@@ -94,4 +94,9 @@ class HomeController extends Controller
             return false;
         }
     }
+
+    public function registerForm()
+    {
+        return view('front.register');
+    }
 }

@@ -1,7 +1,7 @@
 @extends('front.layouts.app')
 
   <!-- Start Page Banner -->
-        {{-- <div class="page-banner-area">
+        <div class="page-banner-area">
             <div class="d-table">
                 <div class="d-table-cell">
                     <div class="container">
@@ -17,7 +17,7 @@
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
         <!-- End Page Banner -->
 
    <!-- Start Contact Area -->

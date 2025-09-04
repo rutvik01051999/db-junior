@@ -28,6 +28,7 @@ Route::get('contact', [HomeController::class, 'contactUsPage'])->name('contact.p
 Route::get('privacy-policy', [HomeController::class, 'privacyPage'])->name('privacy.page');
 Route::get('terms-of-service', [HomeController::class, 'termsPage'])->name('terms.page');
 Route::get('certificate', [HomeController::class, 'certificateGet'])->name('certificate.get');
+Route::get('register/form', [HomeController::class, 'registerForm'])->name('register.form');
 Route::post('certificate/download', [HomeController::class, 'certificateDownload'])->name('certificate.download');
 
 

@@ -2881,6 +2881,7 @@ Page Banner CSS
   padding-top: 200px;
   padding-bottom: 200px;
   background-attachment: fixed;
+  height: 500px;
 }
 .page-banner-area::before {
   position: absolute;
