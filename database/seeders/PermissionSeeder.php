@@ -17,56 +17,38 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'create-update-user',
                 'guard_name' => 'web',
-                'collection_name' => 'user',
-                'description' => 'A user can create and update users',
             ],
             [
                 'name' => 'delete-user',
                 'guard_name' => 'web',
-                'collection_name' => 'user',
-                'description' => 'A user can delete users',
             ],
             [
                 'name' => 'view-user',
                 'guard_name' => 'web',
-                'collection_name' => 'user',
-                'description' => 'A user can view users',
             ],
             [
                 'name' => 'view-all-users',
                 'guard_name' => 'web',
-                'collection_name' => 'user',
-                'description' => 'A user can view all users',
             ],
             [
                 'name' => 'export-users',
                 'guard_name' => 'web',
-                'collection_name' => 'user',
-                'description' => 'A user can export users',
             ],
             [
                 'name' => 'create-update-role',
                 'guard_name' => 'web',
-                'collection_name' => 'role',
-                'description' => 'A user can create and update roles',
             ],
             [
                 'name' => 'delete-role',
                 'guard_name' => 'web',
-                'collection_name' => 'role',
-                'description' => 'A user can delete roles',
             ],
             [
                 'name' => 'view-role',
                 'guard_name' => 'web',
-                'collection_name' => 'role',
-                'description' => 'A user can view roles',
             ],
             [
                 'name' => 'export-roles',
                 'guard_name' => 'web',
-                'collection_name' => 'role',
-                'description' => 'A user can export roles',
             ],
         ];
 
@@ -75,7 +57,6 @@ class PermissionSeeder extends Seeder
                 [
                     'name' => $permission['name'],
                     'guard_name' => $permission['guard_name'],
-                    'collection_name' => $permission['collection_name'],
                 ],
                 $permission,
             );

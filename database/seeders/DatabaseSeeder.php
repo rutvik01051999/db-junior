@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call([
-            LanguageSeeder::class,
+           // LanguageSeeder::class,
             PermissionSeeder::class,
             RoleSeeder::class,
             StateCitySeeder::class,

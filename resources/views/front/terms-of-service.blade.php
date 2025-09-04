@@ -1,30 +1,9 @@
 @extends('front.layouts.app')
-  <!-- Start Page Banner -->
-        {{-- <div class="page-banner-area item-bg2">
-            <div class="d-table">
-                <div class="d-table-cell">
-                    <div class="container">
-                        <div class="page-banner-content">
-                            <h2>Privacy Policy</h2>
-                            <ul>
-                                <li>
-                                    <a href="index.html">Home</a>
-                                </li>
-                                <li>Privacy Policy</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-        <!-- End Page Banner -->
-
-        <!-- Start Privacy policy Area -->
-        <section class="privacy-policy-area ptb-100">
-            <div class="container">
-                <div class="privacy-policy-accordion">
-                    <div class="row">
+  <section class="privacy-policy-area ptb-100">
+<div class="container">
+<div class="row">
                     <div class="col-md-12">
+                        <b>Your website may use the Terms and Conditions given below.</b>
                         <p>The terms "We" / "Us" / "Our"/”Company” individually and collectively refer to Dainik Bhaskar
                             and the terms "Visitor” ”User” refer to the users.</p>
                         <p>This page states the Terms and Conditions under which you (Visitor) may visit this website
@@ -112,7 +91,5 @@
 
                     </div> <!-- end row -->
                 </div>
-                </div>
-            </div>
-        </section>
-        <!-- End Privacy policy Area -->
+</div>
+  </section>

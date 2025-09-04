@@ -57,7 +57,7 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <div class="who-we-are-content">
+                <div class="who-we-are-content" id="about">
                     <h3>Junior Editor</h3>
                     <p>Junior Editor (JE) is India's Largest Newspaper Making Competition which is a pre-designed four-page broadsheet layout. Junior Editor is a unique activity for children that blends the elements of editing, designing, reporting, and creative writing. JE gives you a chance to create your own newspaper by making headlines, crafting stories, and writing editorials. Specific guidelines in the broadsheet will help you through the writing and illustration process. Junior Editor has clinched the highest honours from multiple distinguished organizations. It has been acknowledged by the 'Guinness World Records' (The Largest Writing Competition), the 'Limca World Record' (The Largest Countrywide Newspaper Making Competition for Children), and the India Book of Records for producing the most hand-made newspapers by children. Junior Editor is available in three editions : Dainik Bhaskar, Divya Bhaskar and Divya Marathi. You have the opportunity to create your own newspaper in either Hindi, English, Gujarati, or Marathi.</p>
                     <br>
@@ -106,7 +106,7 @@
             </div>
 
             <div class="col-lg-6">
-                <div class="who-we-are-image-wrap">
+                <div class="who-we-are-image-wrap shadow-custom">
                     <img src="{{ asset('front/assets/img/quote.jpg') }}" alt="image">
 
                 </div>
@@ -119,7 +119,7 @@
 
 <section class="class-area bg-fdf6ed pt-100 pb-70">
     <div class="container">
-       <div class="row justify-content-center">
+        <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="row1">
                     <video preload="metadata" controls="" style="height: 500px;width: 100%;">
@@ -152,7 +152,7 @@
                         <span class="odometer" data-count="1200">00</span>
                     </h3>
                     <p>
-Total Participants</p>
+                        Total Participants</p>
                 </div>
             </div>
 
@@ -162,7 +162,7 @@ Total Participants</p>
                         <span class="odometer" data-count="305">00</span>
                     </h3>
                     <p>
- Participants State </p>
+                        Participants State </p>
                 </div>
             </div>
 
@@ -172,7 +172,7 @@ Total Participants</p>
                         <span class="odometer" data-count="48">00</span>
                     </h3>
                     <p>
- Participants Cities</p>
+                        Participants Cities</p>
                 </div>
             </div>
 
@@ -246,6 +246,190 @@ Total Participants</p>
     </div>
 </section>
 
+<!-- Start Choose Area -->
+<section class="choose-area pt-100 pb-70">
+    <div class="container">
+        <div class="section-title">
+            <h2>Guest Of Honour</h2>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <div class="single-choose">
+                            <div class="icon">
+                                <i class='bx bx-happy'></i>
+                            </div>
+
+                            <div class="content">
+                                <h3>JE - Season 1</h3>
+                                <p>General VK Singh (Retd.)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="single-choose">
+                            <div class="icon">
+                                <i class='bx bx-happy'></i>
+                            </div>
+
+                            <div class="content">
+                                <h3>JE - Season 10</h3>
+                                <p>Late Shri Ramesh Chandra Agarwal Ji (Chairman of the Dainik Bhaskar Group)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="single-choose">
+                            <div class="icon">
+                                <i class='bx bx-happy'></i>
+                            </div>
+
+                            <div class="content">
+                                <h3>JE - Season 1</h3>
+                                <p>General VK Singh (Retd.)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="single-choose">
+                            <div class="icon">
+                                <i class='bx bx-happy'></i>
+                            </div>
+
+                            <div class="content">
+                                <h3>JE - Season 1</h3>
+                                <p>General VK Singh (Retd.)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="single-choose">
+                            <div class="icon">
+                                <i class='bx bx-happy'></i>
+                            </div>
+
+                            <div class="content">
+                                <h3>JE - Season 1</h3>
+                                <p>General VK Singh (Retd.)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="single-choose">
+                            <div class="icon">
+                                <i class='bx bx-happy'></i>
+                            </div>
+
+                            <div class="content">
+                                <h3>JE - Season 1</h3>
+                                <p>General VK Singh (Retd.)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Choose Area -->
+
+  <!-- Start Activities Area -->
+        <section class="activities-area pt-100 pb-70">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Guest Of Honour</h2>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-activities">
+                            <div class="number">
+                                <span>01</span>
+                            </div>
+                            <div class="activities-content">
+                                <h3>
+                                    <a href="#">JE - Season 1</a>
+                                </h3>
+                                <p>General VK Singh (Retd.)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-activities">
+                            <div class="number">
+                                <span class="bg-2">02</span>
+                            </div>
+                            <div class="activities-content">
+                                <h3>
+                                    <a href="#">JE - Season 1</a>
+                                </h3>
+                                <p>General VK Singh (Retd.)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-activities">
+                            <div class="number">
+                                <span class="bg-3">03</span>
+                            </div>
+                            <div class="activities-content">
+                                <h3>
+                                    <a href="#">JE - Season 1</a>
+                                </h3>
+                               <p>General VK Singh (Retd.)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-activities">
+                            <div class="number">
+                                <span class="bg-4">04</span>
+                            </div>
+                            <div class="activities-content">
+                                <h3>
+                                     <a href="#">JE - Season 1</a>
+                                </h3>
+                                <p>General VK Singh (Retd.)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-activities">
+                            <div class="number">
+                                <span class="bg-5">05</span>
+                            </div>
+                            <div class="activities-content">
+                                <h3>
+                                   <a href="#">JE - Season 1</a>
+                                </h3>
+                               <p>General VK Singh (Retd.)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-activities">
+                            <div class="number">
+                                <span class="bg-6">06</span>
+                            </div>
+                            <div class="activities-content">
+                                <h3>
+                                  <a href="#">JE - Season 1</a>
+                                </h3>
+                                <p>Late Shri Ramesh Chandra Agarwal Ji (Chairman of the Dainik Bhaskar Group)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End Activities Area -->
 
 
 <div class="main-banner">
@@ -341,8 +525,8 @@ Total Participants</p>
     </div>
 </div>
 <div id="map">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9476519598093!2d-73.99185268459418!3d40.74117737932881!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a3f81d549f%3A0xb2a39bb5cacc7da0!2s175%205th%20Ave%2C%20New%20York%2C%20NY%2010010%2C%20USA!5e0!3m2!1sen!2sbd!4v1588746137032!5m2!1sen!2sbd"></iframe>
-        </div>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9476519598093!2d-73.99185268459418!3d40.74117737932881!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a3f81d549f%3A0xb2a39bb5cacc7da0!2s175%205th%20Ave%2C%20New%20York%2C%20NY%2010010%2C%20USA!5e0!3m2!1sen!2sbd!4v1588746137032!5m2!1sen!2sbd"></iframe>
+</div>
 <!-- Start Quote Area -->
 <!-- <section class="quote-area bg-item ptb-100">
     <div class="container">

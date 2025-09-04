@@ -5,6 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('front/assets/css/bootstrap.min.css') }}">
@@ -79,6 +80,9 @@
     <script src="{{ asset('front/assets/js/contact-form-script.js') }}"></script>
     <!-- Custom JS -->
     <script src="{{ asset('front/assets/js/main.js') }}"></script>
+
+    <script src="{{ asset('front/assets/js/main_2.js') }}"></script>
+
     
 </body>
 

@@ -64,7 +64,7 @@
                                 {{ auth()->user()->full_name }}
                             </p>
                             <span class="op-7 fw-normal d-block fs-11">
-                                {{ auth()->user()->roles->first()->name }}
+                                
                             </span>
                         </div>
                     </div>

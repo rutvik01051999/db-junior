@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\Select2Controller;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\CerificateController;
 use App\Http\Controllers\HomeController;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,9 @@ Route::get('/temp', function () {
 Route::get('contact', [HomeController::class, 'contactUsPage'])->name('contact.page');
 Route::get('privacy-policy', [HomeController::class, 'privacyPage'])->name('privacy.page');
 Route::get('terms-of-service', [HomeController::class, 'termsPage'])->name('terms.page');
+Route::get('certificate', [HomeController::class, 'certificateGet'])->name('certificate.get');
+Route::post('certificate/download', [HomeController::class, 'certificateDownload'])->name('certificate.download');
+
 
 Auth::routes();
 

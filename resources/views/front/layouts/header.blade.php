@@ -4,7 +4,7 @@
         <div class="container">
             <div class="main-responsive-menu">
                 <div class="logo">
-                    <a href="index.html">
+                    <a href="/">
                         <img src="{{ asset('front/assets/img/Logo.jpg') }}" class="black-logo" alt="image">
                         <img src="{{ asset('front/assets/img/logo-2.png') }}" class="white-logo" alt="image">
                     </a>
@@ -16,7 +16,7 @@
     <div class="main-navbar">
         <div class="container">
             <nav class="navbar navbar-expand-md navbar-light">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="/">
                     <img src="{{ asset('front/assets/img/Logo.jpg') }}" class="black-logo" alt="image" style="width: 110px !important;">
                     <img src="{{ asset('front/assets/img/logo-2.png') }}" class="white-logo" alt="image">
                 </a>
@@ -24,13 +24,13 @@
                 <div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a href="#" class="nav-link active">
+                            <a href="/" class="nav-link active">
                                 Home
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#about" class="nav-link">
                                 About
                             </a>
                         </li>
@@ -42,7 +42,7 @@
                         </li> --}}
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="/certificate" class="nav-link">
                                 Certificate
                             </a>
                         </li>
@@ -110,7 +110,7 @@
                         </div>
 
                         <div class="option-item">
-                            <a href="contact.html" class="default-btn">Contact Us</a>
+                            <a href="/contact" class="default-btn">Contact Us</a>
                         </div>
                     </div>
                 </div>
