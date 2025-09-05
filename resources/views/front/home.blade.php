@@ -189,7 +189,7 @@
 </section>
 <!-- End Fun Facts Area -->
 
-<section class="value-area ptb-100">
+{{-- <section class="value-area ptb-100">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
@@ -244,10 +244,10 @@
             <img src="{{ asset('front/assets/img/value/value-shape-3.png') }}" alt="image">
         </div>
     </div>
-</section>
+</section> --}}
 
 <!-- Start Choose Area -->
-<section class="choose-area pt-100 pb-70">
+{{-- <section class="choose-area pt-100 pb-70">
     <div class="container">
         <div class="section-title">
             <h2>Guest Of Honour</h2>
@@ -332,7 +332,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> --}}
 <!-- End Choose Area -->
 
   <!-- Start Activities Area -->
