@@ -167,6 +167,23 @@
                     </form>
                 </div>
             </div>
+              <div class="main-banner-shape">
+        <div class="shape-5">
+            <img src="{{ asset('front/assets/img/main-banner/banner-shape-5.png') }}" alt="image">
+        </div>
+
+        <div class="shape-2">
+            <img src="{{ asset('front/assets/img/main-banner/banner-shape-2.png') }}" alt="image">
+        </div>
+
+        <div class="shape-6">
+            <img src="{{ asset('front/assets/img/main-banner/banner-shape-6.png') }}" alt="image">
+        </div>
+
+        <div class="shape-4">
+            <img src="{{ asset('front/assets/img/main-banner/banner-shape-4.png') }}" alt="image">
+        </div>
+    </div>
         </div>
     </div>
 </section>

@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\Select2Controller;
 use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\BannerSectionController;
+use App\Http\Controllers\Admin\MainContentController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\CerificateController;
 use App\Http\Controllers\HomeController;
@@ -69,6 +71,32 @@ Route::middleware(SetLocale::class)->group(function () {
     });
 
     Route::prefix('admin/activities')->name('admin.activities.')->middleware(['auth', 'role:Super Admin'])->group(function () {
-        Route::get('/', [ActivityLogsController::class, 'index'])->name('index');
+        Route::get('activity-logs', [ActivityLogsController::class, 'index'])->name('activity-logs.index')->can('view-activity-logs');
+    });
+
+    // Banner Sections Routes
+    Route::prefix('admin/banner-sections')->name('admin.banner-sections.')->middleware('auth')->group(function () {
+        Route::get('/', [BannerSectionController::class, 'index'])->name('index');
+        Route::get('/create', [BannerSectionController::class, 'create'])->name('create');
+        Route::post('/', [BannerSectionController::class, 'store'])->name('store');
+        Route::get('/{bannerSection}/edit', [BannerSectionController::class, 'edit'])->name('edit');
+        Route::put('/{bannerSection}', [BannerSectionController::class, 'update'])->name('update');
+        Route::delete('/{bannerSection}', [BannerSectionController::class, 'destroy'])->name('destroy');
+        
+        // AJAX routes
+        Route::post('/update-status', [BannerSectionController::class, 'updateStatus'])->name('update-status');
+        Route::post('/update-order', [BannerSectionController::class, 'updateOrder'])->name('order');
+    });
+
+    // Main Content Routes
+    Route::prefix('admin/main-contents')->name('admin.main-contents.')->middleware('auth')->group(function () {
+        Route::get('/', [MainContentController::class, 'index'])->name('index');
+        Route::get('/create', [MainContentController::class, 'create'])->name('create');
+        Route::post('/', [MainContentController::class, 'store'])->name('store');
+        Route::post('/update-status', [MainContentController::class, 'updateStatus'])->name('update-status');
+        Route::get('/{mainContent}', [MainContentController::class, 'show'])->name('show');
+        Route::get('/{mainContent}/edit', [MainContentController::class, 'edit'])->name('edit');
+        Route::put('/{mainContent}', [MainContentController::class, 'update'])->name('update');
+        Route::delete('/{mainContent}', [MainContentController::class, 'destroy'])->name('destroy');
     });
 });

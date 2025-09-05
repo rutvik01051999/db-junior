@@ -1,6 +1,6 @@
 @extends('front.layouts.app')
 <br><br>
-<section class="privacy-policy-area ptb-100">
+<section class="class-area bg-fdf6ed pt-100 pb-70">
     <div class="container">
         <div class="privacy-policy-accordion">
             <div class="row justify-content-center">
@@ -29,4 +29,13 @@
             </div>
         </div>
     </div>
+      <div class="class-shape">
+        <div class="shape-1">
+            <img src="{{ asset('front/assets/img/class/class-shape-1.png') }}" alt="image">
+        </div>
+        <div class="shape-2">
+            <img src="{{ asset('front/assets/img/class/class-shape-2.png') }}" alt="image">
+        </div>
+    </div>
+    
 </section>

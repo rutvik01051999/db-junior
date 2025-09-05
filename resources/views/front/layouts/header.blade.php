@@ -35,11 +35,11 @@
                             </a>
                         </li>
 
-                       {{-- <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                Contact
+                       <li class="nav-item">
+                            <a href="/register/form" class="nav-link">
+                                Register
                             </a>
-                        </li> --}}
+                        </li>
 
                         <li class="nav-item">
                             <a href="/certificate" class="nav-link">

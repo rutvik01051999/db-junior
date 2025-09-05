@@ -28,84 +28,69 @@
                                     </svg>
                                 </div>
                                 <ul class="main-menu">
-                                    <li
-                                        class="slide has-sub {{ request()->routeIs('admin.dashboard.index') ? 'active open' : '' }}">
+                                    <!-- Banner Sections -->
+                                    <li class="slide has-sub {{ request()->routeIs('admin.banner-sections.*') ? 'active' : '' }}">
                                         <a href="javascript:void(0);"
-                                            class="side-menu__item {{ request()->routeIs('admin.dashboard.index') ? 'active' : '' }}">
-                                            <i class="bx bx-home side-menu__icon"></i>
+                                            class="side-menu__item {{ request()->routeIs('admin.banner-sections.*') ? 'active' : '' }}">
+                                            <i class="bx bx-image side-menu__icon"></i>
                                             <span class="side-menu__label">
-                                                {{ __('menu.dashboard') }}
+                                                Banner Sections
                                             </span>
                                             <i class="fe fe-chevron-right side-menu__angle"></i>
                                         </a>
-                                        <ul class="slide-menu child1 {{ request()->routeIs('admin.dashboard.index') ? 'active' : '' }}"
+                                        <ul class="slide-menu child1 {{ request()->routeIs('admin.banner-sections.*') ? 'active' : '' }}"
                                             data-popper-placement="bottom">
                                             <li class="slide side-menu__label1">
                                                 <a href="javascript:void(0)">
-                                                    {{ __('menu.dashboard') }}
+                                                    Banner Sections
                                                 </a>
                                             </li>
-                                            <li
-                                                class="slide {{ request()->routeIs('admin.dashboard.index') ? 'active' : '' }}">
-                                                <a href="{{ route('admin.dashboard.index') }}"
-                                                    class="side-menu__item {{ request()->routeIs('admin.dashboard.index') ? 'active' : '' }}">
-                                                    {{ __('menu.analytics') }}
+                                            <li class="slide {{ request()->routeIs('admin.banner-sections.index') ? 'active' : '' }}">
+                                                <a href="{{ route('admin.banner-sections.index') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.banner-sections.index') ? 'active' : '' }}">
+                                                    All Banner Sections
+                                                </a>
+                                            </li>
+                                            <li class="slide">
+                                                <a href="{{ route('admin.banner-sections.create') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.banner-sections.create') ? 'active' : '' }}">
+                                                    Add New
                                                 </a>
                                             </li>
                                         </ul>
                                     </li>
-
-
-                                    @if (auth()->user()->hasPermissionTo('view-all-users'))
-                                        <li
-                                            class="slide has-sub {{ request()->routeIs('admin.users.index') ? 'active open' : '' }}">
-                                            <a href="javascript:void(0);"
-                                                class="side-menu__item {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
-                                                <i class="bx bx-user side-menu__icon"></i>
-                                                <span class="side-menu__label">
-                                                    {{ __('menu.users') }}
-                                                </span>
-                                                <i class="fe fe-chevron-right side-menu__angle"></i>
-                                            </a>
-                                            <ul class="slide-menu child1 {{ request()->routeIs('admin.users.index') ? 'active' : '' }}"
-                                                data-popper-placement="bottom">
-                                                <li class="slide side-menu__label1">
-                                                    <a href="javascript:void(0)">
-                                                        {{ __('menu.users') }}
-                                                    </a>
-                                                </li>
-                                                <li
-                                                    class="slide {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
-                                                    <a href="{{ route('admin.users.index') }}"
-                                                        class="side-menu__item {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
-                                                        {{ __('menu.users') }}
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    @endif
-
-                                    @if (auth()->user()->hasRole('Super Admin'))
-                                        <li class="slide">
-                                            <a href="{{ route('admin.roles.index') }}"
-                                                class="side-menu__item {{ request()->routeIs('admin.roles.index') ? 'active' : '' }}">
-                                                <i class="bx bx-shield side-menu__icon"></i>
-                                                <span class="side-menu__label">
-                                                    {{ __('menu.roles') }}
-                                                </span>
-                                            </a>
-                                        </li>
-
-                                        <li class="slide">
-                                            <a href="{{ route('admin.activities.index') }}"
-                                                class="side-menu__item {{ request()->routeIs('admin.activities.index') ? 'active' : '' }}">
-                                                <i class="bx bx-bell side-menu__icon"></i>
-                                                <span class="side-menu__label">
-                                                    {{ __('menu.activities') }}
-                                                </span>
-                                            </a>
-                                        </li>
-                                    @endif
+                                    
+                                    <!-- Main Content Section -->
+                                    <li class="slide has-sub {{ request()->routeIs('admin.main-contents.*') ? 'active' : '' }}">
+                                        <a href="javascript:void(0);"
+                                            class="side-menu__item {{ request()->routeIs('admin.main-contents.*') ? 'active' : '' }}">
+                                            <i class="bx bx-layout side-menu__icon"></i>
+                                            <span class="side-menu__label">
+                                                Main Content
+                                            </span>
+                                            <i class="fe fe-chevron-right side-menu__angle"></i>
+                                        </a>
+                                        <ul class="slide-menu child1 {{ request()->routeIs('admin.main-contents.*') ? 'active' : '' }}"
+                                            data-popper-placement="bottom">
+                                            <li class="slide side-menu__label1">
+                                                <a href="javascript:void(0)">
+                                                    Main Content
+                                                </a>
+                                            </li>
+                                            <li class="slide {{ request()->routeIs('admin.main-contents.index') ? 'active' : '' }}">
+                                                <a href="{{ route('admin.main-contents.index') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.main-contents.index') ? 'active' : '' }}">
+                                                    All Main Content
+                                                </a>
+                                            </li>
+                                            <li class="slide">
+                                                <a href="{{ route('admin.main-contents.create') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.main-contents.create') ? 'active' : '' }}">
+                                                    Add New
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </ul>
 
                                 <div class="slide-right d-none" id="slide-right">
