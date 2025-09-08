@@ -4,14 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Process extends Model
+class Slider extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'title',
         'image',
         'status'
     ];
@@ -23,13 +21,5 @@ class Process extends Model
     public function getImageUrlAttribute()
     {
         return $this->image ? asset('storage/' . $this->image) : null;
-    }
-
-    /**
-     * Get the steps for the process.
-     */
-    public function steps(): HasMany
-    {
-        return $this->hasMany(ProcessStep::class);
     }
 }

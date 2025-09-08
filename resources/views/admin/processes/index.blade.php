@@ -27,7 +27,7 @@
                                     <th>#</th>
                                     <th>Image</th>
                                     <th>Title</th>
-                                    <th>Sub Title</th>
+                                    <th>Steps</th>
                                     <th>Status</th>
                                     <th width="150">Actions</th>
                                 </tr>
@@ -44,7 +44,9 @@
                                             @endif
                                         </td>
                                         <td>{{ $process->title }}</td>
-                                        <td>{{ $process->sub_title ?? 'N/A' }}</td>
+                                        <td>
+                                            <span class="badge bg-info">{{ $process->steps->count() }} step{{ $process->steps->count() !== 1 ? 's' : '' }}</span>
+                                        </td>
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input status-toggle" type="checkbox" 

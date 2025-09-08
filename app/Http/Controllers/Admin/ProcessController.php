@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Process;
+use App\Models\ProcessStep;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,7 +15,7 @@ class ProcessController extends Controller
      */
     public function index()
     {
-        $processes = Process::latest()->get();
+        $processes = Process::with('steps')->latest()->get();
         return view('admin.processes.index', compact('processes'));
     }
 
@@ -33,17 +34,32 @@ class ProcessController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'sub_title' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'description' => 'nullable|string',
             'status' => 'boolean',
+            'steps' => 'required|array|min:1',
+            'steps.*.sub_title' => 'required|string|max:255',
+            'steps.*.description' => 'required|string',
         ]);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('processes', 'public');
         }
 
-        Process::create($validated);
+        $process = Process::create([
+            'title' => $validated['title'],
+            'image' => $validated['image'] ?? null,
+            'status' => $validated['status'] ?? true,
+        ]);
+
+        // Create process steps
+        foreach ($validated['steps'] as $step) {
+            ProcessStep::create([
+                'process_id' => $process->id,
+                'sub_title' => $step['sub_title'],
+                'description' => $step['description'],
+                'status' => true,
+            ]);
+        }
 
         return redirect()->route('admin.processes.index')
             ->with('success', 'Process created successfully.');
@@ -54,6 +70,7 @@ class ProcessController extends Controller
      */
     public function show(Process $process)
     {
+        $process->load('steps');
         return view('admin.processes.show', compact('process'));
     }
 
@@ -62,6 +79,7 @@ class ProcessController extends Controller
      */
     public function edit(Process $process)
     {
+        $process->load('steps');
         return view('admin.processes.edit', compact('process'));
     }
 
@@ -72,10 +90,12 @@ class ProcessController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'sub_title' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'description' => 'nullable|string',
             'status' => 'boolean',
+            'steps' => 'required|array|min:1',
+            'steps.*.id' => 'nullable|exists:process_steps,id',
+            'steps.*.sub_title' => 'required|string|max:255',
+            'steps.*.description' => 'required|string',
         ]);
 
         if ($request->hasFile('image')) {
@@ -86,7 +106,40 @@ class ProcessController extends Controller
             $validated['image'] = $request->file('image')->store('processes', 'public');
         }
 
-        $process->update($validated);
+        $process->update([
+            'title' => $validated['title'],
+            'image' => $validated['image'] ?? $process->image,
+            'status' => $validated['status'] ?? $process->status,
+        ]);
+
+        // Get existing step IDs
+        $existingStepIds = $process->steps->pluck('id')->toArray();
+        $submittedStepIds = collect($validated['steps'])->pluck('id')->filter()->toArray();
+        
+        // Delete steps that are no longer in the request
+        $stepsToDelete = array_diff($existingStepIds, $submittedStepIds);
+        ProcessStep::whereIn('id', $stepsToDelete)->delete();
+
+        // Update or create steps
+        foreach ($validated['steps'] as $step) {
+            if (isset($step['id']) && $step['id']) {
+                // Update existing step
+                ProcessStep::where('id', $step['id'])
+                    ->where('process_id', $process->id)
+                    ->update([
+                        'sub_title' => $step['sub_title'],
+                        'description' => $step['description'],
+                    ]);
+            } else {
+                // Create new step
+                ProcessStep::create([
+                    'process_id' => $process->id,
+                    'sub_title' => $step['sub_title'],
+                    'description' => $step['description'],
+                    'status' => true,
+                ]);
+            }
+        }
 
         return redirect()->route('admin.processes.index')
             ->with('success', 'Process updated successfully');
@@ -101,6 +154,8 @@ class ProcessController extends Controller
             Storage::disk('public')->delete($process->image);
         }
         
+        // Delete associated steps (cascade delete will handle this automatically)
+        $process->steps()->delete();
         $process->delete();
 
         return redirect()->route('admin.processes.index')

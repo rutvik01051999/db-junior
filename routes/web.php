@@ -10,6 +10,9 @@ use App\Http\Controllers\Admin\BannerSectionController;
 use App\Http\Controllers\Admin\MainContentController;
 use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\Admin\ProcessController;
+use App\Http\Controllers\Admin\ParticipantController;
+use App\Http\Controllers\Admin\GuestOfHonourController;
+use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\CerificateController;
 use App\Http\Controllers\HomeController;
@@ -115,6 +118,42 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::delete('/{process}', [ProcessController::class, 'destroy'])->name('destroy');
     });
 
+    // Participants Routes
+    Route::prefix('admin/participants')->name('admin.participants.')->middleware('auth')->group(function () {
+        Route::get('/', [ParticipantController::class, 'index'])->name('index');
+        Route::get('/create', [ParticipantController::class, 'create'])->name('create');
+        Route::post('/', [ParticipantController::class, 'store'])->name('store');
+        Route::get('/{participant}', [ParticipantController::class, 'show'])->name('show');
+        Route::get('/{participant}/edit', [ParticipantController::class, 'edit'])->name('edit');
+        Route::put('/{participant}', [ParticipantController::class, 'update'])->name('update');
+        Route::post('/update-status', [ParticipantController::class, 'updateStatus'])->name('update-status');
+        Route::delete('/{participant}', [ParticipantController::class, 'destroy'])->name('destroy');
+    });
+
+    // Guest Of Honours Routes
+    Route::prefix('admin/guest-of-honours')->name('admin.guest-of-honours.')->middleware('auth')->group(function () {
+        Route::get('/', [GuestOfHonourController::class, 'index'])->name('index');
+        Route::get('/create', [GuestOfHonourController::class, 'create'])->name('create');
+        Route::post('/', [GuestOfHonourController::class, 'store'])->name('store');
+        Route::get('/{guestOfHonour}', [GuestOfHonourController::class, 'show'])->name('show');
+        Route::get('/{guestOfHonour}/edit', [GuestOfHonourController::class, 'edit'])->name('edit');
+        Route::put('/{guestOfHonour}', [GuestOfHonourController::class, 'update'])->name('update');
+        Route::post('/update-status', [GuestOfHonourController::class, 'updateStatus'])->name('update-status');
+        Route::delete('/{guestOfHonour}', [GuestOfHonourController::class, 'destroy'])->name('destroy');
+    });
+
+    // Sliders Routes
+    Route::prefix('admin/sliders')->name('admin.sliders.')->middleware('auth')->group(function () {
+        Route::get('/', [SliderController::class, 'index'])->name('index');
+        Route::get('/create', [SliderController::class, 'create'])->name('create');
+        Route::post('/', [SliderController::class, 'store'])->name('store');
+        Route::get('/{slider}', [SliderController::class, 'show'])->name('show');
+        Route::get('/{slider}/edit', [SliderController::class, 'edit'])->name('edit');
+        Route::put('/{slider}', [SliderController::class, 'update'])->name('update');
+        Route::post('/update-status', [SliderController::class, 'updateStatus'])->name('update-status');
+        Route::delete('/{slider}', [SliderController::class, 'destroy'])->name('destroy');
+    });
+
     // Video Routes
     Route::prefix('admin/videos')->name('admin.videos.')->middleware('auth')->group(function () {
         Route::get('/', [VideoController::class, 'index'])->name('index');
@@ -123,6 +162,7 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::get('/{video}', [VideoController::class, 'show'])->name('show');
         Route::get('/{video}/edit', [VideoController::class, 'edit'])->name('edit');
         Route::put('/{video}', [VideoController::class, 'update'])->name('update');
+        Route::post('/update-status', [VideoController::class, 'updateStatus'])->name('update-status');
         Route::delete('/{video}', [VideoController::class, 'destroy'])->name('destroy');
     });
 });

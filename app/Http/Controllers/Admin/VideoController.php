@@ -117,4 +117,28 @@ class VideoController extends Controller
         return redirect()->route('admin.videos.index')
             ->with('success', 'Video deleted successfully.');
     }
+
+    /**
+     * Update the status of the specified resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateStatus(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:videos,id',
+            'status' => 'required|boolean',
+        ]);
+
+        $video = Video::findOrFail($request->id);
+        $video->is_active = $request->status;
+        $video->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status updated successfully',
+            'status' => $video->is_active ? 'Active' : 'Inactive'
+        ]);
+    }
 }

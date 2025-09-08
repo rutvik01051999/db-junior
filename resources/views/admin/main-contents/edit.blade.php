@@ -19,35 +19,88 @@
                     @method('PUT')
                     <div class="card-body">
                         <div class="row">
-                            <!-- Left Column -->
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                    <label for="title">Title <span class="text-danger">*</span></label>
-                                    <input type="text" name="title" id="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title', $mainContent->title) }}" required>
-                                    @error('title')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                            <!-- Left Column - Main Content -->
+                            <div class="col-lg-8">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
+                                            <label for="title" class="form-label fw-bold">Title <span class="text-danger">*</span></label>
+                                            <input type="text" name="title" id="title" class="form-control form-control-lg @error('title') is-invalid @enderror" value="{{ old('title', $mainContent->title) }}" placeholder="Enter main content title" required>
+                                            @error('title')
+                                                <div class="invalid-feedback">
+                                                    <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <textarea name="description" id="description" class="form-control @error('description') is-invalid @enderror" rows="5">{{ old('description', $mainContent->description) }}</textarea>
-                                    @error('description')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
+                                            <label for="description" class="form-label fw-bold">Description</label>
+                                            <textarea name="description" id="description" class="form-control @error('description') is-invalid @enderror" rows="6" placeholder="Enter main content description">{{ old('description', $mainContent->description) }}</textarea>
+                                            @error('description')
+                                                <div class="invalid-feedback">
+                                                    <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Image Upload Section -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
+                                            <label for="image" class="form-label fw-bold">Image @if(!$mainContent->image)<span class="text-danger">*</span>@endif</label>
+                                            
+                                            <!-- Current Image Display -->
+                                            @if($mainContent->image)
+                                                <div class="card mb-3">
+                                                    <div class="card-header bg-info text-white">
+                                                        <h6 class="mb-0"><i class="fas fa-image me-2"></i>Current Image</h6>
+                                                    </div>
+                                                    <div class="card-body text-center">
+                                                        <img src="{{ asset('storage/' . $mainContent->image) }}" alt="Current Image" class="img-fluid rounded shadow" style="max-height: 200px;">
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            <!-- New Image Upload -->
+                                            <div class="card border-2 border-dashed border-primary">
+                                                <div class="card-body text-center">
+                                                    <div class="custom-file">
+                                                        <input type="file" name="image" class="custom-file-input @error('image') is-invalid @enderror" id="image" {{ !$mainContent->image ? 'required' : '' }}>
+                                                        <label class="custom-file-label btn btn-outline-primary" for="image">
+                                                            <i class="fas fa-cloud-upload-alt me-2"></i>Choose New Image File
+                                                        </label>
+                                                        @error('image')
+                                                            <div class="invalid-feedback">
+                                                                <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </div>
+                                                    <small class="form-text text-muted mt-2 d-block">
+                                                        <i class="fas fa-info-circle me-1"></i>
+                                                        Leave empty to keep current image. Recommended size: 1200x600px, Max size: 2MB
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3 text-center">
+                                                <img id="imagePreview" src="#" alt="New Image Preview" class="img-fluid rounded shadow" style="max-height: 200px; display: none;">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Right Column -->
-                            <div class="col-md-4">
+                            <!-- Right Column - Additional Fields -->
+                            <div class="col-lg-4">
                                 <!-- Participation Categories -->
                                 <div class="card mb-3">
-                                    <div class="card-header">
-                                        <h6 class="mb-0">Participation Categories</h6>
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0"><i class="fas fa-users me-2"></i>Participation Categories</h6>
                                     </div>
                                     <div class="card-body">
                                         @for($i = 1; $i <= 4; $i++)
@@ -55,16 +108,17 @@
                                                 $fieldName = 'participation_categories_' . $i;
                                                 $fieldValue = old($fieldName, $mainContent->$fieldName);
                                             @endphp
-                                            <div class="form-group">
-                                                <label for="{{ $fieldName }}">Category {{ $i }}</label>
+                                            <div class="form-group mb-3">
+                                                <label for="{{ $fieldName }}" class="form-label">Category {{ $i }}</label>
                                                 <input type="text" name="{{ $fieldName }}" 
                                                        id="{{ $fieldName }}" 
                                                        class="form-control @error($fieldName) is-invalid @enderror" 
-                                                       value="{{ $fieldValue }}">
+                                                       value="{{ $fieldValue }}"
+                                                       placeholder="Enter category {{ $i }}">
                                                 @error($fieldName)
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
+                                                    <div class="invalid-feedback">
+                                                        <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                                                    </div>
                                                 @enderror
                                             </div>
                                         @endfor
@@ -73,8 +127,8 @@
 
                                 <!-- Timeline -->
                                 <div class="card mb-3">
-                                    <div class="card-header">
-                                        <h6 class="mb-0">Timeline</h6>
+                                    <div class="card-header bg-warning text-dark">
+                                        <h6 class="mb-0"><i class="fas fa-clock me-2"></i>Timeline</h6>
                                     </div>
                                     <div class="card-body">
                                         @for($i = 1; $i <= 4; $i++)
@@ -82,54 +136,37 @@
                                                 $fieldName = 'timeline_' . $i;
                                                 $fieldValue = old($fieldName, $mainContent->$fieldName);
                                             @endphp
-                                            <div class="form-group">
-                                                <label for="{{ $fieldName }}">Timeline {{ $i }}</label>
+                                            <div class="form-group mb-3">
+                                                <label for="{{ $fieldName }}" class="form-label">Timeline {{ $i }}</label>
                                                 <input type="text" name="{{ $fieldName }}" 
                                                        id="{{ $fieldName }}" 
                                                        class="form-control @error($fieldName) is-invalid @enderror" 
-                                                       value="{{ $fieldValue }}">
+                                                       value="{{ $fieldValue }}"
+                                                       placeholder="Enter timeline {{ $i }}">
                                                 @error($fieldName)
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
+                                                    <div class="invalid-feedback">
+                                                        <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                                                    </div>
                                                 @enderror
                                             </div>
                                         @endfor
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" value="1" {{ old('is_active', $mainContent->is_active) ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="is_active">Active</label>
+                                <!-- Status Settings -->
+                                <div class="card bg-light">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0"><i class="fas fa-cog me-2"></i>Settings</h6>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Full Width Row for Image Upload -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="image">Image @if(!$mainContent->image)<span class="text-danger">*</span>@endif</label>
-                                    <div class="custom-file">
-                                        <input type="file" name="image" class="custom-file-input @error('image') is-invalid @enderror" id="image" {{ !$mainContent->image ? 'required' : '' }}>
-                                        <label class="custom-file-label" for="image">Choose file</label>
-                                        @error('image')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                    <small class="form-text text-muted">Leave empty to keep the current image. Recommended size: 1200x600px, Max size: 2MB</small>
-                                    @if($mainContent->image)
-                                        <div class="mt-2">
-                                            <img src="{{ asset('storage/' . $mainContent->image) }}" alt="Current Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
-                                            <p class="text-muted mt-1">Current Image</p>
+                                    <div class="card-body">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label fw-bold">Status</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $mainContent->is_active) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="is_active">Active</label>
+                                            </div>
+                                            <small class="form-text text-muted">Toggle to enable/disable this content</small>
                                         </div>
-                                    @endif
-                                    <div class="mt-2">
-                                        <img id="imagePreview" src="#" alt="New Image Preview" style="display: none; max-width: 200px; max-height: 200px;">
                                     </div>
                                 </div>
                             </div>
@@ -179,35 +216,139 @@
             $('#imagePreview').attr('src', '{{ asset('storage/' . $mainContent->image) }}').show();
         @endif
 
+        // Custom validation methods
+        $.validator.addMethod('filesize', function(value, element, param) {
+            if (element.files.length === 0) return true; // No file selected is valid for edit
+            return this.optional(element) || (element.files[0].size <= param * 1024);
+        }, 'File size must be less than {0} KB');
+
+        $.validator.addMethod('extension', function(value, element, param) {
+            if (element.files.length === 0) return true; // No file selected is valid for edit
+            param = typeof param === "string" ? param.replace(/,/g, '|') : 'png|jpe?g|gif';
+            return this.optional(element) || value.match(new RegExp('\\.(' + param + ')$', 'i'));
+        }, 'Please enter a valid file extension.');
+
         // Form validation
         $("#mainContentForm").validate({
             rules: {
                 title: {
                     required: true,
+                    minlength: 3,
                     maxlength: 255
                 },
-                image: {
-                    extension: "jpg|jpeg|png|gif"
+                description: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 1000
                 },
-                sort_order: {
-                    number: true,
-                    min: 0
+                image: {
+                    extension: "jpg|jpeg|png|gif",
+                    filesize: 2048 // 2MB
+                },
+                participation_categories_1: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 100
+                },
+                participation_categories_2: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 100
+                },
+                participation_categories_3: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 100
+                },
+                participation_categories_4: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 100
+                },
+                timeline_1: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 100
+                },
+                timeline_2: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 100
+                },
+                timeline_3: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 100
+                },
+                timeline_4: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 100
+                },
+                is_active: {
+                    required: true
                 }
             },
             messages: {
                 title: {
                     required: "Please enter a title",
+                    minlength: "Title must be at least 3 characters long",
                     maxlength: "Title should not be more than 255 characters"
                 },
-                image: {
-                    extension: "Please upload a valid image file (jpg, jpeg, png, gif)"
+                description: {
+                    required: "Please enter a description",
+                    minlength: "Description must be at least 10 characters long",
+                    maxlength: "Description cannot exceed 1000 characters"
                 },
-                sort_order: {
-                    number: "Please enter a valid number",
-                    min: "Sort order cannot be negative"
+                image: {
+                    extension: "Please upload a valid image file (jpg, jpeg, png, gif)",
+                    filesize: "File size must be less than 2MB"
+                },
+                participation_categories_1: {
+                    required: "Please enter participation category 1",
+                    minlength: "Category must be at least 2 characters long",
+                    maxlength: "Category cannot exceed 100 characters"
+                },
+                participation_categories_2: {
+                    required: "Please enter participation category 2",
+                    minlength: "Category must be at least 2 characters long",
+                    maxlength: "Category cannot exceed 100 characters"
+                },
+                participation_categories_3: {
+                    required: "Please enter participation category 3",
+                    minlength: "Category must be at least 2 characters long",
+                    maxlength: "Category cannot exceed 100 characters"
+                },
+                participation_categories_4: {
+                    required: "Please enter participation category 4",
+                    minlength: "Category must be at least 2 characters long",
+                    maxlength: "Category cannot exceed 100 characters"
+                },
+                timeline_1: {
+                    required: "Please enter timeline 1",
+                    minlength: "Timeline must be at least 2 characters long",
+                    maxlength: "Timeline cannot exceed 100 characters"
+                },
+                timeline_2: {
+                    required: "Please enter timeline 2",
+                    minlength: "Timeline must be at least 2 characters long",
+                    maxlength: "Timeline cannot exceed 100 characters"
+                },
+                timeline_3: {
+                    required: "Please enter timeline 3",
+                    minlength: "Timeline must be at least 2 characters long",
+                    maxlength: "Timeline cannot exceed 100 characters"
+                },
+                timeline_4: {
+                    required: "Please enter timeline 4",
+                    minlength: "Timeline must be at least 2 characters long",
+                    maxlength: "Timeline cannot exceed 100 characters"
+                },
+                is_active: {
+                    required: "Please set the content status"
                 }
             },
-            errorElement: 'span',
+            errorElement: 'div',
             errorPlacement: function (error, element) {
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
@@ -217,6 +358,11 @@
             },
             unhighlight: function (element, errorClass, validClass) {
                 $(element).removeClass('is-invalid');
+            },
+            submitHandler: function(form) {
+                // Show loading state
+                $('button[type="submit"]').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Updating...');
+                form.submit();
             }
         });
     });

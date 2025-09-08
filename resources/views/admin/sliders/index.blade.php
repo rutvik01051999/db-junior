@@ -1,14 +1,16 @@
 @extends('admin.layouts.app')
 
+@section('title', 'Sliders')
+
 @section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">Videos</h4>
-                    <a href="{{ route('admin.videos.create') }}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Add New Video
+                    <h4 class="card-title">Sliders</h4>
+                    <a href="{{ route('admin.sliders.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Slider
                     </a>
                 </div>
                 <div class="card-body">
@@ -20,46 +22,45 @@
 
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
-                            <thead>
+                            <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
-                                    <th>Title</th>
-                                    <th>Video</th>
+                                    <th>Image</th>
                                     <th>Status</th>
-                                    <th>Actions</th>
+                                    <th width="150">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($videos as $video)
+                                @forelse($sliders as $slider)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $video->title }}</td>
                                         <td>
-                                            <video width="200" controls>
-                                                <source src="{{ asset('storage/' . $video->path) }}" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
+                                            @if($slider->image)
+                                                <img src="{{ $slider->image_url }}" alt="Slider Image" width="100" class="img-thumbnail">
+                                            @else
+                                                No Image
+                                            @endif
                                         </td>
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input status-toggle" type="checkbox" 
-                                                    data-id="{{ $video->id }}" 
-                                                    id="status-{{ $video->id }}"
-                                                    {{ $video->is_active ? 'checked' : '' }}>
+                                                    data-id="{{ $slider->id }}" 
+                                                    id="status-{{ $slider->id }}"
+                                                    {{ $slider->status ? 'checked' : '' }}>
                                             </div>
                                         </td>
                                         <td class="text-nowrap">
                                             <div class="btn-group" role="group">
-                                                <a href="{{ route('admin.videos.show', $video->id) }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="View">
+                                                <a href="{{ route('admin.sliders.show', $slider->id) }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="View">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ route('admin.videos.edit', $video->id) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Edit">
+                                                <a href="{{ route('admin.sliders.edit', $slider->id) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <button type="button" class="btn btn-danger btn-sm delete-video" data-id="{{ $video->id }}" data-toggle="tooltip" title="Delete">
+                                                <button type="button" class="btn btn-danger btn-sm delete-slider" data-id="{{ $slider->id }}" data-toggle="tooltip" title="Delete">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
-                                                <form id="delete-form-{{ $video->id }}" action="{{ route('admin.videos.destroy', $video->id) }}" method="POST" style="display: none;">
+                                                <form id="delete-form-{{ $slider->id }}" action="{{ route('admin.sliders.destroy', $slider->id) }}" method="POST" style="display: none;">
                                                     @csrf
                                                     @method('DELETE')
                                                 </form>
@@ -68,7 +69,12 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center">No videos found.</td>
+                                        <td colspan="4" class="text-center">
+                                            <div class="py-4">
+                                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                                <p class="mb-0">No sliders found. Click the button above to add a new one.</p>
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -80,7 +86,6 @@
     </div>
 </div>
 @endsection
-
 @push('styles')
 <style>
     .form-switch .form-check-input {
@@ -114,11 +119,11 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
+        
         // Handle delete button click
-        $('.delete-video').click(function() {
-            const videoId = $(this).data('id');
-            const form = $('#delete-form-' + videoId);
+        $('.delete-slider').click(function() {
+            const sliderId = $(this).data('id');
+            const form = $('#delete-form-' + sliderId);
             
             Swal.fire({
                 title: 'Are you sure?',
@@ -137,7 +142,8 @@
 
         // Handle status toggle switch
         $('.status-toggle').change(function() {
-            const videoId = $(this).data('id');
+            console.log('Status toggle changed');
+            const sliderId = $(this).data('id');
             const isActive = $(this).is(':checked') ? 1 : 0;
             const $switch = $(this);
             
@@ -146,11 +152,11 @@
             
             // Send AJAX request to update status
             $.ajax({
-                url: '{{ route("admin.videos.update-status") }}',
+                url: '{{ route("admin.sliders.update-status") }}',
                 type: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
-                    id: videoId,
+                    id: sliderId,
                     status: isActive
                 },
                 success: function(response) {
@@ -181,6 +187,19 @@
                     $switch.prop('disabled', false);
                 }
             });
+        });
+        
+        // SweetAlert2 toast configuration
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
         });
     });
 </script>

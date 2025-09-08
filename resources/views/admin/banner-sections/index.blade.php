@@ -38,21 +38,26 @@
                                     </td>
                                     <td>{{ Str::limit($banner->description, 50) }}</td>
                                     <td>
-                                        <label class="switch">
-                                            <input type="checkbox" class="status-toggle" 
-                                                data-id="{{ $banner->id }}"
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input status-toggle" type="checkbox" 
+                                                data-id="{{ $banner->id }}" 
+                                                id="status-{{ $banner->id }}"
                                                 {{ $banner->is_active ? 'checked' : '' }}>
-                                            <span class="slider round"></span>
-                                            <span class="status-text">{{ $banner->is_active ? 'Active' : 'Inactive' }}</span>
-                                        </label>
+                                        </div>
                                     </td>
-                                    <td>
-                                        <a href="{{ route('admin.banner-sections.edit', $banner->id) }}" class="btn btn-sm btn-primary">
-                                            Edit
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="{{ $banner->id }}">
-                                            Delete
-                                        </button>
+                                    <td class="text-nowrap">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('admin.banner-sections.edit', $banner->id) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-danger btn-sm delete-banner" data-id="{{ $banner->id }}" data-toggle="tooltip" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <form id="delete-form-{{ $banner->id }}" action="{{ route('admin.banner-sections.destroy', $banner->id) }}" method="POST" style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -67,89 +72,26 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirm Delete</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this banner?
-                </div>
-                <div class="modal-footer">
-                    <form id="deleteForm" method="POST" action="">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('styles')
-    <style>
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 90px;
-            height: 34px;
-        }
-        .switch input { 
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #dc3545;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: #28a745;
-        }
-        input:focus + .slider {
-            box-shadow: 0 0 1px #28a745;
-        }
-        input:checked + .slider:before {
-            transform: translateX(56px);
-        }
-        .status-text {
-            position: absolute;
-            top: 8px;
-            left: 40px;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            pointer-events: none;
-        }
-        input:checked + .slider + .status-text {
-            left: 12px;
-        }
-    </style>
+<style>
+    .form-switch .form-check-input {
+        width: 2.5em;
+        margin-left: -2.5em;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280, 0, 0, 0.25%29'/%3e%3c/svg%3e");
+        background-position: left center;
+        border-radius: 2em;
+        transition: background-position 0.15s ease-in-out;
+    }
+    .form-switch .form-check-input:checked {
+        background-position: right center;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+    }
+    .btn-group .btn {
+        margin-right: 0.25rem;
+    }
+</style>
 @endpush
 
 @push('styles')
@@ -158,112 +100,99 @@
 @endpush
 
 @push('scripts')
-    <!-- jQuery and jQuery UI must be loaded first -->
-  
-    
-    <!-- Toastr for notifications -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script>
-        $(function() {
-            // Delete button click handler
-            $('.delete-btn').click(function() {
-                var id = $(this).data('id');
-                var url = '{{ route("admin.banner-sections.destroy", ":id") }}';
-                url = url.replace(':id', id);
-                $('#deleteForm').attr('action', url);
-                $('#deleteModal').modal('show');
-            });
-
-            // Status toggle handler
-            $('.status-toggle').change(function() {
-                var $toggle = $(this);
-                var $switch = $toggle.closest('.switch');
-                var id = $toggle.data('id');
-                var status = $toggle.prop('checked');
-                var $statusText = $switch.find('.status-text');
-                var $slider = $switch.find('.slider');
-                
-                // Update UI immediately for better UX
-                $statusText.text(status ? 'Active' : 'Inactive');
-                $slider.css('background-color', status ? '#28a745' : '#dc3545');
-                
-                $.ajax({
-                    url: '{{ route("admin.banner-sections.update-status") }}',
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        id: id,
-                        status: status ? 1 : 0
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Update the status text
-                            $statusText.text(status ? 'Active' : 'Inactive');
-                            // Toggle the slider color
-                            $slider.css('background-color', status ? '#28a745' : '#dc3545');
-                            toastr.success('Status updated successfully');
-                        } else {
-                            // Revert the toggle if update fails
-                            $toggle.prop('checked', !status);
-                            $statusText.text(status ? 'Inactive' : 'Active');
-                            $slider.css('background-color', status ? '#dc3545' : '#28a745');
-                            toastr.error('Failed to update status');
-                        }
-                    },
-                    error: function(xhr) {
-                        // Revert the toggle on error
-                        $toggle.prop('checked', !status);
-                        $statusText.text(status ? 'Inactive' : 'Active');
-                        $slider.css('background-color', status ? '#dc3545' : '#28a745');
-                        toastr.error('An error occurred while updating status');
-                    }
-                });
-            });
-
-            // Make sure jQuery UI is loaded
-            // if (typeof jQuery.ui !== 'undefined' && jQuery.ui.sortable) {
-            //     // Initialize sortable with handle
-            //     $("#sortable").sortable({
-            //         handle: 'td', // Make entire row draggable
-            //         cursor: 'move',
-            //         opacity: 0.7,
-            //         update: function(event, ui) {
-            //             var order = [];
-            //             $("#sortable tr").each(function(index) {
-            //                 order.push({
-            //                     id: $(this).data('id'),
-            //                     position: index + 1
-            //                 });
-            //             });
-
-            //             $.ajax({
-            //                 url: '{{ route("admin.banner-sections.order") }}',
-            //                 type: 'POST',
-            //                 data: {
-            //                     _token: '{{ csrf_token() }}',
-            //                     order: order
-            //                 },
-            //                 success: function(response) {
-            //                     if (response.success) {
-            //                         toastr.success(response.message);
-            //                     } else {
-            //                         toastr.error(response.message || 'Failed to update order');
-            //                         location.reload();
-            //                     }
-            //                 },
-            //                 error: function(xhr) {
-            //                     toastr.error('An error occurred while updating the order.');
-            //                     location.reload();
-            //                 }
-            //             });
-            //         }
-            //     });
-                
-            //     // Disable text selection while dragging
-            //     $("#sortable").disableSelection();
-            // } else {
-            //     console.error('jQuery UI Sortable not loaded');
-            // }
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize tooltips
+        $('[data-toggle="tooltip"]').tooltip();
+        
+        // Add CSRF token to all AJAX requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
         });
-    </script>
+        
+        // Handle delete button click
+        $('.delete-banner').click(function() {
+            const bannerId = $(this).data('id');
+            const form = $('#delete-form-' + bannerId);
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
+        // Handle status toggle switch
+        $('.status-toggle').change(function() {
+            const bannerId = $(this).data('id');
+            const isActive = $(this).is(':checked') ? 1 : 0;
+            const $switch = $(this);
+            
+            // Show loading state
+            $switch.prop('disabled', true);
+            
+            // Send AJAX request to update status
+            $.ajax({
+                url: '{{ route("admin.banner-sections.update-status") }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: bannerId,
+                    status: isActive
+                },
+                success: function(response) {
+                    // Show success popup
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.message || 'Status updated successfully',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#3085d6'
+                    });
+                },
+                error: function(xhr) {
+                    // Revert toggle on error
+                    $switch.prop('checked', !isActive);
+                    
+                    // Show error popup
+                    Swal.fire({
+                        title: 'Error!',
+                        text: xhr.responseJSON?.message || 'An error occurred while updating status',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#d33'
+                    });
+                },
+                complete: function() {
+                    // Re-enable the switch
+                    $switch.prop('disabled', false);
+                }
+            });
+        });
+        
+        // SweetAlert2 toast configuration
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+    });
+</script>
 @endpush

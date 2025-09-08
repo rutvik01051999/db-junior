@@ -155,6 +155,102 @@
                                             </li>
                                         </ul>
                                     </li>
+
+                                    <!-- Participants Section -->
+                                    <li class="slide has-sub {{ request()->routeIs('admin.participants.*') ? 'active' : '' }}">
+                                        <a href="javascript:void(0);"
+                                            class="side-menu__item {{ request()->routeIs('admin.participants.*') ? 'active' : '' }}">
+                                            <i class="bx bx-group side-menu__icon"></i>
+                                            <span class="side-menu__label">
+                                                Participants
+                                            </span>
+                                            <i class="fe fe-chevron-right side-menu__angle"></i>
+                                        </a>
+                                        <ul class="slide-menu child1 {{ request()->routeIs('admin.participants.*') ? 'active' : '' }}"
+                                            data-popper-placement="bottom">
+                                            <li class="slide side-menu__label1">
+                                                <a href="javascript:void(0)">
+                                                    Participants
+                                                </a>
+                                            </li>
+                                            <li class="slide {{ request()->routeIs('admin.participants.index') ? 'active' : '' }}">
+                                                <a href="{{ route('admin.participants.index') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.participants.index') ? 'active' : '' }}">
+                                                    All Participants
+                                                </a>
+                                            </li>
+                                            <li class="slide">
+                                                <a href="{{ route('admin.participants.create') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.participants.create') ? 'active' : '' }}">
+                                                    Add New
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <!-- Guest Of Honours Section -->
+                                    <li class="slide has-sub {{ request()->routeIs('admin.guest-of-honours.*') ? 'active' : '' }}">
+                                        <a href="javascript:void(0);"
+                                            class="side-menu__item {{ request()->routeIs('admin.guest-of-honours.*') ? 'active' : '' }}">
+                                            <i class="bx bx-crown side-menu__icon"></i>
+                                            <span class="side-menu__label">
+                                                Guest Of Honours
+                                            </span>
+                                            <i class="fe fe-chevron-right side-menu__angle"></i>
+                                        </a>
+                                        <ul class="slide-menu child1 {{ request()->routeIs('admin.guest-of-honours.*') ? 'active' : '' }}"
+                                            data-popper-placement="bottom">
+                                            <li class="slide side-menu__label1">
+                                                <a href="javascript:void(0)">
+                                                    Guest Of Honours
+                                                </a>
+                                            </li>
+                                            <li class="slide {{ request()->routeIs('admin.guest-of-honours.index') ? 'active' : '' }}">
+                                                <a href="{{ route('admin.guest-of-honours.index') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.guest-of-honours.index') ? 'active' : '' }}">
+                                                    All Guest Of Honours
+                                                </a>
+                                            </li>
+                                            <li class="slide">
+                                                <a href="{{ route('admin.guest-of-honours.create') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.guest-of-honours.create') ? 'active' : '' }}">
+                                                    Add New
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <!-- Sliders Section -->
+                                    <li class="slide has-sub {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}">
+                                        <a href="javascript:void(0);"
+                                            class="side-menu__item {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}">
+                                            <i class="bx bx-slider side-menu__icon"></i>
+                                            <span class="side-menu__label">
+                                                Sliders
+                                            </span>
+                                            <i class="fe fe-chevron-right side-menu__angle"></i>
+                                        </a>
+                                        <ul class="slide-menu child1 {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}"
+                                            data-popper-placement="bottom">
+                                            <li class="slide side-menu__label1">
+                                                <a href="javascript:void(0)">
+                                                    Sliders
+                                                </a>
+                                            </li>
+                                            <li class="slide {{ request()->routeIs('admin.sliders.index') ? 'active' : '' }}">
+                                                <a href="{{ route('admin.sliders.index') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.sliders.index') ? 'active' : '' }}">
+                                                    All Sliders
+                                                </a>
+                                            </li>
+                                            <li class="slide">
+                                                <a href="{{ route('admin.sliders.create') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.sliders.create') ? 'active' : '' }}">
+                                                    Add New
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </ul>
 
                                 <div class="slide-right d-none" id="slide-right">

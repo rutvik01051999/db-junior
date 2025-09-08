@@ -25,10 +25,35 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="sub_title" class="form-label">Sub Title</label>
-                            <input type="text" class="form-control @error('sub_title') is-invalid @enderror" id="sub_title" name="sub_title" value="{{ old('sub_title') }}">
-                            @error('sub_title')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                            <label class="form-label">Process Steps <span class="text-danger">*</span></label>
+                            <div id="steps-container">
+                                <div class="step-item border p-3 mb-3 rounded">
+                                    <div class="mb-3">
+                                        <label class="form-label">Sub Title <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control @error('steps.0.sub_title') is-invalid @enderror" name="steps[0][sub_title]" value="{{ old('steps.0.sub_title') }}" required>
+                                        @error('steps.0.sub_title')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Description <span class="text-danger">*</span></label>
+                                        <textarea class="form-control @error('steps.0.description') is-invalid @enderror" name="steps[0][description]" rows="3" required>{{ old('steps.0.description') }}</textarea>
+                                        @error('steps.0.description')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn-sm btn-danger remove-step" style="display: none;">
+                                            <i class="fas fa-trash"></i> Remove Step
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-success" id="add-step">
+                                <i class="fas fa-plus"></i> Add Step
+                            </button>
+                            @error('steps')
+                                <div class="text-danger mt-1">{{ $message }}</div>
                             @enderror
                         </div>
 
@@ -41,13 +66,6 @@
                             <small class="form-text text-muted">Recommended size: 800x600px</small>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="4">{{ old('description') }}</textarea>
-                            @error('description')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
 
                         <div class="mb-3">
                             <div class="form-check form-switch">
@@ -70,3 +88,61 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let stepIndex = 1;
+    
+    // Add step functionality
+    document.getElementById('add-step').addEventListener('click', function() {
+        const container = document.getElementById('steps-container');
+        const newStep = document.createElement('div');
+        newStep.className = 'step-item border p-3 mb-3 rounded';
+        newStep.innerHTML = `
+            <div class="mb-3">
+                <label class="form-label">Sub Title <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="steps[${stepIndex}][sub_title]" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description <span class="text-danger">*</span></label>
+                <textarea class="form-control" name="steps[${stepIndex}][description]" rows="3" required></textarea>
+            </div>
+            <div class="mt-2">
+                <button type="button" class="btn btn-sm btn-danger remove-step">
+                    <i class="fas fa-trash"></i> Remove Step
+                </button>
+            </div>
+        `;
+        container.appendChild(newStep);
+        stepIndex++;
+        updateRemoveButtons();
+    });
+    
+    // Remove step functionality
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-step')) {
+            e.target.closest('.step-item').remove();
+            updateRemoveButtons();
+        }
+    });
+    
+    // Update remove buttons visibility
+    function updateRemoveButtons() {
+        const stepItems = document.querySelectorAll('.step-item');
+        const removeButtons = document.querySelectorAll('.remove-step');
+        
+        removeButtons.forEach((button, index) => {
+            if (stepItems.length > 1) {
+                button.style.display = 'inline-block';
+            } else {
+                button.style.display = 'none';
+            }
+        });
+    }
+    
+    // Initialize
+    updateRemoveButtons();
+});
+</script>
+@endpush

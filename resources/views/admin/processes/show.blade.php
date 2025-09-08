@@ -35,12 +35,6 @@
                                     <th width="30%">Title</th>
                                     <td>{{ $process->title }}</td>
                                 </tr>
-                                @if($process->sub_title)
-                                    <tr>
-                                        <th>Sub Title</th>
-                                        <td>{{ $process->sub_title }}</td>
-                                    </tr>
-                                @endif
                                 <tr>
                                     <th>Status</th>
                                     <td>
@@ -49,12 +43,6 @@
                                         </span>
                                     </td>
                                 </tr>
-                                @if($process->description)
-                                    <tr>
-                                        <th>Description</th>
-                                        <td>{!! nl2br(e($process->description)) !!}</td>
-                                    </tr>
-                                @endif
                                 <tr>
                                     <th>Created At</th>
                                     <td>{{ $process->created_at->format('M d, Y h:i A') }}</td>
@@ -66,6 +54,29 @@
                             </table>
                         </div>
                     </div>
+                    
+                    @if($process->steps->count() > 0)
+                        <div class="mt-4">
+                            <h5>Process Steps</h5>
+                            <div class="row">
+                                @foreach($process->steps as $index => $step)
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">
+                                                    <span class="badge bg-primary me-2">{{ $loop->iteration }}</span>
+                                                    {{ $step->sub_title }}
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="mb-0">{!! nl2br(e($step->description)) !!}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
