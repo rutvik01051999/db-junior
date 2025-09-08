@@ -91,6 +91,70 @@
                                             </li>
                                         </ul>
                                     </li>
+
+                                    <!-- Video Section -->
+                                    <li class="slide has-sub {{ request()->routeIs('admin.videos.*') ? 'active' : '' }}">
+                                        <a href="javascript:void(0);"
+                                            class="side-menu__item {{ request()->routeIs('admin.videos.*') ? 'active' : '' }}">
+                                            <i class="bx bx-video-recording side-menu__icon"></i>
+                                            <span class="side-menu__label">
+                                                Videos
+                                            </span>
+                                            <i class="fe fe-chevron-right side-menu__angle"></i>
+                                        </a>
+                                        <ul class="slide-menu child1 {{ request()->routeIs('admin.videos.*') ? 'active' : '' }}"
+                                            data-popper-placement="bottom">
+                                            <li class="slide side-menu__label1">
+                                                <a href="javascript:void(0)">
+                                                    Videos
+                                                </a>
+                                            </li>
+                                            <li class="slide {{ request()->routeIs('admin.videos.index') ? 'active' : '' }}">
+                                                <a href="{{ route('admin.videos.index') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.videos.index') ? 'active' : '' }}">
+                                                    All Videos
+                                                </a>
+                                            </li>
+                                            <li class="slide">
+                                                <a href="{{ route('admin.videos.create') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.videos.create') ? 'active' : '' }}">
+                                                    Add New
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <!-- Process Section -->
+                                    <li class="slide has-sub {{ request()->routeIs('admin.processes.*') ? 'active' : '' }}">
+                                        <a href="javascript:void(0);"
+                                            class="side-menu__item {{ request()->routeIs('admin.processes.*') ? 'active' : '' }}">
+                                            <i class="bx bx-list-check side-menu__icon"></i>
+                                            <span class="side-menu__label">
+                                                Processes
+                                            </span>
+                                            <i class="fe fe-chevron-right side-menu__angle"></i>
+                                        </a>
+                                        <ul class="slide-menu child1 {{ request()->routeIs('admin.processes.*') ? 'active' : '' }}"
+                                            data-popper-placement="bottom">
+                                            <li class="slide side-menu__label1">
+                                                <a href="javascript:void(0)">
+                                                    Processes
+                                                </a>
+                                            </li>
+                                            <li class="slide {{ request()->routeIs('admin.processes.index') ? 'active' : '' }}">
+                                                <a href="{{ route('admin.processes.index') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.processes.index') ? 'active' : '' }}">
+                                                    All Processes
+                                                </a>
+                                            </li>
+                                            <li class="slide">
+                                                <a href="{{ route('admin.processes.create') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.processes.create') ? 'active' : '' }}">
+                                                    Add New
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </ul>
 
                                 <div class="slide-right d-none" id="slide-right">

@@ -36,7 +36,16 @@ class MainContentController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'boolean'
+            'participation_categories_1' => 'nullable|string',
+            'participation_categories_2' => 'nullable|string',
+            'participation_categories_3' => 'nullable|string',
+            'participation_categories_4' => 'nullable|string',
+            'timeline_1' => 'nullable|string',
+            'timeline_2' => 'nullable|string',
+            'timeline_3' => 'nullable|string',
+            'timeline_4' => 'nullable|string',
+            'is_active' => 'boolean',
+            'sort_order' => 'nullable|integer'
         ]);
 
         if ($request->hasFile('image')) {
@@ -81,7 +90,16 @@ class MainContentController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'boolean'
+            'participation_categories_1' => 'nullable|string',
+            'participation_categories_2' => 'nullable|string',
+            'participation_categories_3' => 'nullable|string',
+            'participation_categories_4' => 'nullable|string',
+            'timeline_1' => 'nullable|string',
+            'timeline_2' => 'nullable|string',
+            'timeline_3' => 'nullable|string',
+            'timeline_4' => 'nullable|string',
+            'is_active' => 'boolean',
+            'sort_order' => 'nullable|integer'
         ]);
 
         if ($request->hasFile('image')) {

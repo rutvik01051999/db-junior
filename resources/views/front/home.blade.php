@@ -141,6 +141,141 @@
 </section>
 
 <!-- End Value Area -->
+<section class="value-area ptb-100">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="value-image">
+                    <img src="{{ asset('front/assets/img/value/value-1.png') }}" alt="image">
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="value-item">
+                    <div class="value-content">
+                        <h3>We are Refunding Early Childcare Education</h3>
+                    </div>
+
+                    <div class="value-inner-content">
+                        <div class="number">
+                            <span>01</span>
+                        </div>
+                        <h4>Active Learning</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+
+                    <div class="value-inner-content">
+                        <div class="number">
+                            <span class="bg-2">02</span>
+                        </div>
+                        <h4>Safe Environment</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+
+                    <div class="value-inner-content">
+                        <div class="number">
+                            <span class="bg-3">03</span>
+                        </div>
+                        <h4>Fully Equipment</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+                </div>
+            </div>
+
+            
+
+
+            <div class="col-lg-6">
+                <div class="value-item">
+                    <div class="value-content">
+                        <h3>We are Refunding Early Childcare Education</h3>
+                    </div>
+
+                    <div class="value-inner-content">
+                        <div class="number">
+                            <span>01</span>
+                        </div>
+                        <h4>Active Learning</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+
+                    <div class="value-inner-content">
+                        <div class="number">
+                            <span class="bg-2">02</span>
+                        </div>
+                        <h4>Safe Environment</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+
+                    <div class="value-inner-content">
+                        <div class="number">
+                            <span class="bg-3">03</span>
+                        </div>
+                        <h4>Fully Equipment</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="value-image">
+                    <img src="{{ asset('front/assets/img/value/value-1.png') }}" alt="image">
+                </div>
+            </div>
+
+           
+            <div class="col-lg-6">
+                <div class="value-image">
+                    <img src="{{ asset('front/assets/img/value/value-1.png') }}" alt="image">
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="value-item">
+                    <div class="value-content">
+                        <h3>We are Refunding Early Childcare Education</h3>
+                    </div>
+
+                    <div class="value-inner-content">
+                        <div class="number">
+                            <span>01</span>
+                        </div>
+                        <h4>Active Learning</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+
+                    <div class="value-inner-content">
+                        <div class="number">
+                            <span class="bg-2">02</span>
+                        </div>
+                        <h4>Safe Environment</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+
+                    <div class="value-inner-content">
+                        <div class="number">
+                            <span class="bg-3">03</span>
+                        </div>
+                        <h4>Fully Equipment</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="value-shape">
+        <div class="shape-1">
+            <img src="{{ asset('front/assets/img/value/value-shape-1.png') }}" alt="image">
+        </div>
+        <div class="shape-2">
+            <img src="{{ asset('front/assets/img/value/value-shape-2.png') }}" alt="image">
+        </div>
+        <div class="shape-3">
+            <img src="{{ asset('front/assets/img/value/value-shape-3.png') }}" alt="image">
+        </div>
+    </div>
+</section>
 
 <!-- Start Fun Facts Area -->
 <section class="fun-facts-area pt-100 pb-70">
@@ -236,14 +371,14 @@
     <div class="value-shape">
         <div class="shape-1">
             <img src="{{ asset('front/assets/img/value/value-shape-1.png') }}" alt="image">
-        </div>
-        <!-- <div class="shape-2">
+</div>
+<!-- <div class="shape-2">
             <img src="{{ asset('front/assets/img/value/value-shape-2.png') }}" alt="image">
         </div> -->
-        <div class="shape-3">
-            <img src="{{ asset('front/assets/img/value/value-shape-3.png') }}" alt="image">
-        </div>
-    </div>
+<div class="shape-3">
+    <img src="{{ asset('front/assets/img/value/value-shape-3.png') }}" alt="image">
+</div>
+</div>
 </section> --}}
 
 <!-- Start Choose Area -->
@@ -335,101 +470,101 @@
 </section> --}}
 <!-- End Choose Area -->
 
-  <!-- Start Activities Area -->
-        <section class="activities-area pt-100 pb-70">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Guest Of Honour</h2>
-                </div>
+<!-- Start Activities Area -->
+<section class="activities-area pt-100 pb-70">
+    <div class="container">
+        <div class="section-title">
+            <h2>Guest Of Honour</h2>
+        </div>
 
-                <div class="row">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="single-activities">
-                            <div class="number">
-                                <span>01</span>
-                            </div>
-                            <div class="activities-content">
-                                <h3>
-                                    <a href="#">JE - Season 1</a>
-                                </h3>
-                                <p>General VK Singh (Retd.)</p>
-                            </div>
-                        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="single-activities">
+                    <div class="number">
+                        <span>01</span>
                     </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="single-activities">
-                            <div class="number">
-                                <span class="bg-2">02</span>
-                            </div>
-                            <div class="activities-content">
-                                <h3>
-                                    <a href="#">JE - Season 1</a>
-                                </h3>
-                                <p>General VK Singh (Retd.)</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="single-activities">
-                            <div class="number">
-                                <span class="bg-3">03</span>
-                            </div>
-                            <div class="activities-content">
-                                <h3>
-                                    <a href="#">JE - Season 1</a>
-                                </h3>
-                               <p>General VK Singh (Retd.)</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="single-activities">
-                            <div class="number">
-                                <span class="bg-4">04</span>
-                            </div>
-                            <div class="activities-content">
-                                <h3>
-                                     <a href="#">JE - Season 1</a>
-                                </h3>
-                                <p>General VK Singh (Retd.)</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="single-activities">
-                            <div class="number">
-                                <span class="bg-5">05</span>
-                            </div>
-                            <div class="activities-content">
-                                <h3>
-                                   <a href="#">JE - Season 1</a>
-                                </h3>
-                               <p>General VK Singh (Retd.)</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="single-activities">
-                            <div class="number">
-                                <span class="bg-6">06</span>
-                            </div>
-                            <div class="activities-content">
-                                <h3>
-                                  <a href="#">JE - Season 1</a>
-                                </h3>
-                                <p>Late Shri Ramesh Chandra Agarwal Ji (Chairman of the Dainik Bhaskar Group)</p>
-                            </div>
-                        </div>
+                    <div class="activities-content">
+                        <h3>
+                            <a href="#">JE - Season 1</a>
+                        </h3>
+                        <p>General VK Singh (Retd.)</p>
                     </div>
                 </div>
             </div>
-        </section>
-        <!-- End Activities Area -->
+
+            <div class="col-lg-4 col-md-6">
+                <div class="single-activities">
+                    <div class="number">
+                        <span class="bg-2">02</span>
+                    </div>
+                    <div class="activities-content">
+                        <h3>
+                            <a href="#">JE - Season 1</a>
+                        </h3>
+                        <p>General VK Singh (Retd.)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="single-activities">
+                    <div class="number">
+                        <span class="bg-3">03</span>
+                    </div>
+                    <div class="activities-content">
+                        <h3>
+                            <a href="#">JE - Season 1</a>
+                        </h3>
+                        <p>General VK Singh (Retd.)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="single-activities">
+                    <div class="number">
+                        <span class="bg-4">04</span>
+                    </div>
+                    <div class="activities-content">
+                        <h3>
+                            <a href="#">JE - Season 1</a>
+                        </h3>
+                        <p>General VK Singh (Retd.)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="single-activities">
+                    <div class="number">
+                        <span class="bg-5">05</span>
+                    </div>
+                    <div class="activities-content">
+                        <h3>
+                            <a href="#">JE - Season 1</a>
+                        </h3>
+                        <p>General VK Singh (Retd.)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="single-activities">
+                    <div class="number">
+                        <span class="bg-6">06</span>
+                    </div>
+                    <div class="activities-content">
+                        <h3>
+                            <a href="#">JE - Season 1</a>
+                        </h3>
+                        <p>Late Shri Ramesh Chandra Agarwal Ji (Chairman of the Dainik Bhaskar Group)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Activities Area -->
 
 
 <div class="main-banner">

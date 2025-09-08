@@ -26,14 +26,27 @@
                                     <th>Description</th>
                                     <td>{!! $mainContent->description ? nl2br(e($mainContent->description)) : '<span class="text-muted">No description</span>' !!}</td>
                                 </tr>
-                                <tr>
-                                    <th>Participation Categories</th>
-                                    <td>{{ $mainContent->participation_categories ?: 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Timeline</th>
-                                    <td>{{ $mainContent->timeline ?: 'N/A' }}</td>
-                                </tr>
+                                @for($i = 1; $i <= 4; $i++)
+                                    @php
+                                        $field = 'participation_categories_' . $i;
+                                        $value = $mainContent->$field;
+                                    @endphp
+                                    <tr>
+                                        <th>Participation Category {{ $i }}</th>
+                                        <td>{{ $value ?: 'N/A' }}</td>
+                                    </tr>
+                                @endfor
+                                
+                                @for($i = 1; $i <= 4; $i++)
+                                    @php
+                                        $field = 'timeline_' . $i;
+                                        $value = $mainContent->$field;
+                                    @endphp
+                                    <tr>
+                                        <th>Timeline {{ $i }}</th>
+                                        <td>{{ $value ?: 'N/A' }}</td>
+                                    </tr>
+                                @endfor
                                 <tr>
                                     <th>Status</th>
                                     <td>

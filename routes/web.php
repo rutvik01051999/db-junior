@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\Select2Controller;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\BannerSectionController;
 use App\Http\Controllers\Admin\MainContentController;
+use App\Http\Controllers\Admin\VideoController;
+use App\Http\Controllers\Admin\ProcessController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\CerificateController;
 use App\Http\Controllers\HomeController;
@@ -98,5 +100,29 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::get('/{mainContent}/edit', [MainContentController::class, 'edit'])->name('edit');
         Route::put('/{mainContent}', [MainContentController::class, 'update'])->name('update');
         Route::delete('/{mainContent}', [MainContentController::class, 'destroy'])->name('destroy');
+    });
+
+    // Video Management Routes
+    // Process Routes
+    Route::prefix('admin/processes')->name('admin.processes.')->middleware('auth')->group(function () {
+        Route::get('/', [ProcessController::class, 'index'])->name('index');
+        Route::get('/create', [ProcessController::class, 'create'])->name('create');
+        Route::post('/', [ProcessController::class, 'store'])->name('store');
+        Route::get('/{process}', [ProcessController::class, 'show'])->name('show');
+        Route::get('/{process}/edit', [ProcessController::class, 'edit'])->name('edit');
+        Route::put('/{process}', [ProcessController::class, 'update'])->name('update');
+        Route::post('/update-status', [ProcessController::class, 'updateStatus'])->name('update-status');
+        Route::delete('/{process}', [ProcessController::class, 'destroy'])->name('destroy');
+    });
+
+    // Video Routes
+    Route::prefix('admin/videos')->name('admin.videos.')->middleware('auth')->group(function () {
+        Route::get('/', [VideoController::class, 'index'])->name('index');
+        Route::get('/create', [VideoController::class, 'create'])->name('create');
+        Route::post('/', [VideoController::class, 'store'])->name('store');
+        Route::get('/{video}', [VideoController::class, 'show'])->name('show');
+        Route::get('/{video}/edit', [VideoController::class, 'edit'])->name('edit');
+        Route::put('/{video}', [VideoController::class, 'update'])->name('update');
+        Route::delete('/{video}', [VideoController::class, 'destroy'])->name('destroy');
     });
 });

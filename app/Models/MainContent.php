@@ -13,8 +13,14 @@ class MainContent extends Model
         'title',
         'description',
         'image',
-        'participation_categories',
-        'timeline',
+        'participation_categories_1',
+        'participation_categories_2',
+        'participation_categories_3',
+        'participation_categories_4',
+        'timeline_1',
+        'timeline_2',
+        'timeline_3',
+        'timeline_4',
         'is_active',
         'sort_order'
     ];

@@ -44,24 +44,58 @@
 
                             <!-- Right Column -->
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="participation_categories">Participation Categories</label>
-                                    <input type="text" name="participation_categories" id="participation_categories" class="form-control @error('participation_categories') is-invalid @enderror" value="{{ old('participation_categories', $mainContent->participation_categories) }}">
-                                    @error('participation_categories')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                <!-- Participation Categories -->
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Participation Categories</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        @for($i = 1; $i <= 4; $i++)
+                                            @php
+                                                $fieldName = 'participation_categories_' . $i;
+                                                $fieldValue = old($fieldName, $mainContent->$fieldName);
+                                            @endphp
+                                            <div class="form-group">
+                                                <label for="{{ $fieldName }}">Category {{ $i }}</label>
+                                                <input type="text" name="{{ $fieldName }}" 
+                                                       id="{{ $fieldName }}" 
+                                                       class="form-control @error($fieldName) is-invalid @enderror" 
+                                                       value="{{ $fieldValue }}">
+                                                @error($fieldName)
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        @endfor
+                                    </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="timeline">Timeline</label>
-                                    <input type="text" name="timeline" id="timeline" class="form-control @error('timeline') is-invalid @enderror" value="{{ old('timeline', $mainContent->timeline) }}">
-                                    @error('timeline')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                <!-- Timeline -->
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Timeline</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        @for($i = 1; $i <= 4; $i++)
+                                            @php
+                                                $fieldName = 'timeline_' . $i;
+                                                $fieldValue = old($fieldName, $mainContent->$fieldName);
+                                            @endphp
+                                            <div class="form-group">
+                                                <label for="{{ $fieldName }}">Timeline {{ $i }}</label>
+                                                <input type="text" name="{{ $fieldName }}" 
+                                                       id="{{ $fieldName }}" 
+                                                       class="form-control @error($fieldName) is-invalid @enderror" 
+                                                       value="{{ $fieldValue }}">
+                                                @error($fieldName)
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        @endfor
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
