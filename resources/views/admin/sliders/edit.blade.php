@@ -22,49 +22,13 @@
                             <div class="col-lg-8">
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="form-group mb-3">
-                                            <label for="image" class="form-label fw-bold">Slider Image</label>
-                                            
-                                            <!-- Current Image Display -->
-                                            @if($slider->image)
-                                                <div class="card mb-3">
-                                                    <div class="card-header bg-info text-white">
-                                                        <h6 class="mb-0"><i class="fas fa-image me-2"></i>Current Image</h6>
-                                                    </div>
-                                                    <div class="card-body text-center">
-                                                        <img src="{{ $slider->image_url }}" alt="Slider Image" class="img-fluid rounded shadow" style="max-height: 200px;">
-                                                        <div class="form-check mt-3">
-                                                            <input class="form-check-input" type="checkbox" id="remove_image" name="remove_image">
-                                                            <label class="form-check-label" for="remove_image">Remove current image</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endif
-
-                                            <!-- New Image Upload -->
-                                            <div class="card border-2 border-dashed border-primary">
-                                                <div class="card-body text-center">
-                                                    <div class="custom-file">
-                                                        <input type="file" class="custom-file-input @error('image') is-invalid @enderror" id="image" name="image">
-                                                        <label class="custom-file-label btn btn-outline-primary" for="image">
-                                                            <i class="fas fa-cloud-upload-alt me-2"></i>Choose New Image File
-                                                        </label>
-                                                        @error('image')
-                                                            <div class="invalid-feedback">
-                                                                <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
-                                                            </div>
-                                                        @enderror
-                                                    </div>
-                                                    <small class="form-text text-muted mt-2 d-block">
-                                                        <i class="fas fa-info-circle me-1"></i>
-                                                        Leave empty to keep current image. Recommended size: 1920x1080px or similar aspect ratio
-                                                    </small>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3 text-center">
-                                                <img id="imagePreview" src="#" alt="Preview" class="img-fluid rounded shadow" style="max-height: 200px; display: none;">
-                                            </div>
-                                        </div>
+                                        <x-image-upload 
+                                            name="image" 
+                                            label="Slider Image" 
+                                            :required="false"
+                                            :current-image="$slider->image"
+                                            recommended-size="1920x1080px"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -146,18 +110,12 @@
                 image: {
                     extension: "jpg|jpeg|png|gif",
                     filesize: 2048 // 2MB
-                },
-                status: {
-                    required: true
                 }
             },
             messages: {
                 image: {
                     extension: "Please upload a valid image file (jpg, jpeg, png, gif)",
                     filesize: "File size must be less than 2MB"
-                },
-                status: {
-                    required: "Please set the slider status"
                 }
             },
             errorElement: 'div',

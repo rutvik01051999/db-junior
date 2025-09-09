@@ -15,7 +15,7 @@ class BannerSectionController extends Controller
      */
     public function index()
     {
-        $banners = BannerSection::orderBy('sort_order')->get();
+        $banners = BannerSection::orderBy('language')->orderBy('sort_order')->get();
         return view('admin.banner-sections.index', compact('banners'));
     }
 
@@ -33,6 +33,7 @@ class BannerSectionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'language' => 'required|in:en,hi',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -45,6 +46,11 @@ class BannerSectionController extends Controller
             $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('banners', $imageName, 'public');
             $validated['image'] = $imagePath;
+        }
+
+        // Clean HTML content from CKEditor
+        if (isset($validated['description'])) {
+            $validated['description'] = $this->cleanHtmlContent($validated['description']);
         }
 
         BannerSection::create($validated);
@@ -67,12 +73,22 @@ class BannerSectionController extends Controller
     public function update(Request $request, BannerSection $bannerSection)
     {
         $validated = $request->validate([
+            'language' => 'required|in:en,hi',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean',
-            'sort_order' => 'nullable|integer'
+            'sort_order' => 'nullable|integer',
+            'remove_current_image' => 'nullable|boolean'
         ]);
+
+        // Handle image removal
+        if ($request->has('remove_current_image') && $request->remove_current_image) {
+            if ($bannerSection->image) {
+                Storage::disk('public')->delete($bannerSection->image);
+                $validated['image'] = null;
+            }
+        }
 
         if ($request->hasFile('image')) {
             // Delete old image if exists
@@ -84,6 +100,11 @@ class BannerSectionController extends Controller
             $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('banners', $imageName, 'public');
             $validated['image'] = $imagePath;
+        }
+
+        // Clean HTML content from CKEditor
+        if (isset($validated['description'])) {
+            $validated['description'] = $this->cleanHtmlContent($validated['description']);
         }
 
         $bannerSection->update($validated);
@@ -139,5 +160,35 @@ class BannerSectionController extends Controller
             'success' => true,
             'message' => 'Order updated successfully.'
         ]);
+    }
+
+    /**
+     * Clean HTML content from CKEditor
+     */
+    private function cleanHtmlContent($content)
+    {
+        if (empty($content)) {
+            return $content;
+        }
+
+        // Remove &nbsp; entities
+        $content = str_replace('&nbsp;', '', $content);
+        
+        // Remove empty paragraphs
+        $content = preg_replace('/<p[^>]*>\s*<\/p>/i', '', $content);
+        
+        // Remove paragraphs that only contain <br> tags
+        $content = preg_replace('/<p[^>]*>\s*<br[^>]*>\s*<\/p>/i', '', $content);
+        
+        // Remove paragraphs that only contain whitespace and <br> tags
+        $content = preg_replace('/<p[^>]*>\s*(<br[^>]*>\s*)+<\/p>/i', '', $content);
+        
+        // Clean up multiple consecutive <br> tags
+        $content = preg_replace('/(<br[^>]*>\s*){3,}/i', '<br><br>', $content);
+        
+        // Remove leading/trailing whitespace
+        $content = trim($content);
+        
+        return $content;
     }
 }

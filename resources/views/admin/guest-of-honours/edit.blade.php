@@ -13,7 +13,7 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.guest-of-honours.update', $guestOfHonour->id) }}" method="POST">
+                    <form action="{{ route('admin.guest-of-honours.update', $guestOfHonour->id) }}" method="POST" id="guestOfHonourForm">
                         @csrf
                         @method('PUT')
                         
@@ -21,6 +21,21 @@
                             <!-- Left Column - Main Content -->
                             <div class="col-lg-8">
                                 <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
+                                            <label for="language" class="form-label fw-bold">Language <span class="text-danger">*</span></label>
+                                            <select name="language" id="language" class="form-select form-select-lg @error('language') is-invalid @enderror" required>
+                                                <option value="">Select Language</option>
+                                                <option value="en" {{ old('language', $guestOfHonour->language) == 'en' ? 'selected' : '' }}>English</option>
+                                                <option value="hi" {{ old('language', $guestOfHonour->language) == 'hi' ? 'selected' : '' }}>Hindi</option>
+                                            </select>
+                                            @error('language')
+                                                <div class="invalid-feedback">
+                                                    <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                     <div class="col-12">
                                         <div class="form-group mb-3">
                                             <label for="season_name" class="form-label fw-bold">Season Name <span class="text-danger">*</span></label>
@@ -92,7 +107,7 @@
 <script>
     $(document).ready(function() {
         // Form validation
-        $("form").validate({
+        $("#guestOfHonourForm").validate({
             rules: {
                 season_name: {
                     required: true,
@@ -104,9 +119,6 @@
                     minlength: 3,
                     maxlength: 255
                 },
-                status: {
-                    required: true
-                }
             },
             messages: {
                 season_name: {
@@ -118,9 +130,6 @@
                     required: "Please enter a guest name",
                     minlength: "Guest name must be at least 3 characters long",
                     maxlength: "Guest name cannot exceed 255 characters"
-                },
-                status: {
-                    required: "Please set the guest of honour status"
                 }
             },
             errorElement: 'div',

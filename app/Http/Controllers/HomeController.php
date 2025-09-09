@@ -2,6 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BannerSection;
+use App\Models\MainContent;
+use App\Models\GuestOfHonour;
+use App\Models\Video;
+use App\Models\Slider;
+use App\Models\Participant;
+use App\Models\Process;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -9,6 +16,65 @@ use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
+    /**
+     * Display the home page with dynamic content
+     */
+    public function index()
+    {
+        // Fetch active banner sections ordered by language and sort_order
+        $bannerSections = BannerSection::where('is_active', true)
+            ->orderBy('language')
+            ->orderBy('sort_order')
+            ->get();
+
+        // Fetch active main content ordered by language and sort_order
+        $mainContent = MainContent::where('is_active', true)
+            ->orderBy('language')
+            ->orderBy('sort_order')
+            ->first();
+
+        // Fetch active guest of honour entries
+        $guestOfHonours = GuestOfHonour::where('status', true)
+            ->orderBy('language')
+            ->orderBy('id')
+            ->get();
+
+        // Fetch active videos
+        $videos = Video::where('is_active', true)
+            ->orderBy('id')
+            ->get();
+
+        // Fetch active slider images
+        $sliders = Slider::where('status', true)
+            ->orderBy('id')
+            ->get();
+
+        // Fetch active participant statistics
+        $participants = Participant::where('status', true)
+            ->orderBy('language')
+            ->orderBy('id')
+            ->get();
+
+        // Fetch active processes with their steps
+        $processes = Process::where('status', true)
+            ->with(['steps' => function($query) {
+                $query->where('status', true)->orderBy('id');
+            }])
+            ->orderBy('language')
+            ->orderBy('id')
+            ->get();
+
+        return view('front.home', compact(
+            'bannerSections',
+            'mainContent',
+            'guestOfHonours',
+            'videos',
+            'sliders',
+            'participants',
+            'processes'
+        ));
+    }
+
     public function contactUsPage()
     {
         return view('front.contact');

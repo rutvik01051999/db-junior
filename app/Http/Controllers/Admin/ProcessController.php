@@ -15,7 +15,7 @@ class ProcessController extends Controller
      */
     public function index()
     {
-        $processes = Process::with('steps')->latest()->get();
+        $processes = Process::with('steps')->orderBy('language')->latest()->get();
         return view('admin.processes.index', compact('processes'));
     }
 
@@ -33,12 +33,12 @@ class ProcessController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'language' => 'required|in:en,hi',
             'title' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'boolean',
             'steps' => 'required|array|min:1',
-            'steps.*.sub_title' => 'required|string|max:255',
-            'steps.*.description' => 'required|string',
+            'steps.*.content' => 'required|string',
         ]);
 
         if ($request->hasFile('image')) {
@@ -46,6 +46,7 @@ class ProcessController extends Controller
         }
 
         $process = Process::create([
+            'language' => $validated['language'],
             'title' => $validated['title'],
             'image' => $validated['image'] ?? null,
             'status' => $validated['status'] ?? true,
@@ -55,8 +56,7 @@ class ProcessController extends Controller
         foreach ($validated['steps'] as $step) {
             ProcessStep::create([
                 'process_id' => $process->id,
-                'sub_title' => $step['sub_title'],
-                'description' => $step['description'],
+                'content' => $this->cleanHtmlContent($step['content']),
                 'status' => true,
             ]);
         }
@@ -89,13 +89,13 @@ class ProcessController extends Controller
     public function update(Request $request, Process $process)
     {
         $validated = $request->validate([
+            'language' => 'required|in:en,hi',
             'title' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'boolean',
             'steps' => 'required|array|min:1',
             'steps.*.id' => 'nullable|exists:process_steps,id',
-            'steps.*.sub_title' => 'required|string|max:255',
-            'steps.*.description' => 'required|string',
+            'steps.*.content' => 'required|string',
         ]);
 
         if ($request->hasFile('image')) {
@@ -107,6 +107,7 @@ class ProcessController extends Controller
         }
 
         $process->update([
+            'language' => $validated['language'],
             'title' => $validated['title'],
             'image' => $validated['image'] ?? $process->image,
             'status' => $validated['status'] ?? $process->status,
@@ -127,15 +128,13 @@ class ProcessController extends Controller
                 ProcessStep::where('id', $step['id'])
                     ->where('process_id', $process->id)
                     ->update([
-                        'sub_title' => $step['sub_title'],
-                        'description' => $step['description'],
+                        'content' => $this->cleanHtmlContent($step['content']),
                     ]);
             } else {
                 // Create new step
                 ProcessStep::create([
                     'process_id' => $process->id,
-                    'sub_title' => $step['sub_title'],
-                    'description' => $step['description'],
+                    'content' => $this->cleanHtmlContent($step['content']),
                     'status' => true,
                 ]);
             }
@@ -184,5 +183,35 @@ class ProcessController extends Controller
             'message' => 'Status updated successfully',
             'status' => $process->status ? 'Active' : 'Inactive'
         ]);
+    }
+
+    /**
+     * Clean HTML content from CKEditor
+     */
+    private function cleanHtmlContent($content)
+    {
+        if (empty($content)) {
+            return $content;
+        }
+
+        // Remove &nbsp; entities
+        $content = str_replace('&nbsp;', '', $content);
+        
+        // Remove empty paragraphs
+        $content = preg_replace('/<p[^>]*>\s*<\/p>/i', '', $content);
+        
+        // Remove paragraphs that only contain <br> tags
+        $content = preg_replace('/<p[^>]*>\s*<br[^>]*>\s*<\/p>/i', '', $content);
+        
+        // Remove paragraphs that only contain whitespace and <br> tags
+        $content = preg_replace('/<p[^>]*>\s*(<br[^>]*>\s*)+<\/p>/i', '', $content);
+        
+        // Clean up multiple consecutive <br> tags
+        $content = preg_replace('/(<br[^>]*>\s*){3,}/i', '<br><br>', $content);
+        
+        // Remove leading/trailing whitespace
+        $content = trim($content);
+        
+        return $content;
     }
 }

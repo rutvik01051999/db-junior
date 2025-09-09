@@ -13,7 +13,7 @@ class ParticipantController extends Controller
      */
     public function index()
     {
-        $participants = Participant::latest()->get();
+        $participants = Participant::orderBy('language')->latest()->get();
         return view('admin.participants.index', compact('participants'));
     }
 
@@ -31,6 +31,7 @@ class ParticipantController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'language' => 'required|in:en,hi',
             'title' => 'required|string|max:255',
             'number_of_participants' => 'required|integer|min:1',
             'status' => 'boolean',
@@ -64,6 +65,7 @@ class ParticipantController extends Controller
     public function update(Request $request, Participant $participant)
     {
         $validated = $request->validate([
+            'language' => 'required|in:en,hi',
             'title' => 'required|string|max:255',
             'number_of_participants' => 'required|integer|min:1',
             'status' => 'boolean',

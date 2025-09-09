@@ -13,13 +13,28 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.participants.store') }}" method="POST">
+                    <form action="{{ route('admin.participants.store') }}" method="POST" id="participantForm">
                         @csrf
                         
                         <div class="row">
                             <!-- Left Column - Main Content -->
                             <div class="col-lg-8">
                                 <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
+                                            <label for="language" class="form-label fw-bold">Language <span class="text-danger">*</span></label>
+                                            <select name="language" id="language" class="form-select form-select-lg @error('language') is-invalid @enderror" required>
+                                                <option value="">Select Language</option>
+                                                <option value="en" {{ old('language') == 'en' ? 'selected' : '' }}>English</option>
+                                                <option value="hi" {{ old('language') == 'hi' ? 'selected' : '' }}>Hindi</option>
+                                            </select>
+                                            @error('language')
+                                                <div class="invalid-feedback">
+                                                    <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                     <div class="col-12">
                                         <div class="form-group mb-3">
                                             <label for="title" class="form-label fw-bold">Title <span class="text-danger">*</span></label>
@@ -91,7 +106,7 @@
 <script>
     $(document).ready(function() {
         // Form validation
-        $("form").validate({
+        $("#participantForm").validate({
             rules: {
                 title: {
                     required: true,
@@ -103,9 +118,6 @@
                     min: 1,
                     max: 999999
                 },
-                status: {
-                    required: true
-                }
             },
             messages: {
                 title: {
@@ -117,9 +129,6 @@
                     required: "Please enter the number of participants",
                     min: "Number of participants must be at least 1",
                     max: "Number of participants cannot exceed 999,999"
-                },
-                status: {
-                    required: "Please set the participant status"
                 }
             },
             errorElement: 'div',

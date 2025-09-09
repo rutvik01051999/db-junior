@@ -1,69 +1,63 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Banner Sections')
+@section('title', 'CMS Pages')
 
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">Banner Sections</h4>
-                    <a href="{{ route('admin.banner-sections.create') }}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Add New Banner
+                    <h4 class="card-title">CMS Pages</h4>
+                    <a href="{{ route('admin.cms-pages.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Page
                     </a>
                 </div>
 
-               
                 <div class="card-body table-responsive p-0">
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Language</th>
-                                <th>Image</th>
                                 <th>Title</th>
-                                <th>Description</th>
+                                <th>Slug</th>
                                 <th>Status</th>
+                                <th>Created</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="sortable">
-                            @forelse($banners as $banner)
-
-                            
-                                <tr data-id="{{ $banner->id }}">
+                        <tbody>
+                            @forelse($cmsPages as $cmsPage)
+                                <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
-                                        <span class="badge {{ $banner->language == 'en' ? 'bg-primary' : 'bg-success' }}">
-                                            {{ $banner->language_name }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->title }}" style="max-width: 100px; max-height: 50px;">
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('admin.banner-sections.edit', $banner->id) }}" class="text-primary">
-                                            {{ $banner->title }}
+                                        <a href="{{ route('admin.cms-pages.edit', $cmsPage->id) }}" class="text-primary">
+                                            {{ $cmsPage->title }}
                                         </a>
                                     </td>
-                                    <td>{{ Str::limit($banner->description, 50) }}</td>
+                                    <td>
+                                        <code>{{ $cmsPage->slug }}</code>
+                                    </td>
                                     <td>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input status-toggle" type="checkbox" 
-                                                data-id="{{ $banner->id }}" 
-                                                id="status-{{ $banner->id }}"
-                                                {{ $banner->is_active ? 'checked' : '' }}>
+                                                data-id="{{ $cmsPage->id }}" 
+                                                id="status-{{ $cmsPage->id }}"
+                                                {{ $cmsPage->is_active ? 'checked' : '' }}>
                                         </div>
                                     </td>
+                                    <td>{{ $cmsPage->created_at->format('M d, Y') }}</td>
                                     <td class="text-nowrap">
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.banner-sections.edit', $banner->id) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Edit">
+                                            <a href="{{ route('admin.cms-pages.show', $cmsPage->id) }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="View">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ route('admin.cms-pages.edit', $cmsPage->id) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <button type="button" class="btn btn-danger btn-sm delete-banner" data-id="{{ $banner->id }}" data-toggle="tooltip" title="Delete">
+                                            <button type="button" class="btn btn-danger btn-sm delete-cms-page" data-id="{{ $cmsPage->id }}" data-toggle="tooltip" title="Delete">
                                                 <i class="fas fa-trash"></i>
                                             </button>
-                                            <form id="delete-form-{{ $banner->id }}" action="{{ route('admin.banner-sections.destroy', $banner->id) }}" method="POST" style="display: none;">
+                                            <form id="delete-form-{{ $cmsPage->id }}" action="{{ route('admin.cms-pages.destroy', $cmsPage->id) }}" method="POST" style="display: none;">
                                                 @csrf
                                                 @method('DELETE')
                                             </form>
@@ -72,7 +66,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">No banner sections found.</td>
+                                    <td colspan="6" class="text-center">No CMS pages found.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -81,7 +75,6 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @push('styles')
@@ -101,12 +94,13 @@
     .btn-group .btn {
         margin-right: 0.25rem;
     }
+    code {
+        background-color: #f8f9fa;
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+    }
 </style>
-@endpush
-
-@push('styles')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endpush
 
 @push('scripts')
@@ -124,9 +118,9 @@
         });
         
         // Handle delete button click
-        $('.delete-banner').click(function() {
-            const bannerId = $(this).data('id');
-            const form = $('#delete-form-' + bannerId);
+        $('.delete-cms-page').click(function() {
+            const cmsPageId = $(this).data('id');
+            const form = $('#delete-form-' + cmsPageId);
             
             Swal.fire({
                 title: 'Are you sure?',
@@ -145,7 +139,7 @@
 
         // Handle status toggle switch
         $('.status-toggle').change(function() {
-            const bannerId = $(this).data('id');
+            const cmsPageId = $(this).data('id');
             const isActive = $(this).is(':checked') ? 1 : 0;
             const $switch = $(this);
             
@@ -154,11 +148,11 @@
             
             // Send AJAX request to update status
             $.ajax({
-                url: '{{ route("admin.banner-sections.update-status") }}',
+                url: '{{ route("admin.cms-pages.update-status") }}',
                 type: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
-                    id: bannerId,
+                    id: cmsPageId,
                     status: isActive
                 },
                 success: function(response) {
@@ -189,19 +183,6 @@
                     $switch.prop('disabled', false);
                 }
             });
-        });
-        
-        // SweetAlert2 toast configuration
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer);
-                toast.addEventListener('mouseleave', Swal.resumeTimer);
-            }
         });
     });
 </script>

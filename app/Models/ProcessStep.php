@@ -12,8 +12,7 @@ class ProcessStep extends Model
 
     protected $fillable = [
         'process_id',
-        'sub_title',
-        'description',
+        'content',
         'status'
     ];
 

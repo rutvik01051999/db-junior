@@ -251,6 +251,38 @@
                                             </li>
                                         </ul>
                                     </li>
+
+                                    <!-- CMS Pages Section -->
+                                    <li class="slide has-sub {{ request()->routeIs('admin.cms-pages.*') ? 'active' : '' }}">
+                                        <a href="javascript:void(0);"
+                                            class="side-menu__item {{ request()->routeIs('admin.cms-pages.*') ? 'active' : '' }}">
+                                            <i class="bx bx-file side-menu__icon"></i>
+                                            <span class="side-menu__label">
+                                                CMS Pages
+                                            </span>
+                                            <i class="fe fe-chevron-right side-menu__angle"></i>
+                                        </a>
+                                        <ul class="slide-menu child1 {{ request()->routeIs('admin.cms-pages.*') ? 'active' : '' }}"
+                                            data-popper-placement="bottom">
+                                            <li class="slide side-menu__label1">
+                                                <a href="javascript:void(0)">
+                                                    CMS Pages
+                                                </a>
+                                            </li>
+                                            <li class="slide {{ request()->routeIs('admin.cms-pages.index') ? 'active' : '' }}">
+                                                <a href="{{ route('admin.cms-pages.index') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.cms-pages.index') ? 'active' : '' }}">
+                                                    All Pages
+                                                </a>
+                                            </li>
+                                            <li class="slide">
+                                                <a href="{{ route('admin.cms-pages.create') }}"
+                                                    class="side-menu__item {{ request()->routeIs('admin.cms-pages.create') ? 'active' : '' }}">
+                                                    Add New Page
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </ul>
 
                                 <div class="slide-right d-none" id="slide-right">

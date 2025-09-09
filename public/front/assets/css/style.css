@@ -1193,6 +1193,7 @@ Main Banner Area CSS
   margin: 0;
   position: absolute;
   left: 20px;
+  bottom: unset !important;
   top: 40%;
   transform: translateY(-40%);
   padding: 0;
@@ -5345,4 +5346,21 @@ Buy Now Btn
 
 .list-unstyled{
   color: red !important;
+}
+
+@media (max-width: 767px) {
+  html, body { height: 100%; } /* helpful for some mobile browsers */
+  video {
+    height: 200px !important;
+  }
+  .owl-height{
+    height: 50% !important;
+  }
+  .home-slides.owl-carousel.owl-theme.owl-loaded.owl-drag{
+    height: unset !important;
+  }
+  .main-banner-home{
+    margin-top: 30%;
+    height: max-content;
+  }
 }

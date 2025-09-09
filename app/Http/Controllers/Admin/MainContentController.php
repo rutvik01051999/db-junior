@@ -15,7 +15,7 @@ class MainContentController extends Controller
      */
     public function index()
     {
-        $mainContents = MainContent::orderBy('id', 'desc')->get();
+        $mainContents = MainContent::orderBy('language')->orderBy('id', 'desc')->get();
         return view('admin.main-contents.index', compact('mainContents'));
     }
 
@@ -33,6 +33,7 @@ class MainContentController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'language' => 'required|in:en,hi',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -53,6 +54,11 @@ class MainContentController extends Controller
             $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('main-contents', $imageName, 'public');
             $validated['image'] = $imagePath;
+        }
+
+        // Clean HTML content from CKEditor
+        if (isset($validated['description'])) {
+            $validated['description'] = $this->cleanHtmlContent($validated['description']);
         }
 
         MainContent::create($validated);
@@ -87,6 +93,7 @@ class MainContentController extends Controller
         $mainContent = MainContent::findOrFail($id);
         
         $validated = $request->validate([
+            'language' => 'required|in:en,hi',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -112,6 +119,11 @@ class MainContentController extends Controller
             $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('main-contents', $imageName, 'public');
             $validated['image'] = $imagePath;
+        }
+
+        // Clean HTML content from CKEditor
+        if (isset($validated['description'])) {
+            $validated['description'] = $this->cleanHtmlContent($validated['description']);
         }
 
         $mainContent->update($validated);
@@ -155,5 +167,35 @@ class MainContentController extends Controller
             'success' => true,
             'message' => 'Status updated successfully.'
         ]);
+    }
+
+    /**
+     * Clean HTML content from CKEditor
+     */
+    private function cleanHtmlContent($content)
+    {
+        if (empty($content)) {
+            return $content;
+        }
+
+        // Remove &nbsp; entities
+        $content = str_replace('&nbsp;', '', $content);
+        
+        // Remove empty paragraphs
+        $content = preg_replace('/<p[^>]*>\s*<\/p>/i', '', $content);
+        
+        // Remove paragraphs that only contain <br> tags
+        $content = preg_replace('/<p[^>]*>\s*<br[^>]*>\s*<\/p>/i', '', $content);
+        
+        // Remove paragraphs that only contain whitespace and <br> tags
+        $content = preg_replace('/<p[^>]*>\s*(<br[^>]*>\s*)+<\/p>/i', '', $content);
+        
+        // Clean up multiple consecutive <br> tags
+        $content = preg_replace('/(<br[^>]*>\s*){3,}/i', '<br><br>', $content);
+        
+        // Remove leading/trailing whitespace
+        $content = trim($content);
+        
+        return $content;
     }
 }

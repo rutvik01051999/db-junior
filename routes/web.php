@@ -13,20 +13,16 @@ use App\Http\Controllers\Admin\ProcessController;
 use App\Http\Controllers\Admin\ParticipantController;
 use App\Http\Controllers\Admin\GuestOfHonourController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\CmsPageController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\CerificateController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\FrontCmsPageController;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect()->route('admin.dashboard.index');
-    } else if (Auth::guest()) {
-        return view('front.home');
-    }
-});
+Route::get('/', [HomeController::class, 'index']);
 
 Route::get('/temp', function () {
     return view('admin.layouts.app');
@@ -34,6 +30,9 @@ Route::get('/temp', function () {
 Route::get('contact', [HomeController::class, 'contactUsPage'])->name('contact.page');
 Route::get('privacy-policy', [HomeController::class, 'privacyPage'])->name('privacy.page');
 Route::get('terms-of-service', [HomeController::class, 'termsPage'])->name('terms.page');
+
+// CMS Pages Routes
+Route::get('/page/{slug}', [FrontCmsPageController::class, 'show'])->name('cms-page.show');
 Route::get('certificate', [HomeController::class, 'certificateGet'])->name('certificate.get');
 Route::get('register/form', [HomeController::class, 'registerForm'])->name('register.form');
 Route::post('certificate/download', [HomeController::class, 'certificateDownload'])->name('certificate.download');
@@ -155,7 +154,7 @@ Route::middleware(SetLocale::class)->group(function () {
     });
 
     // Video Routes
-    Route::prefix('admin/videos')->name('admin.videos.')->middleware('auth')->group(function () {
+    Route::prefix('admin/videos')->name('admin.videos.')->middleware(['auth', 'large.uploads'])->group(function () {
         Route::get('/', [VideoController::class, 'index'])->name('index');
         Route::get('/create', [VideoController::class, 'create'])->name('create');
         Route::post('/', [VideoController::class, 'store'])->name('store');
@@ -164,5 +163,17 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::put('/{video}', [VideoController::class, 'update'])->name('update');
         Route::post('/update-status', [VideoController::class, 'updateStatus'])->name('update-status');
         Route::delete('/{video}', [VideoController::class, 'destroy'])->name('destroy');
+    });
+
+    // CMS Pages Routes
+    Route::prefix('admin/cms-pages')->name('admin.cms-pages.')->middleware('auth')->group(function () {
+        Route::get('/', [CmsPageController::class, 'index'])->name('index');
+        Route::get('/create', [CmsPageController::class, 'create'])->name('create');
+        Route::post('/', [CmsPageController::class, 'store'])->name('store');
+        Route::get('/{cmsPage}', [CmsPageController::class, 'show'])->name('show');
+        Route::get('/{cmsPage}/edit', [CmsPageController::class, 'edit'])->name('edit');
+        Route::put('/{cmsPage}', [CmsPageController::class, 'update'])->name('update');
+        Route::post('/update-status', [CmsPageController::class, 'updateStatus'])->name('update-status');
+        Route::delete('/{cmsPage}', [CmsPageController::class, 'destroy'])->name('destroy');
     });
 });

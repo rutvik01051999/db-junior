@@ -29,6 +29,7 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
+                                    <th>Language</th>
                                     <th>Image</th>
                                     <th>Title</th>
                                     <th>Status</th>
@@ -39,6 +40,11 @@
                                 @forelse($mainContents as $index => $content)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
+                                        <td>
+                                            <span class="badge {{ $content->language == 'en' ? 'bg-primary' : 'bg-success' }}">
+                                                {{ $content->language_name }}
+                                            </span>
+                                        </td>
                                         <td>
                                             @if($content->image)
                                                 <img src="{{ asset('storage/' . $content->image) }}" alt="{{ $content->title }}" class="img-thumbnail" style="max-width: 80px; max-height: 60px; object-fit: cover;">

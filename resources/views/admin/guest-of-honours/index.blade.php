@@ -25,6 +25,7 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
+                                    <th>Language</th>
                                     <th>Season Name</th>
                                     <th>Guest Name</th>
                                     <th>Status</th>
@@ -35,6 +36,11 @@
                                 @forelse($guestOfHonours as $guestOfHonour)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>
+                                            <span class="badge {{ $guestOfHonour->language == 'en' ? 'bg-primary' : 'bg-success' }}">
+                                                {{ $guestOfHonour->language_name }}
+                                            </span>
+                                        </td>
                                         <td>{{ $guestOfHonour->season_name }}</td>
                                         <td>{{ $guestOfHonour->guest_name }}</td>
                                         <td>

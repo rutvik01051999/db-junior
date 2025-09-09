@@ -13,7 +13,7 @@ class GuestOfHonourController extends Controller
      */
     public function index()
     {
-        $guestOfHonours = GuestOfHonour::latest()->get();
+        $guestOfHonours = GuestOfHonour::orderBy('language')->latest()->get();
         return view('admin.guest-of-honours.index', compact('guestOfHonours'));
     }
 
@@ -31,6 +31,7 @@ class GuestOfHonourController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'language' => 'required|in:en,hi',
             'season_name' => 'required|string|max:255',
             'guest_name' => 'required|string|max:255',
             'status' => 'boolean',
@@ -64,6 +65,7 @@ class GuestOfHonourController extends Controller
     public function update(Request $request, GuestOfHonour $guestOfHonour)
     {
         $validated = $request->validate([
+            'language' => 'required|in:en,hi',
             'season_name' => 'required|string|max:255',
             'guest_name' => 'required|string|max:255',
             'status' => 'boolean',

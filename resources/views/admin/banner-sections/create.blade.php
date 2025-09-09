@@ -23,6 +23,21 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-group mb-3">
+                                            <label for="language" class="form-label fw-bold">Language <span class="text-danger">*</span></label>
+                                            <select name="language" id="language" class="form-select form-select-lg @error('language') is-invalid @enderror" required>
+                                                <option value="">Select Language</option>
+                                                <option value="en" {{ old('language') == 'en' ? 'selected' : '' }}>English</option>
+                                                <option value="hi" {{ old('language') == 'hi' ? 'selected' : '' }}>Hindi</option>
+                                            </select>
+                                            @error('language')
+                                                <div class="invalid-feedback">
+                                                    <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
                                             <label for="title" class="form-label fw-bold">Title <span class="text-danger">*</span></label>
                                             <input type="text" name="title" id="title" class="form-control form-control-lg @error('title') is-invalid @enderror" value="{{ old('title') }}" placeholder="Enter banner title" required>
                                             @error('title')
@@ -51,31 +66,12 @@
                                 <!-- Image Upload Section -->
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="form-group mb-3">
-                                            <label for="image" class="form-label fw-bold">Banner Image <span class="text-danger">*</span></label>
-                                            <div class="card border-2 border-dashed border-primary">
-                                                <div class="card-body text-center">
-                                                    <div class="custom-file">
-                                                        <input type="file" name="image" class="custom-file-input @error('image') is-invalid @enderror" id="image" required>
-                                                        <label class="custom-file-label btn btn-outline-primary" for="image">
-                                                            <i class="fas fa-cloud-upload-alt me-2"></i>Choose Image File
-                                                        </label>
-                                                        @error('image')
-                                                            <div class="invalid-feedback">
-                                                                <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
-                                                            </div>
-                                                        @enderror
-                                                    </div>
-                                                    <small class="form-text text-muted mt-2 d-block">
-                                                        <i class="fas fa-info-circle me-1"></i>
-                                                        Recommended size: 1920x600px, Max size: 2MB
-                                                    </small>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3 text-center">
-                                                <img id="imagePreview" src="#" alt="Preview" class="img-fluid rounded shadow" style="max-height: 200px; display: none;">
-                                            </div>
-                                        </div>
+                                        <x-image-upload 
+                                            name="image" 
+                                            label="Banner Image" 
+                                            :required="true"
+                                            recommended-size="1920x600px"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -114,95 +110,134 @@
     </div>
 @endsection
 
+@push('styles')
+<style>
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+    
+    .form-label {
+        color: #495057;
+        font-weight: 600;
+    }
+    
+    .text-danger {
+        color: #dc3545 !important;
+    }
+    
+    .text-muted {
+        color: #6c757d !important;
+    }
+</style>
+@endpush
+
 @push('scripts')
-    <script>
-        $(document).ready(function() {
-            // Preview image before upload
-            function readURL(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        $('#imagePreview').attr('src', e.target.result).show();
-                    }
-                    
-                    reader.readAsDataURL(input.files[0]);
-                }
+<!-- CKEditor 5 -->
+<script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
+<script>
+$(document).ready(function() {
+    // Initialize CKEditor
+    ClassicEditor
+        .create(document.querySelector('#description'), {
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', 'underline', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'outdent', 'indent', '|',
+                    'link', 'blockQuote', '|',
+                    'undo', 'redo'
+                ]
+            },
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                ]
             }
-
-            $("#image").change(function() {
-                readURL(this);
-            });
-
-            // Custom validation methods
-            $.validator.addMethod('filesize', function(value, element, param) {
-                return this.optional(element) || (element.files[0].size <= param * 1024);
-            }, 'File size must be less than {0} KB');
-
-            $.validator.addMethod('extension', function(value, element, param) {
-                param = typeof param === "string" ? param.replace(/,/g, '|') : 'png|jpe?g|gif';
-                return this.optional(element) || value.match(new RegExp('\\.(' + param + ')$', 'i'));
-            }, 'Please enter a valid file extension.');
-
-            // Form validation
-            $("#bannerForm").validate({
-                rules: {
-                    title: {
-                        required: true,
-                        minlength: 3,
-                        maxlength: 255
-                    },
-                    description: {
-                        required: true,
-                        minlength: 10,
-                        maxlength: 1000
-                    },
-                    image: {
-                        required: true,
-                        extension: "jpg|jpeg|png|gif",
-                        filesize: 2048 // 2MB
-                    },
-                    is_active: {
-                        required: true
-                    }
-                },
-                messages: {
-                    title: {
-                        required: "Please enter a banner title",
-                        minlength: "Title must be at least 3 characters long",
-                        maxlength: "Title cannot exceed 255 characters"
-                    },
-                    description: {
-                        required: "Please enter a banner description",
-                        minlength: "Description must be at least 10 characters long",
-                        maxlength: "Description cannot exceed 1000 characters"
-                    },
-                    image: {
-                        required: "Please select a banner image",
-                        extension: "Please upload a valid image file (jpg, jpeg, png, gif)",
-                        filesize: "File size must be less than 2MB"
-                    },
-                    is_active: {
-                        required: "Please set the banner status"
-                    }
-                },
-                errorElement: 'div',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                },
-                submitHandler: function(form) {
-                    // Show loading state
-                    $('button[type="submit"]').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
-                    form.submit();
-                }
-            });
+        })
+        .then(editor => {
+            window.descriptionEditor = editor;
+        })
+        .catch(error => {
+            console.error('Error initializing CKEditor:', error);
         });
-    </script>
+
+    // Form validation
+    $("#bannerForm").validate({
+        rules: {
+            title: {
+                required: true,
+                minlength: 3,
+                maxlength: 255
+            },
+            description: {
+                required: true,
+                minlength: 10
+            },
+            image: {
+                required: true
+            }
+        },
+        messages: {
+            title: {
+                required: "Please enter a banner title",
+                minlength: "Title must be at least 3 characters long",
+                maxlength: "Title cannot exceed 255 characters"
+            },
+            description: {
+                required: "Please enter a banner description",
+                minlength: "Description must be at least 10 characters long"
+            },
+            image: {
+                required: "Please select a banner image"
+            }
+        },
+        errorElement: 'div',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        },
+        submitHandler: function(form) {
+            // Update textarea with CKEditor content before submit
+            if (window.descriptionEditor) {
+                window.descriptionEditor.updateSourceElement();
+            }
+            
+            // Show loading state
+            $('button[type="submit"]').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+            form.submit();
+        }
+    });
+});
+</script>
 @endpush

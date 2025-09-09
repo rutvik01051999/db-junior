@@ -13,12 +13,24 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.processes.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.processes.store') }}" method="POST" enctype="multipart/form-data" id="processForm">
                         @csrf
                         
                         <div class="mb-3">
+                            <label for="language" class="form-label">Language <span class="text-danger">*</span></label>
+                            <select name="language" id="language" class="form-select @error('language') is-invalid @enderror" required>
+                                <option value="">Select Language</option>
+                                <option value="en" {{ old('language') == 'en' ? 'selected' : '' }}>English</option>
+                                <option value="hi" {{ old('language') == 'hi' ? 'selected' : '' }}>Hindi</option>
+                            </select>
+                            @error('language')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}" required>
+                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}">
                             @error('title')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -29,18 +41,12 @@
                             <div id="steps-container">
                                 <div class="step-item border p-3 mb-3 rounded">
                                     <div class="mb-3">
-                                        <label class="form-label">Sub Title <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('steps.0.sub_title') is-invalid @enderror" name="steps[0][sub_title]" value="{{ old('steps.0.sub_title') }}" required>
-                                        @error('steps.0.sub_title')
+                                        <label class="form-label">Step Content <span class="text-danger">*</span></label>
+                                        <textarea class="form-control step-content @error('steps.0.content') is-invalid @enderror" name="steps[0][content]" rows="6">{{ old('steps.0.content') }}</textarea>
+                                        @error('steps.0.content')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Description <span class="text-danger">*</span></label>
-                                        <textarea class="form-control @error('steps.0.description') is-invalid @enderror" name="steps[0][description]" rows="3" required>{{ old('steps.0.description') }}</textarea>
-                                        @error('steps.0.description')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <small class="form-text text-muted">Use the rich text editor to format your step content with headings, lists, and other formatting.</small>
                                     </div>
                                     <div class="mt-2">
                                         <button type="button" class="btn btn-sm btn-danger remove-step" style="display: none;">
@@ -49,28 +55,34 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-sm btn-success" id="add-step">
-                                <i class="fas fa-plus"></i> Add Step
-                            </button>
                             @error('steps')
                                 <div class="text-danger mt-1">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label for="image" class="form-label">Image</label>
-                            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
-                            @error('image')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="form-text text-muted">Recommended size: 800x600px</small>
-                        </div>
+                        <x-image-upload 
+                            name="image" 
+                            label="Image" 
+                            :required="false"
+                            recommended-size="800x600px"
+                        />
 
 
                         <div class="mb-3">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="status" name="status" value="1" checked>
-                                <label class="form-check-label" for="status">Active</label>
+                            <div class="card bg-light">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0"><i class="fas fa-cog me-2"></i>Settings</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Status</label>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="status" name="status" value="1" checked>
+                                            <label class="form-check-label" for="status">Active</label>
+                                        </div>
+                                        <small class="form-text text-muted">Toggle to enable/disable this process</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -90,39 +102,61 @@
 @endsection
 
 @push('scripts')
+<!-- CKEditor 5 -->
+<script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let stepIndex = 1;
+    let editors = {}; // Store CKEditor instances
     
-    // Add step functionality
-    document.getElementById('add-step').addEventListener('click', function() {
-        const container = document.getElementById('steps-container');
-        const newStep = document.createElement('div');
-        newStep.className = 'step-item border p-3 mb-3 rounded';
-        newStep.innerHTML = `
-            <div class="mb-3">
-                <label class="form-label">Sub Title <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" name="steps[${stepIndex}][sub_title]" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Description <span class="text-danger">*</span></label>
-                <textarea class="form-control" name="steps[${stepIndex}][description]" rows="3" required></textarea>
-            </div>
-            <div class="mt-2">
-                <button type="button" class="btn btn-sm btn-danger remove-step">
-                    <i class="fas fa-trash"></i> Remove Step
-                </button>
-            </div>
-        `;
-        container.appendChild(newStep);
-        stepIndex++;
-        updateRemoveButtons();
-    });
+    // Initialize CKEditor for existing textareas
+    function initializeCKEditor(textarea) {
+        const name = textarea.name;
+        ClassicEditor
+            .create(textarea, {
+                toolbar: {
+                    items: [
+                        'heading', '|',
+                        'bold', 'italic', 'underline', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'outdent', 'indent', '|',
+                        'link', 'blockQuote', '|',
+                        'undo', 'redo'
+                    ]
+                },
+                heading: {
+                    options: [
+                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                    ]
+                }
+            })
+            .then(editor => {
+                editors[name] = editor;
+            })
+            .catch(error => {
+                console.error('Error initializing CKEditor:', error);
+            });
+    }
+    
+    // Initialize CKEditor for existing textareas
+    document.querySelectorAll('.step-content').forEach(initializeCKEditor);
+    
     
     // Remove step functionality
     document.addEventListener('click', function(e) {
         if (e.target.closest('.remove-step')) {
-            e.target.closest('.step-item').remove();
+            const stepItem = e.target.closest('.step-item');
+            const textarea = stepItem.querySelector('.step-content');
+            
+            // Destroy CKEditor instance if it exists
+            if (textarea && editors[textarea.name]) {
+                editors[textarea.name].destroy();
+                delete editors[textarea.name];
+            }
+            
+            stepItem.remove();
             updateRemoveButtons();
         }
     });
@@ -143,6 +177,109 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize
     updateRemoveButtons();
+    
+    // Custom validation methods
+    $.validator.addMethod('filesize', function(value, element, param) {
+        return this.optional(element) || (element.files[0].size <= param * 1024);
+    }, 'File size must be less than {0} KB');
+
+    $.validator.addMethod('extension', function(value, element, param) {
+        param = typeof param === "string" ? param.replace(/,/g, '|') : 'png|jpe?g|gif';
+        return this.optional(element) || value.match(new RegExp('\\.(' + param + ')$', 'i'));
+    }, 'Please enter a valid file extension.');
+
+    // jQuery Form Validation
+    $("#processForm").validate({
+        rules: {
+            title: {
+                required: true,
+                minlength: 3,
+                maxlength: 255
+            },
+            image: {
+                extension: "jpg|jpeg|png|gif|webp",
+                filesize: 2048 // 2MB
+            },
+            'steps[0][content]': {
+                required: true,
+                minlength: 10
+            }
+        },
+        messages: {
+            title: {
+                required: "Please enter a process title",
+                minlength: "Title must be at least 3 characters long",
+                maxlength: "Title cannot exceed 255 characters"
+            },
+            image: {
+                extension: "Please upload a valid image file (jpg, jpeg, png, gif, webp)",
+                filesize: "File size must be less than 2MB"
+            },
+            'steps[0][content]': {
+                required: "Please enter step content",
+                minlength: "Step content must be at least 10 characters long"
+            }
+        },
+        errorElement: 'div',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            if (element.attr('name') === 'image') {
+                element.closest('.form-group').append(error);
+            } else {
+                element.closest('.mb-3').append(error);
+            }
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        },
+        submitHandler: function(form) {
+            // Update all CKEditor instances before validation
+            Object.values(editors).forEach(editor => {
+                editor.updateSourceElement();
+            });
+            
+            // Validate process steps
+            let isValid = true;
+            const stepItems = document.querySelectorAll('.step-item');
+            
+            stepItems.forEach((step, index) => {
+                const content = step.querySelector('textarea[name*="[content]"]');
+                
+                // Validate content (required)
+                if (!content.value.trim()) {
+                    isValid = false;
+                    $(content).addClass('is-invalid');
+                    if (!step.querySelector('.invalid-feedback')) {
+                        $(content).after('<div class="invalid-feedback">Step content is required for step ' + (index + 1) + '</div>');
+                    }
+                } else if (content.value.trim().length < 10) {
+                    isValid = false;
+                    $(content).addClass('is-invalid');
+                    if (!step.querySelector('.invalid-feedback')) {
+                        $(content).after('<div class="invalid-feedback">Step content must be at least 10 characters long for step ' + (index + 1) + '</div>');
+                    }
+                } else {
+                    $(content).removeClass('is-invalid');
+                    step.querySelectorAll('.invalid-feedback').forEach(feedback => {
+                        if (feedback.textContent.includes('Step content')) {
+                            feedback.remove();
+                        }
+                    });
+                }
+            });
+            
+            if (!isValid) {
+                return false;
+            }
+            
+            // Show loading state
+            $('button[type="submit"]').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
+            form.submit();
+        }
+    });
 });
 </script>
 @endpush

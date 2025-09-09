@@ -11,6 +11,7 @@ class Process extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'language',
         'title',
         'image',
         'status'
@@ -23,6 +24,22 @@ class Process extends Model
     public function getImageUrlAttribute()
     {
         return $this->image ? asset('storage/' . $this->image) : null;
+    }
+
+    /**
+     * Get the language name
+     */
+    public function getLanguageNameAttribute()
+    {
+        return $this->language === 'hi' ? 'Hindi' : 'English';
+    }
+
+    /**
+     * Scope to filter by language
+     */
+    public function scopeByLanguage($query, $language)
+    {
+        return $query->where('language', $language);
     }
 
     /**

@@ -25,6 +25,7 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
+                                    <th>Language</th>
                                     <th>Image</th>
                                     <th>Title</th>
                                     <th>Steps</th>
@@ -36,6 +37,11 @@
                                 @forelse($processes as $process)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>
+                                            <span class="badge {{ $process->language == 'en' ? 'bg-primary' : 'bg-success' }}">
+                                                {{ $process->language_name }}
+                                            </span>
+                                        </td>
                                         <td>
                                             @if($process->image)
                                                 <img src="{{ $process->image_url }}" alt="{{ $process->title }}" width="100">

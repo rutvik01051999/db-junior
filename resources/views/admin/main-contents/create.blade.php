@@ -23,6 +23,21 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-group mb-3">
+                                            <label for="language" class="form-label fw-bold">Language <span class="text-danger">*</span></label>
+                                            <select name="language" id="language" class="form-select form-select-lg @error('language') is-invalid @enderror" required>
+                                                <option value="">Select Language</option>
+                                                <option value="en" {{ old('language') == 'en' ? 'selected' : '' }}>English</option>
+                                                <option value="hi" {{ old('language') == 'hi' ? 'selected' : '' }}>Hindi</option>
+                                            </select>
+                                            @error('language')
+                                                <div class="invalid-feedback">
+                                                    <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
                                             <label for="title" class="form-label fw-bold">Title <span class="text-danger">*</span></label>
                                             <input type="text" name="title" id="title" class="form-control form-control-lg @error('title') is-invalid @enderror" value="{{ old('title') }}" placeholder="Enter main content title" required>
                                             @error('title')
@@ -51,31 +66,12 @@
                                 <!-- Image Upload Section -->
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="form-group mb-3">
-                                            <label for="image" class="form-label fw-bold">Image <span class="text-danger">*</span></label>
-                                            <div class="card border-2 border-dashed border-primary">
-                                                <div class="card-body text-center">
-                                                    <div class="custom-file">
-                                                        <input type="file" name="image" class="custom-file-input @error('image') is-invalid @enderror" id="image" required>
-                                                        <label class="custom-file-label btn btn-outline-primary" for="image">
-                                                            <i class="fas fa-cloud-upload-alt me-2"></i>Choose Image File
-                                                        </label>
-                                                        @error('image')
-                                                            <div class="invalid-feedback">
-                                                                <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
-                                                            </div>
-                                                        @enderror
-                                                    </div>
-                                                    <small class="form-text text-muted mt-2 d-block">
-                                                        <i class="fas fa-info-circle me-1"></i>
-                                                        Recommended size: 1200x600px, Max size: 2MB
-                                                    </small>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3 text-center">
-                                                <img id="imagePreview" src="#" alt="Image Preview" class="img-fluid rounded shadow" style="max-height: 200px; display: none;">
-                                            </div>
-                                        </div>
+                                        <x-image-upload 
+                                            name="image" 
+                                            label="Image" 
+                                            :required="true"
+                                            recommended-size="1200x600px"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -170,8 +166,38 @@
 @endsection
 
 @push('scripts')
+<!-- CKEditor 5 -->
+<script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
 <script>
     $(document).ready(function() {
+        // Initialize CKEditor
+        ClassicEditor
+            .create(document.querySelector('#description'), {
+                toolbar: {
+                    items: [
+                        'heading', '|',
+                        'bold', 'italic', 'underline', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'outdent', 'indent', '|',
+                        'link', 'blockQuote', '|',
+                        'undo', 'redo'
+                    ]
+                },
+                heading: {
+                    options: [
+                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                    ]
+                }
+            })
+            .then(editor => {
+                window.descriptionEditor = editor;
+            })
+            .catch(error => {
+                console.error('Error initializing CKEditor:', error);
+            });
         // Preview image before upload
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -214,8 +240,7 @@
                 },
                 description: {
                     required: true,
-                    minlength: 10,
-                    maxlength: 1000
+                    minlength: 10
                 },
                 image: {
                     required: true,
@@ -274,8 +299,7 @@
                 },
                 description: {
                     required: "Please enter a description",
-                    minlength: "Description must be at least 10 characters long",
-                    maxlength: "Description cannot exceed 1000 characters"
+                    minlength: "Description must be at least 10 characters long"
                 },
                 image: {
                     required: "Please select an image",
@@ -338,6 +362,11 @@
                 $(element).removeClass('is-invalid');
             },
             submitHandler: function(form) {
+                // Update textarea with CKEditor content before submit
+                if (window.descriptionEditor) {
+                    window.descriptionEditor.updateSourceElement();
+                }
+                
                 // Show loading state
                 $('button[type="submit"]').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Saving...');
                 form.submit();
