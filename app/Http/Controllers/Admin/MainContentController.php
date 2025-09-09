@@ -45,7 +45,6 @@ class MainContentController extends Controller
             'timeline_2' => 'nullable|string',
             'timeline_3' => 'nullable|string',
             'timeline_4' => 'nullable|string',
-            'is_active' => 'boolean',
             'sort_order' => 'nullable|integer'
         ]);
 
@@ -105,7 +104,6 @@ class MainContentController extends Controller
             'timeline_2' => 'nullable|string',
             'timeline_3' => 'nullable|string',
             'timeline_4' => 'nullable|string',
-            'is_active' => 'boolean',
             'sort_order' => 'nullable|integer'
         ]);
 
@@ -151,6 +149,7 @@ class MainContentController extends Controller
             'message' => 'Main content deleted successfully.'
         ]);
     }
+
 
     /**
      * Update main content status

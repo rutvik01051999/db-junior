@@ -287,9 +287,6 @@
                     minlength: 2,
                     maxlength: 100
                 },
-                is_active: {
-                    required: true
-                }
             },
             messages: {
                 title: {
@@ -346,9 +343,6 @@
                     minlength: "Timeline must be at least 2 characters long",
                     maxlength: "Timeline cannot exceed 100 characters"
                 },
-                is_active: {
-                    required: "Please set the content status"
-                }
             },
             errorElement: 'div',
             errorPlacement: function (error, element) {

@@ -69,10 +69,6 @@
                                                 <button type="button" class="btn btn-danger btn-sm delete-main-content" data-id="{{ $content->id }}" data-toggle="tooltip" title="Delete">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
-                                                <form id="delete-form-{{ $content->id }}" action="{{ route('admin.main-contents.destroy', $content->id) }}" method="POST" style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
                                             </div>
                                         </td>
                                     </tr>
@@ -120,7 +116,7 @@
 <script>
     $(document).ready(function() {
         // Initialize tooltips
-        $('[data-toggle="tooltip"]').tooltip();
+        //$('[data-toggle="tooltip"]').tooltip();
         
         // Add CSRF token to all AJAX requests
         $.ajaxSetup({
@@ -132,7 +128,8 @@
         // Handle delete button click
         $('.delete-main-content').click(function() {
             const contentId = $(this).data('id');
-            const form = $('#delete-form-' + contentId);
+            const $button = $(this);
+            const $row = $button.closest('tr');
             
             Swal.fire({
                 title: 'Are you sure?',
@@ -144,7 +141,59 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    // Show loading state
+                    $button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+                    
+                    // Send AJAX delete request
+                    $.ajax({
+                        url: '{{ route("admin.main-contents.destroy", ":id") }}'.replace(':id', contentId),
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            // Remove the row from table
+                            $row.fadeOut(300, function() {
+                                $(this).remove();
+                                
+                                // Check if table is empty
+                                if ($('tbody tr').length === 0) {
+                                    $('tbody').html(`
+                                        <tr>
+                                            <td colspan="5" class="text-center">
+                                                <div class="py-4">
+                                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                                    <p class="mb-0">No main content found. Click the button above to add a new one.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `);
+                                }
+                            });
+                            
+                            // Show success message
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: response.message || 'Main content has been deleted.',
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        },
+                        error: function(xhr) {
+                            // Re-enable button
+                            $button.prop('disabled', false).html('<i class="fas fa-trash"></i>');
+                            
+                            // Show error message
+                            Swal.fire({
+                                title: 'Error!',
+                                text: xhr.responseJSON?.message || 'An error occurred while deleting the main content.',
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    });
                 }
             });
         });

@@ -114,7 +114,7 @@
 <script>
     $(document).ready(function() {
         // Initialize tooltips
-        $('[data-toggle="tooltip"]').tooltip();
+        //$('[data-toggle="tooltip"]').tooltip();
         
         // Add CSRF token to all AJAX requests
         $.ajaxSetup({

@@ -69,10 +69,6 @@
                                                 <button type="button" class="btn btn-danger btn-sm delete-process" data-id="{{ $process->id }}" data-toggle="tooltip" title="Delete">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
-                                                <form id="delete-form-{{ $process->id }}" action="{{ route('admin.processes.destroy', $process->id) }}" method="POST" style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
                                             </div>
                                         </td>
                                     </tr>
@@ -120,7 +116,7 @@
 <script>
     $(document).ready(function() {
         // Initialize tooltips
-        $('[data-toggle="tooltip"]').tooltip();
+        //$('[data-toggle="tooltip"]').tooltip();
         
         // Add CSRF token to all AJAX requests
         $.ajaxSetup({
@@ -132,7 +128,8 @@
         // Handle delete button click
         $('.delete-process').click(function() {
             const processId = $(this).data('id');
-            const form = $('#delete-form-' + processId);
+            const $button = $(this);
+            const $row = $button.closest('tr');
             
             Swal.fire({
                 title: 'Are you sure?',
@@ -144,14 +141,65 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    // Show loading state
+                    $button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+                    
+                    // Send AJAX delete request
+                    $.ajax({
+                        url: '{{ route("admin.processes.destroy", ":id") }}'.replace(':id', processId),
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            // Remove the row from table
+                            $row.fadeOut(300, function() {
+                                $(this).remove();
+                                
+                                // Check if table is empty
+                                if ($('tbody tr').length === 0) {
+                                    $('tbody').html(`
+                                        <tr>
+                                            <td colspan="7" class="text-center">
+                                                <div class="py-4">
+                                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                                    <p class="mb-0">No processes found. Click the button above to add a new one.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `);
+                                }
+                            });
+                            
+                            // Show success message
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: response.message || 'Process has been deleted.',
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        },
+                        error: function(xhr) {
+                            // Re-enable button
+                            $button.prop('disabled', false).html('<i class="fas fa-trash"></i>');
+                            
+                            // Show error message
+                            Swal.fire({
+                                title: 'Error!',
+                                text: xhr.responseJSON?.message || 'An error occurred while deleting the process.',
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    });
                 }
             });
         });
 
         // Handle status toggle switch
         $('.status-toggle').change(function() {
-            console.log('Status toggle changed');
             const processId = $(this).data('id');
             const isActive = $(this).is(':checked') ? 1 : 0;
             const $switch = $(this);
@@ -169,44 +217,26 @@
                     status: isActive
                 },
                 success: function(response) {
-                    // Show success message
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer);
-                            toast.addEventListener('mouseleave', Swal.resumeTimer);
-                        }
-                    });
-                    
-                    Toast.fire({
+                    // Show success popup
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.message || 'Status updated successfully',
                         icon: 'success',
-                        title: response.message || 'Status updated successfully'
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#3085d6'
                     });
                 },
                 error: function(xhr) {
                     // Revert toggle on error
                     $switch.prop('checked', !isActive);
                     
-                    // Show error message
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer);
-                            toast.addEventListener('mouseleave', Swal.resumeTimer);
-                        }
-                    });
-                    
-                    Toast.fire({
+                    // Show error popup
+                    Swal.fire({
+                        title: 'Error!',
+                        text: xhr.responseJSON?.message || 'An error occurred while updating status',
                         icon: 'error',
-                        title: xhr.responseJSON?.message || 'An error occurred while updating status'
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#d33'
                     });
                 },
                 complete: function() {

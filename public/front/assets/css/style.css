@@ -2233,7 +2233,7 @@ Activities Area CSS
 .single-activities .number span {
   display: inline-block;
   height: 60px;
-  width: 60px;
+  width: 85px;
   line-height: 60px;
   font-size: 30px;
   color: #1b0238;
@@ -5362,5 +5362,11 @@ Buy Now Btn
   .main-banner-home{
     margin-top: 30%;
     height: max-content;
+  }
+  .single-activities .activities-content{
+    padding-left: unset !important;
+  }
+  .banner-description .rich-content p{
+    font-size: 14px !important;
   }
 }

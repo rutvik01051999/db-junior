@@ -169,6 +169,35 @@
     text-decoration: underline;
 }
 
+/* Alternating layout styles */
+.process-section .row {
+    margin-bottom: 0;
+}
+
+.process-section .value-image {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.process-section .value-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.process-section .value-image img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+}
+
+/* Ensure proper spacing between alternating sections */
+.process-section:not(:last-child) {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 80px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .value-inner-content {
@@ -206,6 +235,15 @@
     
     .process-steps {
         margin-top: 15px;
+    }
+    
+    /* Reset order on mobile for better UX */
+    .process-section .col-lg-6 {
+        order: unset !important;
+    }
+    
+    .process-section .value-image {
+        margin-bottom: 20px;
     }
 }
 
@@ -270,15 +308,22 @@ document.addEventListener('DOMContentLoaded', function() {
         <section class="value-area ptb-100 process-section {{ $processIndex > 0 ? 'mt-0' : '' }}">
             <div class="container">
                 <div class="row align-items-center">
-                    @if($process->image)
-                        <div class="col-lg-6">
+                    @php
+                        $isEven = ($processIndex + 1) % 2 == 0;
+                        $hasImage = $process->image;
+                    @endphp
+
+                    {{-- Image Column - Alternates position based on even/odd --}}
+                    @if($hasImage)
+                        <div class="col-lg-6 {{ $isEven ? 'order-lg-2' : 'order-lg-1' }}">
                             <div class="value-image">
                                 <img src="{{ $process->image_url }}" alt="{{ $process->title }}" class="img-fluid rounded shadow-sm">
                             </div>
                         </div>
                     @endif
 
-                    <div class="col-lg-{{ $process->image ? '6' : '12' }}">
+                    {{-- Content Column - Alternates position based on even/odd --}}
+                    <div class="col-lg-{{ $hasImage ? '6' : '12' }} {{ $hasImage ? ($isEven ? 'order-lg-1' : 'order-lg-2') : '' }}">
                         <div class="value-item">
                             <div class="value-content">
                                 <h3 class="mb-4">{{ $process->title }}</h3>
@@ -307,15 +352,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
 
-                    @if(!$process->image)
-                        {{-- If no image, show a default image or leave empty --}}
-                        @if($process->steps && $process->steps->count() > 0)
-                            <div class="col-lg-6">
-                                <div class="value-image">
-                                    <img src="{{ asset('front/assets/img/value/value-1.png') }}" alt="{{ $process->title }}" class="img-fluid rounded shadow-sm">
-                                </div>
+                    {{-- Fallback image for processes without images --}}
+                    @if(!$hasImage && $process->steps && $process->steps->count() > 0)
+                        <div class="col-lg-6 {{ $isEven ? 'order-lg-1' : 'order-lg-2' }}">
+                            <div class="value-image">
+                                <img src="{{ asset('front/assets/img/value/value-1.png') }}" alt="{{ $process->title }}" class="img-fluid rounded shadow-sm">
                             </div>
-                        @endif
+                        </div>
                     @endif
                 </div>
             </div>

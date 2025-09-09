@@ -11,14 +11,21 @@
                 @foreach($guestOfHonours as $index => $guest)
                     <div class="col-lg-4 col-md-6">
                         <div class="single-activities">
-                            <div class="number">
-                                <span class="{{ $index % 6 == 0 ? '' : ($index % 6 == 1 ? 'bg-2' : ($index % 6 == 2 ? 'bg-3' : ($index % 6 == 3 ? 'bg-4' : ($index % 6 == 4 ? 'bg-5' : 'bg-6')))) }}">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
-                            </div>
+                            {{-- <div class="number">
+                                <span class="{{ $index % 6 == 0 ? '' : ($index % 6 == 1 ? 'bg-2' : ($index % 6 == 2 ? 'bg-3' : ($index % 6 == 3 ? 'bg-4' : ($index % 6 == 4 ? 'bg-5' : 'bg-6')))) }}">{{ $guest->season_name }}</span>
+                            </div> --}}
                             <div class="activities-content">
-                                <h3>
+                                <div class="guest-of-honour-number" style="text-align: center;">
+                                    <span class="{{ $index % 6 == 0 ? '' : ($index % 6 == 1 ? 'bg-2' : ($index % 6 == 2 ? 'bg-3' : ($index % 6 == 3 ? 'bg-4' : ($index % 6 == 4 ? 'bg-5' : 'bg-6')))) }}" style="
+                                    font-size: x-large;
+                                    font-weight: 700;
+                                ">{{ $guest->season_name }}</span>
+                                    <p>{{ $guest->guest_name }}</p>
+                                </div>
+                                {{-- <h3>
                                     <a href="#">{{ $guest->season_name }}</a>
-                                </h3>
-                                <p>{{ $guest->guest_name }}</p>
+                                </h3> --}}
+                                {{-- <p>{{ $guest->guest_name }}</p> --}}
                             </div>
                         </div>
                     </div>

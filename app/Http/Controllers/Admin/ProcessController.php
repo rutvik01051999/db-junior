@@ -36,7 +36,6 @@ class ProcessController extends Controller
             'language' => 'required|in:en,hi',
             'title' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'boolean',
             'steps' => 'required|array|min:1',
             'steps.*.content' => 'required|string',
         ]);
@@ -92,7 +91,6 @@ class ProcessController extends Controller
             'language' => 'required|in:en,hi',
             'title' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'boolean',
             'steps' => 'required|array|min:1',
             'steps.*.id' => 'nullable|exists:process_steps,id',
             'steps.*.content' => 'required|string',
@@ -157,31 +155,26 @@ class ProcessController extends Controller
         $process->steps()->delete();
         $process->delete();
 
-        return redirect()->route('admin.processes.index')
-            ->with('success', 'Process deleted successfully');
+        return response()->json([
+            'success' => true,
+            'message' => 'Process deleted successfully.'
+        ]);
     }
 
     /**
-     * Update the status of the specified resource.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Update process status
      */
     public function updateStatus(Request $request)
     {
-        $request->validate([
-            'id' => 'required|exists:processes,id',
-            'status' => 'required|boolean',
-        ]);
-
         $process = Process::findOrFail($request->id);
-        $process->status = $request->status;
-        $process->save();
+        
+        $process->update([
+            'status' => $request->status
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Status updated successfully',
-            'status' => $process->status ? 'Active' : 'Inactive'
+            'message' => 'Status updated successfully.'
         ]);
     }
 

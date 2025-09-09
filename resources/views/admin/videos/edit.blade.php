@@ -57,9 +57,9 @@
                                                 <div class="card-body text-center">
                                                     <div class="custom-file">
                                                         <input type="file" class="custom-file-input @error('video') is-invalid @enderror" id="video" name="video" accept="video/*">
-                                                        <label class="custom-file-label btn btn-outline-primary" for="video">
+                                                        {{-- <label class="custom-file-label btn btn-outline-primary" for="video">
                                                             <i class="fas fa-video me-2"></i>Choose New Video File
-                                                        </label>
+                                                        </label> --}}
                                                         @error('video')
                                                             <div class="invalid-feedback">
                                                                 <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
