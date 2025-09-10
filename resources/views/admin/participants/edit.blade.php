@@ -13,7 +13,7 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.participants.update', $participant->id) }}" method="POST">
+                    <form action="{{ route('admin.participants.update', $participant->id) }}" method="POST" id="participantForm">
                         @csrf
                         @method('PUT')
                         
@@ -107,7 +107,7 @@
 <script>
     $(document).ready(function() {
         // Form validation
-        $("form").validate({
+        $("#participantForm").validate({
             rules: {
                 title: {
                     required: true,

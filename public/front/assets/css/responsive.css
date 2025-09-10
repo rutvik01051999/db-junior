@@ -1,6 +1,20 @@
+/* Language Switcher Styles */
+.language-switcher .dropdown-item.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.language-switcher .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.language-switcher .dropdown-item.active:hover {
+    background-color: #0056b3;
+}
+
 @media only screen and (max-width: 767px) {
   .ptb-100 {
-    padding-top: 50px;
+    padding-top: 100px;
     padding-bottom: 50px;
   }
   .pt-100 {

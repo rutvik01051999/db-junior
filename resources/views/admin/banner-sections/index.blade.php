@@ -12,9 +12,17 @@
                         <i class="fas fa-plus"></i> Add New Banner
                     </a>
                 </div>
+                <div class="card-body">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
 
-               
-                <div class="card-body table-responsive p-0">
+                    <div class="table-responsive">
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
@@ -63,10 +71,6 @@
                                             <button type="button" class="btn btn-danger btn-sm delete-banner" data-id="{{ $banner->id }}" data-toggle="tooltip" title="Delete">
                                                 <i class="fas fa-trash"></i>
                                             </button>
-                                            <form id="delete-form-{{ $banner->id }}" action="{{ route('admin.banner-sections.destroy', $banner->id) }}" method="POST" style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -77,6 +81,7 @@
                             @endforelse
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -126,7 +131,8 @@
         // Handle delete button click
         $('.delete-banner').click(function() {
             const bannerId = $(this).data('id');
-            const form = $('#delete-form-' + bannerId);
+            const $button = $(this);
+            const $row = $button.closest('tr');
             
             Swal.fire({
                 title: 'Are you sure?',
@@ -138,7 +144,59 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    // Show loading state
+                    $button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+                    
+                    // Send AJAX delete request
+                    $.ajax({
+                        url: '{{ route("admin.banner-sections.destroy", ":id") }}'.replace(':id', bannerId),
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            // Remove the row from table
+                            $row.fadeOut(300, function() {
+                                $(this).remove();
+                                
+                                // Check if table is empty
+                                if ($('tbody tr').length === 0) {
+                                    $('tbody').html(`
+                                        <tr>
+                                            <td colspan="7" class="text-center">
+                                                <div class="py-4">
+                                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                                    <p class="mb-0">No banner sections found. Click the button above to add a new one.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `);
+                                }
+                            });
+                            
+                            // Show success message
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: response.message || 'Banner section has been deleted.',
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        },
+                        error: function(xhr) {
+                            // Re-enable button
+                            $button.prop('disabled', false).html('<i class="fas fa-trash"></i>');
+                            
+                            // Show error message
+                            Swal.fire({
+                                title: 'Error!',
+                                text: xhr.responseJSON?.message || 'An error occurred while deleting the banner section.',
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    });
                 }
             });
         });

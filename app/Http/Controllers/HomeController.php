@@ -19,48 +19,56 @@ class HomeController extends Controller
     /**
      * Display the home page with dynamic content
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch active banner sections ordered by language and sort_order
+        // Get language from URL route or default to 'en'
+        $currentLanguage = 'en'; // Default
+        if ($request->route()->getName() === 'home.hindi') {
+            $currentLanguage = 'hi';
+        } elseif ($request->route()->getName() === 'home.english') {
+            $currentLanguage = 'en';
+        }
+
+        // Fetch active banner sections for current language
         $bannerSections = BannerSection::where('is_active', true)
-            ->orderBy('language')
+            ->where('language', $currentLanguage)
             ->orderBy('sort_order')
             ->get();
 
-        // Fetch active main content ordered by language and sort_order
+        // Fetch active main content for current language
         $mainContent = MainContent::where('is_active', true)
-            ->orderBy('language')
+            ->where('language', $currentLanguage)
             ->orderBy('sort_order')
             ->first();
 
-        // Fetch active guest of honour entries
+        // Fetch active guest of honour entries for current language
         $guestOfHonours = GuestOfHonour::where('status', true)
-            ->orderBy('language')
+            ->where('language', $currentLanguage)
             ->orderBy('id')
             ->get();
 
-        // Fetch active videos
+        // Fetch active videos (language independent)
         $videos = Video::where('is_active', true)
             ->orderBy('id')
             ->get();
 
-        // Fetch active slider images
+        // Fetch active slider images (language independent)
         $sliders = Slider::where('status', true)
             ->orderBy('id')
             ->get();
 
-        // Fetch active participant statistics
+        // Fetch active participant statistics for current language
         $participants = Participant::where('status', true)
-            ->orderBy('language')
+            ->where('language', $currentLanguage)
             ->orderBy('id')
             ->get();
 
-        // Fetch active processes with their steps
+        // Fetch active processes with their steps for current language
         $processes = Process::where('status', true)
+            ->where('language', $currentLanguage)
             ->with(['steps' => function($query) {
                 $query->where('status', true)->orderBy('id');
             }])
-            ->orderBy('language')
             ->orderBy('id')
             ->get();
 
@@ -71,7 +79,8 @@ class HomeController extends Controller
             'videos',
             'sliders',
             'participants',
-            'processes'
+            'processes',
+            'currentLanguage'
         ));
     }
 

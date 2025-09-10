@@ -92,19 +92,18 @@
                         <div class="option-item">
                             <div class="dropdown language-switcher d-inline-block">
                                 <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span>Language <i class='bx bx-chevron-down'></i></span>
+                                    <span>{{ isset($currentLanguage) && $currentLanguage == 'hi' ? 'हिंदी' : 'English' }} <i class='bx bx-chevron-down'></i></span>
                                 </button>
 
                                 <div class="dropdown-menu">
-                                    <a href="#" class="dropdown-item d-flex align-items-center">
+                                    <a href="{{ route('home.english') }}" class="dropdown-item d-flex align-items-center {{ isset($currentLanguage) && $currentLanguage == 'en' ? 'active' : '' }}">
                                         <img src="{{ asset('front/assets/img/english.png') }}" class="shadow-sm" alt="flag">
                                         <span>English</span>
                                     </a>
-                                     <a href="#" class="dropdown-item d-flex align-items-center">
+                                    <a href="{{ route('home.hindi') }}" class="dropdown-item d-flex align-items-center {{ isset($currentLanguage) && $currentLanguage == 'hi' ? 'active' : '' }}">
                                         <img src="{{ asset('front/assets/img/english.png') }}" class="shadow-sm" alt="flag">
-                                        <span>Hindi</span>
+                                        <span>हिंदी</span>
                                     </a>
-                                    
                                 </div>
                             </div>
                         </div>
@@ -134,36 +133,24 @@
                         <div class="option-item">
                             <div class="dropdown language-switcher d-inline-block">
                                 <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span>Language <i class='bx bx-chevron-down'></i></span>
+                                    <span>{{ isset($currentLanguage) && $currentLanguage == 'hi' ? 'हिंदी' : 'English' }} <i class='bx bx-chevron-down'></i></span>
                                 </button>
 
                                 <div class="dropdown-menu">
-                                    <a href="#" class="dropdown-item d-flex align-items-center">
+                                    <a href="{{ route('home.english') }}" class="dropdown-item d-flex align-items-center {{ isset($currentLanguage) && $currentLanguage == 'en' ? 'active' : '' }}">
                                         <img src="{{ asset('front/assets/img/english.png') }}" class="shadow-sm" alt="flag">
                                         <span>English</span>
                                     </a>
-                                    <a href="#" class="dropdown-item d-flex align-items-center">
-                                        <img src="{{ asset('front/assets/img/arab.png') }}" class="shadow-sm" alt="flag">
-                                        <span>العربيّة</span>
-                                    </a>
-                                    <a href="#" class="dropdown-item d-flex align-items-center">
-                                        <img src="{{ asset('front/assets/img/germany.png') }}" class="shadow-sm" alt="flag">
-                                        <span>Deutsch</span>
-                                    </a>
-                                    <a href="#" class="dropdown-item d-flex align-items-center">
-                                        <img src="{{ asset('front/assets/img/portugal.png') }}" class="shadow-sm" alt="flag">
-                                        <span>Português</span>
-                                    </a>
-                                    <a href="#" class="dropdown-item d-flex align-items-center">
-                                        <img src="{{ asset('front/assets/img/china.png') }}" class="shadow-sm" alt="flag">
-                                        <span>简体中文</span>
+                                    <a href="{{ route('home.hindi') }}" class="dropdown-item d-flex align-items-center {{ isset($currentLanguage) && $currentLanguage == 'hi' ? 'active' : '' }}">
+                                        <img src="{{ asset('front/assets/img/english.png') }}" class="shadow-sm" alt="flag">
+                                        <span>हिंदी</span>
                                     </a>
                                 </div>
                             </div>
                         </div>
 
                         <div class="option-item">
-                            <a href="contact.html" class="default-btn">Contact Us</a>
+                            <a href="/contact" class="default-btn">Contact Us</a>
                         </div>
                     </div>
                 </div>

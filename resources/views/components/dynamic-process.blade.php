@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 @if($processes && $processes->count() > 0)
     @foreach($processes as $processIndex => $process)
-        <section class="value-area ptb-100 process-section {{ $processIndex > 0 ? 'mt-0' : '' }}">
+        <section class="value-area ptb-50 process-section {{ $processIndex > 0 ? 'mt-0' : '' }}">
             <div class="container">
                 <div class="row align-items-center">
                     @php
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     {{-- Image Column - Alternates position based on even/odd --}}
                     @if($hasImage)
-                        <div class="col-lg-6 {{ $isEven ? 'order-lg-2' : 'order-lg-1' }}">
+                        <div class="col-lg-4 {{ $isEven ? 'order-lg-2' : 'order-lg-1' }}">
                             <div class="value-image">
                                 <img src="{{ $process->image_url }}" alt="{{ $process->title }}" class="img-fluid rounded shadow-sm">
                             </div>
@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     @endif
 
                     {{-- Content Column - Alternates position based on even/odd --}}
-                    <div class="col-lg-{{ $hasImage ? '6' : '12' }} {{ $hasImage ? ($isEven ? 'order-lg-1' : 'order-lg-2') : '' }}">
+                    <div class="col-lg-{{ $hasImage ? '8' : '12' }} {{ $hasImage ? ($isEven ? 'order-lg-1' : 'order-lg-2') : '' }}">
                         <div class="value-item">
                             <div class="value-content">
                                 <h3 class="mb-4">{{ $process->title }}</h3>
@@ -336,8 +336,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                             @if($step->content)
                                                 {{-- Show number for each step --}}
                                                 <div class="number">
-                                                    <span class="{{ $index % 3 == 0 ? '' : ($index % 3 == 1 ? 'bg-2' : 'bg-3') }}">
-                                                        {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                                                    <span class="{{ $processIndex % 3 == 0 ? '' : ($processIndex % 3 == 1 ? 'bg-2' : 'bg-3') }}">
+                                                        {{ $processIndex + 1 }}
                                                     </span>
                                                 </div>
                                                 {{-- Display rich content with proper styling --}}
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', function() {
     @endforeach
 @else
     {{-- Fallback to static content if no processes are found --}}
-    <section class="value-area ptb-100 process-section">
+    <section class="value-area process-section">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6">

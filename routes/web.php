@@ -43,6 +43,10 @@ Auth::routes();
 // lang.swap
 Route::get('lang/{locale}', [LanguageController::class, '__invoke'])->name('lang.swap');
 
+// New language switching routes
+Route::get('ln=hi', [HomeController::class, 'index'])->name('home.hindi');
+Route::get('ln=en', [HomeController::class, 'index'])->name('home.english');
+
 Route::middleware(SetLocale::class)->group(function () {
     Route::prefix('admin/dashboard')->name('admin.dashboard.')->middleware('auth')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('index');
