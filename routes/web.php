@@ -14,13 +14,18 @@ use App\Http\Controllers\Admin\ParticipantController;
 use App\Http\Controllers\Admin\GuestOfHonourController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CmsPageController;
+use App\Http\Controllers\Admin\ContactController as AdminContactController;
+use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\CerificateController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\FrontCmsPageController;
+use App\Http\Controllers\ContactController;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+Auth::routes();
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -28,6 +33,7 @@ Route::get('/temp', function () {
     return view('admin.layouts.app');
 });
 Route::get('contact', [HomeController::class, 'contactUsPage'])->name('contact.page');
+Route::post('contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('privacy-policy', [HomeController::class, 'privacyPage'])->name('privacy.page');
 Route::get('terms-of-service', [HomeController::class, 'termsPage'])->name('terms.page');
 
@@ -38,14 +44,52 @@ Route::get('register/form', [HomeController::class, 'registerForm'])->name('regi
 Route::post('certificate/download', [HomeController::class, 'certificateDownload'])->name('certificate.download');
 
 
-Auth::routes();
 
 // lang.swap
 Route::get('lang/{locale}', [LanguageController::class, '__invoke'])->name('lang.swap');
 
-// New language switching routes
-Route::get('ln=hi', [HomeController::class, 'index'])->name('home.hindi');
-Route::get('ln=en', [HomeController::class, 'index'])->name('home.english');
+// Language switching routes - work on any page
+Route::get('ln=hi', function() {
+    $currentUrl = request()->header('referer') ?: url()->previous() ?: '/';
+    
+    // Parse the URL to handle existing parameters
+    $parsedUrl = parse_url($currentUrl);
+    $path = $parsedUrl['path'] ?? '/';
+    $query = $parsedUrl['query'] ?? '';
+    
+    // Parse existing query parameters
+    parse_str($query, $params);
+    
+    // Update or add the language parameter
+    $params['lang'] = 'hi';
+    
+    // Rebuild the URL
+    $newQuery = http_build_query($params);
+    $newUrl = $path . ($newQuery ? '?' . $newQuery : '');
+    
+    return redirect($newUrl);
+})->name('switch.hindi');
+
+Route::get('ln=en', function() {
+    $currentUrl = request()->header('referer') ?: url()->previous() ?: '/';
+    
+    // Parse the URL to handle existing parameters
+    $parsedUrl = parse_url($currentUrl);
+    $path = $parsedUrl['path'] ?? '/';
+    $query = $parsedUrl['query'] ?? '';
+    
+    // Parse existing query parameters
+    parse_str($query, $params);
+    
+    // Update or add the language parameter
+    $params['lang'] = 'en';
+    
+    // Rebuild the URL
+    $newQuery = http_build_query($params);
+    $newUrl = $path . ($newQuery ? '?' . $newQuery : '');
+    
+    return redirect($newUrl);
+})->name('switch.english');
 
 Route::middleware(SetLocale::class)->group(function () {
     Route::prefix('admin/dashboard')->name('admin.dashboard.')->middleware('auth')->group(function () {
@@ -180,4 +224,32 @@ Route::middleware(SetLocale::class)->group(function () {
         Route::post('/update-status', [CmsPageController::class, 'updateStatus'])->name('update-status');
         Route::delete('/{cmsPage}', [CmsPageController::class, 'destroy'])->name('destroy');
     });
+
+    // Contact Form Submissions Routes
+Route::prefix('admin/contacts')->name('admin.contacts.')->middleware('auth')->group(function () {
+    Route::get('/', [AdminContactController::class, 'index'])->name('index');
+    Route::get('/{contact}', [AdminContactController::class, 'show'])->name('show');
+    Route::delete('/{contact}', [AdminContactController::class, 'destroy'])->name('destroy');
+});
+
+// Employee Management Routes
+Route::prefix('admin/employees')->name('admin.employees.')->middleware('auth')->group(function () {
+    Route::get('/', [EmployeeController::class, 'index'])->name('index');
+    Route::get('/create', [EmployeeController::class, 'create'])->name('create');
+    Route::post('/', [EmployeeController::class, 'store'])->name('store');
+    Route::get('/{employee}', [EmployeeController::class, 'show'])->name('show');
+    Route::post('/fetch-data', [EmployeeController::class, 'fetchEmployeeData'])->name('fetch-data');
+});
+
+// Junior Editor Registration Routes
+Route::get('/register', [App\Http\Controllers\JuniorEditorController::class, 'index'])->name('junior-editor.register');
+Route::post('/send-otp', [App\Http\Controllers\JuniorEditorController::class, 'sendOtp'])->name('junior-editor.send-otp');
+Route::post('/verify-otp', [App\Http\Controllers\JuniorEditorController::class, 'verifyOtp'])->name('junior-editor.verify-otp');
+Route::get('/states', [App\Http\Controllers\JuniorEditorController::class, 'getStates'])->name('junior-editor.states');
+Route::post('/cities', [App\Http\Controllers\JuniorEditorController::class, 'getCities'])->name('junior-editor.cities');
+Route::post('/save-partial', [App\Http\Controllers\JuniorEditorController::class, 'savePartialRegistration'])->name('junior-editor.save-partial');
+Route::post('/test-form', [App\Http\Controllers\JuniorEditorController::class, 'testFormSubmission'])->name('junior-editor.test-form');
+Route::post('/create-order', [App\Http\Controllers\JuniorEditorController::class, 'createOrder'])->name('junior-editor.create-order');
+Route::post('/update-payment', [App\Http\Controllers\JuniorEditorController::class, 'updatePayment'])->name('junior-editor.update-payment');
+Route::post('/payment-failure', [App\Http\Controllers\JuniorEditorController::class, 'handlePaymentFailure'])->name('junior-editor.payment-failure');
 });

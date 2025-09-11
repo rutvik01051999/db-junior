@@ -3,9 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Enums\UserStatus;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -19,39 +21,55 @@ class SuperAdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $suprAdminUser = [
-            'first_name' => 'Super',
-            'middle_name' => '',
-            'last_name' => 'Admin',
-            'email' => 'superadmin@' . config('app.name', 'laravel') . '.com',
-            'password' => bcrypt('12345678'),
-            'mobile_number' => '1234567890',
+        $superAdminUser = [
+            'first_name'     => 'Super',
+            'middle_name'    => 'Admin',
+            'last_name'      => 'Admin',
+            'full_name'      => 'Super Admin',
+            'username'       => 'Super Admin',
+            'email'          => 'superadmin@gmail.com',
+            'password'       => bcrypt('12345678'),
+            'mobile_number'  => '1234567890',
+            'department'     => 'Super Admin',
+            'status'         => 1,
         ];
 
-        $suprAdminUser = User::updateOrCreate(['email' => $suprAdminUser['email']], $suprAdminUser);
-        $permissions = Permission::all();
-
-        $role = Role::where('slug', 'super-admin')->first();
-
-        if (!$role) {
-            Artisan::call('db:seed', ['--class' => RoleSeeder::class]);
-
-            $role = Role::where('slug', 'super-admin')->first();
+        // Create or update super admin user using DB::table to avoid enum casting issues
+        $existingUser = DB::table('users')->where('email', $superAdminUser['email'])->first();
+        
+        if ($existingUser) {
+            DB::table('users')->where('email', $superAdminUser['email'])->update($superAdminUser);
+            $superAdminUser = User::where('email', $superAdminUser['email'])->first();
+        } else {
+            $superAdminUser['created_at'] = now();
+            $superAdminUser['updated_at'] = now();
+            $userId = DB::table('users')->insertGetId($superAdminUser);
+            $superAdminUser = User::find($userId);
         }
 
+        // Get or create role
+        $role = Role::firstOrCreate(
+            ['name' => 'Super Admin', 'guard_name' => 'web']
+        );
+
+        // Attach all permissions
+        $permissions = Permission::pluck('id', 'id')->all();
         $role->syncPermissions($permissions);
 
-        $suprAdminUser->assignRole($role);
+        // Assign role to super admin
+        $superAdminUser->assignRole($role);
 
-        $suprAdminUser->email_verified_at = now();
-        $suprAdminUser->save();
+        // Verify email
+        DB::table('users')->where('id', $superAdminUser->id)->update([
+            'email_verified_at' => now()
+        ]);
 
-        $action = $suprAdminUser->isrewasRecentlyCreated ? 'created' : 'updated';
-        info("Super Admin user $action successfully.");
+        $action = $superAdminUser->wasRecentlyCreated ? 'created' : 'updated';
+        info("Super Admin user {$action} successfully.");
 
         table([
-            ['Name', $suprAdminUser->full_name],
-            ['Email', $suprAdminUser->email],
+            ['Name', $superAdminUser->first_name . ' ' . $superAdminUser->last_name],
+            ['Email', $superAdminUser->email],
             ['Password', '12345678'],
         ]);
     }

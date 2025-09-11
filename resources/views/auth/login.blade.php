@@ -68,5 +68,5 @@
 @endsection
 
 @push('scripts')
-    @include('admin.validations.auth.login')
+    {{-- @include('admin.validations.auth.login') --}}
 @endpush

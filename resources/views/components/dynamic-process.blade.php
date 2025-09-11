@@ -9,7 +9,7 @@
     margin-top: 20px;
 }
 
-.value-inner-content {
+/* .value-inner-content {
     display: flex;
     align-items: flex-start;
     gap: 20px;
@@ -17,7 +17,6 @@
     padding: 20px;
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -54,7 +53,7 @@
     background: #ffc107;
     color: #333;
     box-shadow: 0 2px 8px rgba(255,193,7,0.3);
-}
+} */
 
 /* Rich content styling for process steps */
 .step-content.rich-content {
@@ -332,14 +331,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             @if($process->steps && $process->steps->count() > 0)
                                 <div class="process-steps">
                                     @foreach($process->steps as $index => $step)
-                                        <div class="value-inner-content mb-4">
+                                        <div class="value-inner-content">
                                             @if($step->content)
                                                 {{-- Show number for each step --}}
-                                                <div class="number">
+                                                {{-- <div class="number">
                                                     <span class="{{ $processIndex % 3 == 0 ? '' : ($processIndex % 3 == 1 ? 'bg-2' : 'bg-3') }}">
                                                         {{ $processIndex + 1 }}
                                                     </span>
-                                                </div>
+                                                </div> --}}
                                                 {{-- Display rich content with proper styling --}}
                                                 <div class="step-content rich-content">
                                                     {!! $step->content !!}

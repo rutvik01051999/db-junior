@@ -21,11 +21,11 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        // Get language from URL route or default to 'en'
-        $currentLanguage = 'en'; // Default
-        if ($request->route()->getName() === 'home.hindi') {
-            $currentLanguage = 'hi';
-        } elseif ($request->route()->getName() === 'home.english') {
+        // Get language from query parameter or default to 'en'
+        $currentLanguage = $request->get('lang', 'en');
+        
+        // Validate language parameter
+        if (!in_array($currentLanguage, ['en', 'hi'])) {
             $currentLanguage = 'en';
         }
 

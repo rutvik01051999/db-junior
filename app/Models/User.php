@@ -10,15 +10,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
+// use Spatie\Activitylog\Traits\LogsActivity;
+// use Spatie\Activitylog\LogOptions;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, FilterableByDates, LogsActivity;
+    use HasFactory, Notifiable, HasRoles, FilterableByDates; // LogsActivity commented out
 
     /**
      * The attributes that are mass assignable.
@@ -41,6 +41,8 @@ class User extends Authenticatable
         'email_verified_at',
         'state_id',
         'city_id',
+        'full_name',
+        'department',
     ];
 
     /**
@@ -70,11 +72,12 @@ class User extends Authenticatable
 
     protected $appends = ['full_name'];
 
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logOnly(['first_name', 'middle_name', 'last_name', 'email', 'status', 'mobile_number', 'gender', 'date_of_birth', 'address', 'avatar', 'username', 'state_id', 'city_id']);
-    }
+    // Activity logging commented out - activity_log table doesn't exist
+    // public function getActivitylogOptions(): LogOptions
+    // {
+    //     return LogOptions::defaults()
+    //         ->logOnly(['first_name', 'middle_name', 'last_name', 'email', 'status', 'mobile_number', 'gender', 'date_of_birth', 'address', 'avatar', 'username', 'state_id', 'city_id']);
+    // }
 
     /**
      * The accessors to append to the model's array form.

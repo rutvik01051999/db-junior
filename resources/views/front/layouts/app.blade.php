@@ -32,7 +32,10 @@
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="{{ asset('front/assets/css/responsive.css') }}">
 
-    <title>Junior Editor</title>
+    <!-- Stack for additional styles -->
+    @stack('styles')
+
+    <title>@yield('title', 'Junior Editor')</title>
 
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
 </head>
@@ -55,7 +58,7 @@
     @yield('content')
     @include('front.layouts.footer')
 
-
+ 
     <!-- jQuery Slim JS -->
     <script src="{{ asset('front/assets/js/jquery.min.js') }}"></script>
     <!-- Bootstrap JS -->
@@ -83,6 +86,8 @@
 
     <script src="{{ asset('front/assets/js/main_2.js') }}"></script>
 
+    <!-- Stack for additional scripts -->
+    @stack('scripts')
     
 </body>
 

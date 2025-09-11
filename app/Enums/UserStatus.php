@@ -2,16 +2,18 @@
 
 namespace App\Enums;
 
-enum UserStatus: int
+enum UserStatus: string
 {
-    case INACTIVE = 0;
-    case ACTIVE = 1;
+    case INACTIVE = 'inactive';
+    case ACTIVE = 'active';
+    case SUSPENDED = 'suspended';
 
     public function color(): string
     {
         return match ($this) {
             self::ACTIVE => 'success',
             self::INACTIVE => 'danger',
+            self::SUSPENDED => 'warning',
         };
     }
 
@@ -20,6 +22,7 @@ enum UserStatus: int
         return match ($this) {
             self::ACTIVE => 'Active',
             self::INACTIVE => 'Inactive',
+            self::SUSPENDED => 'Suspended',
         };
     }
 
@@ -28,14 +31,16 @@ enum UserStatus: int
         return match ($this) {
             self::ACTIVE => 'Active',
             self::INACTIVE => 'Inactive',
+            self::SUSPENDED => 'Suspended',
         };
     }
 
-    public function value(): int
+    public function value(): string
     {
         return match ($this) {
-            self::INACTIVE => 0,
-            self::ACTIVE => 1,
+            self::INACTIVE => 'inactive',
+            self::ACTIVE => 'active',
+            self::SUSPENDED => 'suspended',
         };
     }
 
@@ -44,6 +49,7 @@ enum UserStatus: int
         return [
             self::ACTIVE->value(),
             self::INACTIVE->value(),
+            self::SUSPENDED->value(),
         ];
     }
 
@@ -52,6 +58,7 @@ enum UserStatus: int
         return [
             self::ACTIVE->label(),
             self::INACTIVE->label(),
+            self::SUSPENDED->label(),
         ];
     }
 
@@ -62,9 +69,10 @@ enum UserStatus: int
 
     public static function randomStatus(): self
     {
-        return match (rand(0, 1)) {
+        return match (rand(0, 2)) {
             0 => self::INACTIVE,
             1 => self::ACTIVE,
+            2 => self::SUSPENDED,
         };
     }
 
@@ -73,14 +81,16 @@ enum UserStatus: int
         return [
             self::ACTIVE->value() => self::ACTIVE->label(),
             self::INACTIVE->value() => self::INACTIVE->label(),
+            self::SUSPENDED->value() => self::SUSPENDED->label(),
         ];
     }
 
-    public static function fromValue(int $value): self
+    public static function fromValue(string $value): self
     {
         return match ($value) {
             self::ACTIVE->value() => self::ACTIVE,
             self::INACTIVE->value() => self::INACTIVE,
+            self::SUSPENDED->value() => self::SUSPENDED,
         };
     }
 }

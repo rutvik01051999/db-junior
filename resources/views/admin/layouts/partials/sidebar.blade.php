@@ -283,6 +283,64 @@
                                             </li>
                                         </ul>
                                     </li>
+
+            <!-- Contact Form Submissions Section -->
+            <li class="slide has-sub {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
+                <a href="javascript:void(0);"
+                    class="side-menu__item {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
+                    <i class="bx bx-message-square-detail side-menu__icon"></i>
+                    <span class="side-menu__label">
+                        Contact Submissions
+                    </span>
+                    <i class="fe fe-chevron-right side-menu__angle"></i>
+                </a>
+                <ul class="slide-menu child1 {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}"
+                    data-popper-placement="bottom">
+                    <li class="slide side-menu__label1">
+                        <a href="javascript:void(0)">
+                            Contact Submissions
+                        </a>
+                    </li>
+                    <li class="slide {{ request()->routeIs('admin.contacts.index') ? 'active' : '' }}">
+                        <a href="{{ route('admin.contacts.index') }}"
+                            class="side-menu__item {{ request()->routeIs('admin.contacts.index') ? 'active' : '' }}">
+                            All Submissions
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Employee Management Section -->
+            <li class="slide has-sub {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
+                <a href="javascript:void(0);"
+                    class="side-menu__item {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
+                    <i class="bx bx-user-plus side-menu__icon"></i>
+                    <span class="side-menu__label">
+                        Employee Management
+                    </span>
+                    <i class="fe fe-chevron-right side-menu__angle"></i>
+                </a>
+                <ul class="slide-menu child1 {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}"
+                    data-popper-placement="bottom">
+                    <li class="slide side-menu__label1">
+                        <a href="javascript:void(0)">
+                            Employee Management
+                        </a>
+                    </li>
+                    <li class="slide {{ request()->routeIs('admin.employees.index') ? 'active' : '' }}">
+                        <a href="{{ route('admin.employees.index') }}"
+                            class="side-menu__item {{ request()->routeIs('admin.employees.index') ? 'active' : '' }}">
+                            All Employees
+                        </a>
+                    </li>
+                    <li class="slide {{ request()->routeIs('admin.employees.create') ? 'active' : '' }}">
+                        <a href="{{ route('admin.employees.create') }}"
+                            class="side-menu__item {{ request()->routeIs('admin.employees.create') ? 'active' : '' }}">
+                            Add New Employee
+                        </a>
+                    </li>
+                </ul>
+            </li>
                                 </ul>
 
                                 <div class="slide-right d-none" id="slide-right">
