@@ -252,4 +252,7 @@ Route::post('/test-form', [App\Http\Controllers\JuniorEditorController::class, '
 Route::post('/create-order', [App\Http\Controllers\JuniorEditorController::class, 'createOrder'])->name('junior-editor.create-order');
 Route::post('/update-payment', [App\Http\Controllers\JuniorEditorController::class, 'updatePayment'])->name('junior-editor.update-payment');
 Route::post('/payment-failure', [App\Http\Controllers\JuniorEditorController::class, 'handlePaymentFailure'])->name('junior-editor.payment-failure');
+Route::get('/payment-success', function() {
+    return view('front.payment-success');
+})->name('payment-success');
 });

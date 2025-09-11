@@ -298,11 +298,11 @@
 
                         <!-- Submit Button -->
                         <div class="row justify-content-center">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <button type="submit" class="default-btn">Proceed</button>
-                                </div>
-                            </div>
+                              <div class="col-md-6">
+                                  <div class="form-group">
+                                      <input type="button" class="default-btn" onclick="Checkoutpayment();" value="Proceed">
+                                  </div>
+                              </div>
                         </div>
                     </form>
                 </div>

@@ -346,9 +346,9 @@ function handleDeliveryTypeChange() {
         $("#div_note1").hide();
         $("#div_tag").hide();
         $("#div_tag_day").hide();
-        $('#amount').val('135');
-        $('#amount1').val('₹ 135');
-        console.log('Amount set to ₹135');
+        $('#amount').val('1');
+        $('#amount1').val('₹ 1');
+        console.log('Amount set to ₹1');
     } else if (deliveryType === 'Self Pick Up') {
         $("#div_note").hide();
         $("#div_note1").show();
@@ -673,26 +673,26 @@ function createOrder() {
     };
     
     console.log('Form data:', formData);
-    console.log('Making AJAX request to: {{ route("junior-editor.test-form") }}');
+    console.log('Making AJAX request to: {{ route("junior-editor.create-order") }}');
     
     $.ajax({
         type: 'POST',
-        url: '{{ route("junior-editor.test-form") }}',
+        url: '{{ route("junior-editor.create-order") }}',
         data: formData,
         beforeSend: function() {
             console.log('AJAX request starting...');
         },
         success: function(response) {
-            console.log('Test form submission response:', response);
+            console.log('Order creation response:', response);
             if (response.status === '1') {
-                notify('success', 'Form submission test successful!');
-                console.log('Form submission working correctly');
+                console.log('Order created successfully, opening Razorpay...');
+                openRazorpayCheckout(response.data);
             } else {
                 notify('danger', response.message);
             }
             
             // Reset submit button state
-            const submitBtn = $('button[type="submit"]');
+            const submitBtn = $('input[type="button"][onclick="Checkoutpayment();"]');
             submitBtn.removeClass('btn-loading').prop('disabled', false);
         },
         error: function(xhr, status, error) {
@@ -705,6 +705,83 @@ function createOrder() {
             // Reset submit button state
             const submitBtn = $('button[type="submit"]');
             submitBtn.removeClass('btn-loading').prop('disabled', false);
+        }
+    });
+}
+
+// Open Razorpay checkout
+function openRazorpayCheckout(orderData) {
+    console.log('Opening Razorpay checkout with data:', orderData);
+    
+    var options = {
+        "key": "rzp_live_U6SQkI1OHSjZ2n", // Enter the Key ID generated from the Dashboard
+        "amount": orderData.amount, // Amount is in currency subunits
+        "currency": "INR",
+        "name": "DB Corp",
+        "description": orderData.receipt,
+        "image": "https://junioreditor.groupbhaskar.in/images/JE6-WebSlice_01.gif",
+        "order_id": orderData.order_id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response) {
+            console.log('Payment successful:', response);
+            updatePaymentStatus(response, orderData.mobile);
+        },
+        "prefill": {
+            "name": $("#parent_name").val(),
+            "email": $("#email").val(),
+            "contact": orderData.mobile
+        },
+        "notes": {
+            "address": "Db Corp Office"
+        },
+        "theme": {
+            "color": "#ea512e"
+        },
+        "modal": {
+            "ondismiss": function() {
+                console.log('Payment modal dismissed');
+                notify('info', 'Payment cancelled');
+            }
+        }
+    };
+    
+    var rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function (response) {
+        console.log('Payment failed:', response.error);
+        handlePaymentFailure(response.error, orderData.order_id);
+    });
+    
+    rzp1.open();
+}
+
+// Update payment status after successful payment
+function updatePaymentStatus(response, mobile) {
+    console.log('Updating payment status...');
+    
+    $.ajax({
+        type: 'POST',
+        url: '{{ route("junior-editor.update-payment") }}',
+        data: {
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_signature: response.razorpay_signature,
+            mobile: mobile,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            console.log('Payment status updated:', response);
+            if (response.status === '1') {
+                notify('success', 'Payment successful! You will receive a confirmation email shortly.');
+                // Redirect to success page or show success message
+                setTimeout(function() {
+                    window.location.href = '/payment-success?payment_id=' + response.data.payment_id;
+                }, 2000);
+            } else {
+                notify('danger', response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Failed to update payment status:', error);
+            notify('danger', 'Payment successful but failed to update status. Please contact support.');
         }
     });
 }
