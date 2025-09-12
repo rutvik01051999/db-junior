@@ -16,6 +16,7 @@ return [
         'message_placeholder' => 'Write your message...',
         'message_error' => 'Please enter your message',
         'submit_button' => 'Send Message',
+        'submitting' => 'Sending...',
     ],
     
     'info' => [
@@ -37,13 +38,17 @@ return [
     
     'validation' => [
         'name_required' => 'Please enter your name.',
+        'name_min' => 'Name must be at least 2 characters long.',
         'name_max' => 'Name cannot exceed 255 characters.',
         'email_required' => 'Please enter your email address.',
         'email_invalid' => 'Please enter a valid email address.',
         'email_max' => 'Email cannot exceed 255 characters.',
         'phone_required' => 'Please enter your phone number.',
-        'phone_max' => 'Phone number cannot exceed 20 characters.',
+        'phone_digits' => 'Phone number must contain only digits.',
+        'phone_min' => 'Phone number must be at least 10 digits.',
+        'phone_max' => 'Phone number cannot exceed 15 digits.',
         'message_required' => 'Please enter your message.',
+        'message_min' => 'Message must be at least 10 characters long.',
         'message_max' => 'Message cannot exceed 1000 characters.',
     ],
     

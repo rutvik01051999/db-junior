@@ -31,6 +31,11 @@
                     <div class="card-title">
                         {{ __('module.role.update_role') }}
                     </div>
+                    <div class="card-tools">
+                        <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('admin.roles.update', $role) }}" method="POST" id="create-role-form">

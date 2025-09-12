@@ -6,11 +6,13 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex align-items-center justify-content-between">
                     <h4 class="card-title">Create New Participant</h4>
-                    <a href="{{ route('admin.participants.index') }}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-arrow-left"></i> Back to List
-                    </a>
+                    <div class="card-tools">
+                        <a href="{{ route('admin.participants.index') }}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('admin.participants.store') }}" method="POST" id="participantForm">

@@ -5360,12 +5360,39 @@ Buy Now Btn
   }
   .main-banner-home{
     margin-top: 30%;
-    height: max-content;
+    height: 60%;
   }
   .single-activities .activities-content{
     padding-left: unset !important;
   }
   .banner-description .rich-content p{
     font-size: 14px !important;
+  }
+  .value-image img{
+    width: 50% !important;
+  }
+  .banner-content h3{
+    font-size: 18px !important;
+  }
+  .who-we-are-content h3{
+    text-align: center !important;
+  }
+  .who-we-are-content .who-we-are-list{
+    padding-left: revert !important;
+  }
+  .who-we-are-content h4{
+    text-align: center !important;
+  }
+  .others-option-for-responsive .dot-menu{
+    top: -71px !important;
+  }
+  .process-section:not(:last-child){
+    padding-bottom: 0px !important;
+  }
+  .banner-description .rich-content p{
+    font-size: 14px !important;
+  }
+  .main-content-description .rich-content{
+    padding: 10px !important;
   }
 }

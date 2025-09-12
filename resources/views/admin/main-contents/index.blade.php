@@ -6,13 +6,11 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">Main Content</h3>
-                        <a href="{{ route('admin.main-contents.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Add New
-                        </a>
-                    </div>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Main Content</h3>
+                    <a href="{{ route('admin.main-contents.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New
+                    </a>
                 </div>
                 <div class="card-body">
                     @if(session('success'))

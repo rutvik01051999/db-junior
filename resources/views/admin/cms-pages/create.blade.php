@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Create New CMS Page</h3>
                     <div class="card-tools">
                         <a href="{{ route('admin.cms-pages.index') }}" class="btn btn-secondary btn-sm">

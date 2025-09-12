@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Edit Main Content</h3>
                     <div class="card-tools">
                         <a href="{{ route('admin.main-contents.index') }}" class="btn btn-secondary btn-sm">

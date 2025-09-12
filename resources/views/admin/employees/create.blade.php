@@ -1,14 +1,14 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    @include('admin.layouts.partials.page-header', [
+    {{-- @include('admin.layouts.partials.page-header', [
         'title' => 'Add New Employee',
         'breadcrumb' => [
             'Home' => route('admin.dashboard.index'),
             'Employee Management' => route('admin.employees.index'),
             'Add New Employee' => '#'
         ]
-    ])
+    ]) --}}
 
     @include('admin.layouts.partials.alert')
 

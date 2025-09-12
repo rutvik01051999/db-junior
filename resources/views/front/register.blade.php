@@ -310,6 +310,23 @@
         </div>
     </div>
 </section>
+<div class="main-banner-shape">
+    <div class="shape-5">
+        <img src="http://127.0.0.1:8000/front/assets/img/main-banner/banner-shape-5.png" alt="image">
+    </div>
+
+    <div class="shape-2">
+        <img src="http://127.0.0.1:8000/front/assets/img/main-banner/banner-shape-2.png" alt="image">
+    </div>
+
+    <div class="shape-6">
+        <img src="http://127.0.0.1:8000/front/assets/img/main-banner/banner-shape-6.png" alt="image">
+    </div>
+
+    <div class="shape-4">
+        <img src="http://127.0.0.1:8000/front/assets/img/main-banner/banner-shape-4.png" alt="image">
+    </div>
+</div>
 <!-- End Contact Area -->
 
 <!-- OTP Verification Modal -->
@@ -326,7 +343,7 @@
                         <input type='text' class='form-control' placeholder='Please enter your otp' id='dialog_otp' maxlength="6" onkeypress="return restrictAlphabets(event)">
                     </div>
                     <div class='form-group col-md-4'>
-                        <input type="button" class="btn btn-primary form-control" value="Verify" id='check_otp'/>
+                        <input type="button" class="default-btn form-control" value="Verify" id='check_otp'/>
                     </div>
         </div>
                 <p style="text-align: right;">

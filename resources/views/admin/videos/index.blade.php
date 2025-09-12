@@ -53,9 +53,6 @@
                                         </td>
                                         <td class="text-nowrap">
                                             <div class="btn-group" role="group">
-                                                <a href="{{ route('admin.videos.show', $video->id) }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="View">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
                                                 <a href="{{ route('admin.videos.edit', $video->id) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>

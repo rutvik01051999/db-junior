@@ -5,11 +5,13 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex align-items-center justify-content-between">
                     <h4 class="card-title">Edit Video</h4>
-                    <a href="{{ route('admin.videos.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to List
-                    </a>
+                    <div class="card-tools">
+                        <a href="{{ route('admin.videos.index') }}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form id="videoForm" action="{{ route('admin.videos.update', $video->id) }}" method="POST" enctype="multipart/form-data">

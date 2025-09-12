@@ -56,9 +56,6 @@
                                         </td>
                                         <td class="text-nowrap">
                                             <div class="btn-group" role="group">
-                                                <a href="{{ route('admin.guest-of-honours.show', $guestOfHonour->id) }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="View">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
                                                 <a href="{{ route('admin.guest-of-honours.edit', $guestOfHonour->id) }}" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>

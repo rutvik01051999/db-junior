@@ -71,7 +71,7 @@
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <a href="{{ route('admin.contacts.show', $contact) }}" 
-                                                       class="btn btn-sm btn-primary" 
+                                                       class="btn btn-sm btn-info" 
                                                        title="View Details">
                                                         <i class="bx bx-show"></i>
                                                     </a>
