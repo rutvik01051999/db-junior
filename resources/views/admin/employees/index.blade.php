@@ -14,12 +14,12 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card custom-card">
-                <div class="card-header d-flex align-items-center justify-content-between">
+                {{-- <div class="card-header d-flex align-items-center justify-content-between">
                     <div class="card-title">All Employees ({{ $employees->total() }})</div>
                     <a href="{{ route('admin.employees.create') }}" class="btn btn-primary">
                         <i class="bx bx-plus"></i> Add New Employee
                     </a>
-                </div>
+                </div> --}}
                 <div class="card-body">
                     @if($employees->count() > 0)
                         <div class="table-responsive">
@@ -59,7 +59,7 @@
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <a href="{{ route('admin.employees.show', $employee->id) }}" 
-                                                       class="btn btn-sm btn-info">
+                                                       class="btn btn-sm btn-info" style="height: fit-content;">
                                                         <i class="bx bx-show"></i> View
                                                     </a>
                                                 </div>

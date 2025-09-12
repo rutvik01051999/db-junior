@@ -444,3 +444,56 @@
 .cursor-pointer {
     cursor: pointer;
 }
+
+.card.border-dashed {
+    border-style: dashed !important;
+    border-radius: 12px;
+    background: #fafaff;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.card.border-dashed:hover {
+    background: #f0f0ff;
+    border-color: #6f42c1 !important; /* purple hover */
+    box-shadow: 0 0 10px rgba(111, 66, 193, 0.2);
+}
+
+.custom-file {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.custom-file-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.custom-file::before {
+    content: "\f093  Choose video file";
+    font-family: "Font Awesome 5 Free"; 
+    font-weight: 600;
+    display: block;
+    text-align: center;
+    padding: 14px;
+    background: #6f42c1;
+    color: #fff;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.custom-file:hover::before {
+    background: #5a34a1;
+}
+.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred{
+    height: 140px;
+}

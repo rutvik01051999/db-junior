@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\CmsPage;
 
 class HomeController extends Controller
 {
@@ -88,13 +89,16 @@ class HomeController extends Controller
     {
         return view('front.contact');
     }
-    public function privacyPage()
+    public function privacyPage(Request $request)
     {
-        return view('front.privacy-policy');
+        $content = CmsPage::where('slug', 'privacy-policy')->first();
+        return view('front.cms', compact('content'));
     }
     public function termsPage()
     {
-        return view('front.terms-of-service');      
+        $content = CmsPage::where('slug', 'terms-and-conditions')->first();
+        return view('front.cms', compact('content'));
+        //return view('front.terms-of-service');      
     }
     public function certificateGet()
     {

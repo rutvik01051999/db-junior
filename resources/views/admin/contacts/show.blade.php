@@ -104,7 +104,7 @@
             </div>
 
             <!-- Actions Card -->
-            <div class="card custom-card">
+            {{-- <div class="card custom-card">
                 <div class="card-header">
                     <div class="card-title">
                         Actions
@@ -133,7 +133,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 @endsection

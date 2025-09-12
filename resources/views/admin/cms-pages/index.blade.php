@@ -54,10 +54,6 @@
                                             <button type="button" class="btn btn-danger btn-sm delete-cms-page" data-id="{{ $cmsPage->id }}" data-toggle="tooltip" title="Delete">
                                                 <i class="fas fa-trash"></i>
                                             </button>
-                                            <form id="delete-form-{{ $cmsPage->id }}" action="{{ route('admin.cms-pages.destroy', $cmsPage->id) }}" method="POST" style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -117,7 +113,7 @@
         // Handle delete button click
         $('.delete-cms-page').click(function() {
             const cmsPageId = $(this).data('id');
-            const form = $('#delete-form-' + cmsPageId);
+            const $button = $(this);
             
             Swal.fire({
                 title: 'Are you sure?',
@@ -129,7 +125,46 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    // Show loading state
+                    $button.prop('disabled', true);
+                    
+                    // Send AJAX request
+                    $.ajax({
+                        url: '{{ route("admin.cms-pages.destroy", ":id") }}'.replace(':id', cmsPageId),
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            // Show success message
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: response.message || 'CMS page has been deleted.',
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                // Remove the row from table
+                                $button.closest('tr').fadeOut(300, function() {
+                                    $(this).remove();
+                                });
+                            });
+                        },
+                        error: function(xhr) {
+                            // Show error message
+                            Swal.fire({
+                                title: 'Error!',
+                                text: xhr.responseJSON?.message || 'An error occurred while deleting the CMS page.',
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#d33'
+                            });
+                        },
+                        complete: function() {
+                            // Re-enable the button
+                            $button.prop('disabled', false);
+                        }
+                    });
                 }
             });
         });

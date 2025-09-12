@@ -18,6 +18,7 @@ class RazorpayPaymentResponse extends Model
     ];
     
     protected $casts = [
+        'status' => 'integer',
         'create_date' => 'datetime',
         'update_date' => 'datetime',
     ];

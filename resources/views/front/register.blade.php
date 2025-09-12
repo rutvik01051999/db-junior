@@ -357,7 +357,17 @@
 @endsection
 
 @push('styles')
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+
 <style>
+    @media (min-width: 992px) {
+        .form-row{
+            display: flex;
+            gap: 8px;
+        }
+    }
     .blue_label {
         background: #ea512e;
         padding: 8px 15px;
@@ -647,6 +657,83 @@
     
     @keyframes spin {
         to { transform: rotate(360deg); }
+    }
+    
+    /* Select2 Custom Styling */
+    .select2-container {
+        width: 100% !important;
+    }
+    
+    .select2-container--bootstrap-5 .select2-selection {
+        min-height: 48px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 12px 15px;
+        background-color: white;
+    }
+    
+    .select2-container--bootstrap-5 .select2-selection--single {
+        height: 48px;
+        line-height: 24px;
+    }
+    
+    .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+        padding-left: 0;
+        padding-right: 0;
+        color: #333;
+    }
+    
+    .select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
+        color: #6c757d;
+    }
+    
+    .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+        height: 46px;
+        right: 10px;
+    }
+    
+    .select2-container--bootstrap-5 .select2-dropdown {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 8px 12px;
+    }
+    
+    .select2-container--bootstrap-5 .select2-results__option {
+        padding: 8px 12px;
+    }
+    
+    .select2-container--bootstrap-5 .select2-results__option--highlighted {
+        background-color: #ea512e;
+        color: white;
+    }
+    
+    .select2-container--bootstrap-5 .select2-results__option--selected {
+        background-color: #f8f9fa;
+        color: #333;
+    }
+    
+    .select2-container--bootstrap-5 .select2-selection:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        outline: none;
+    }
+    
+    /* Error state for Select2 */
+    .select2-container--bootstrap-5.error .select2-selection {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+    
+    /* Valid state for Select2 */
+    .select2-container--bootstrap-5.valid .select2-selection {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
     }
 </style>
 @endpush

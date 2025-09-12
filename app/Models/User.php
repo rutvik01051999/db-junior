@@ -70,7 +70,7 @@ class User extends Authenticatable
         ];
     }
 
-    protected $appends = ['full_name'];
+    protected $appends = ['full_name', 'admin_full_name'];
 
     // Activity logging commented out - activity_log table doesn't exist
     // public function getActivitylogOptions(): LogOptions
@@ -84,9 +84,19 @@ class User extends Authenticatable
      * 
      * @var list<string>
      */
-    public function getFullNameAttribute(): string
+    // public function getFullNameAttribute(): string
+    // {
+    //     return "{$this->first_name} {$this->middle_name} {$this->last_name}";
+    // }
+
+    /**
+     * Get the admin full name from the full_name column.
+     * 
+     * @return string
+     */
+    public function getAdminFullNameAttribute(): string
     {
-        return "{$this->first_name} {$this->middle_name} {$this->last_name}";
+        return $this->full_name ?? '';
     }
 
     // Create unique username on user creation

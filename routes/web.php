@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\CmsPageController;
 use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\Admin\EmployeeController;
+use App\Http\Controllers\Admin\JuniorEditorRegistrationsController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\CerificateController;
 use App\Http\Controllers\HomeController;
@@ -239,6 +240,16 @@ Route::prefix('admin/employees')->name('admin.employees.')->middleware('auth')->
     Route::post('/', [EmployeeController::class, 'store'])->name('store');
     Route::get('/{employee}', [EmployeeController::class, 'show'])->name('show');
     Route::post('/fetch-data', [EmployeeController::class, 'fetchEmployeeData'])->name('fetch-data');
+});
+
+// Junior Editor Registrations Routes
+Route::prefix('admin/junior-editor-registrations')->name('admin.junior-editor-registrations.')->middleware('auth')->group(function () {
+    Route::get('/', [JuniorEditorRegistrationsController::class, 'index'])->name('index');
+    Route::get('/{juniorEditorRegistration}', [JuniorEditorRegistrationsController::class, 'show'])->name('show');
+    Route::post('/update-payment-status', [JuniorEditorRegistrationsController::class, 'updatePaymentStatus'])->name('update-payment-status');
+    Route::get('/export/csv', [JuniorEditorRegistrationsController::class, 'export'])->name('export');
+    Route::get('/export/excel', [JuniorEditorRegistrationsController::class, 'exportExcel'])->name('export.excel');
+    Route::get('/export/pdf', [JuniorEditorRegistrationsController::class, 'exportPdf'])->name('export.pdf');
 });
 
 // Junior Editor Registration Routes

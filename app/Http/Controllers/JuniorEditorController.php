@@ -6,6 +6,8 @@ use App\Models\JuniorEditor;
 use App\Models\MobileVerification;
 use App\Models\State;
 use App\Models\City;
+use App\Models\RazorpayPaymentResponse;
+use App\Models\RazorpayPaymentTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -459,11 +461,51 @@ class JuniorEditorController extends Controller
                 ]);
             }
 
-            $registration->update([
-                'razorpay_payment_id' => $request->razorpay_payment_id,
-                'razorpay_signature' => $request->razorpay_signature,
-                'payment_status' => 'completed',
-            ]);
+            // Use database transaction to ensure data consistency
+            DB::beginTransaction();
+            
+            try {
+                // Update registration
+                $registration->update([
+                    'razorpay_payment_id' => $request->razorpay_payment_id,
+                    'razorpay_signature' => $request->razorpay_signature,
+                    'payment_status' => 'completed',
+                ]);
+
+                // Save to razorpay_payment_response table
+                RazorpayPaymentResponse::create([
+                    'mobile' => $request->mobile,
+                    'razorpay_payment_id' => $request->razorpay_payment_id,
+                    'razorpay_order_id' => $request->razorpay_order_id,
+                    'razorpay_signature' => $request->razorpay_signature,
+                    'status' => 1, // 1 for completed, 0 for failed
+                    'date' => now()->format('Y-m-d'),
+                ]);
+
+                // Save to razorpay_payments_transaction table
+                RazorpayPaymentTransaction::create([
+                    'mobile' => $request->mobile,
+                    'order_id' => $request->razorpay_order_id,
+                    'entity' => 'payment',
+                    'amount' => $registration->amount ? ($registration->amount * 100) : '0', // Convert to paise
+                    'amount_paid' => $registration->amount ? ($registration->amount * 100) : '0',
+                    'amount_due' => '0',
+                    'currency' => 'INR',
+                    'receipt' => 'JE_' . $registration->id . '_' . time(),
+                    'status' => 'paid',
+                    'attempts' => '1',
+                    'created_at' => now()->format('Y-m-d H:i:s'),
+                    'payment_update_api_check' => 1,
+                ]);
+
+                DB::commit();
+                Log::info('Payment data saved to both tables for mobile: ' . $request->mobile);
+                
+            } catch (\Exception $e) {
+                DB::rollback();
+                Log::error('Failed to save payment data to tables: ' . $e->getMessage());
+                throw $e; // Re-throw to be caught by outer try-catch
+            }
 
             // TODO: Send confirmation email and SMS
 

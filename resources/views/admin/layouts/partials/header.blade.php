@@ -64,7 +64,7 @@
                         </div>
                         <div class="d-sm-block d-none">
                             <p class="fw-semibold mb-0 lh-1">
-                                {{ auth()->user()->full_name }}
+                                {{ auth()->user()->admin_full_name }}
                             </p>
                             <span class="op-7 fw-normal d-block fs-11">
                                 

@@ -18,71 +18,76 @@
                     <form action="{{ route('admin.processes.store') }}" method="POST" enctype="multipart/form-data" id="processForm">
                         @csrf
                         
-                        <div class="mb-3">
-                            <label for="language" class="form-label">Language <span class="text-danger">*</span></label>
-                            <select name="language" id="language" class="form-select @error('language') is-invalid @enderror" required>
-                                <option value="">Select Language</option>
-                                <option value="en" {{ old('language') == 'en' ? 'selected' : '' }}>English</option>
-                                <option value="hi" {{ old('language') == 'hi' ? 'selected' : '' }}>Hindi</option>
-                            </select>
-                            @error('language')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}">
-                            @error('title')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Process Steps <span class="text-danger">*</span></label>
-                            <div id="steps-container">
-                                <div class="step-item border p-3 mb-3 rounded">
-                                    <div class="mb-3">
-                                        <label class="form-label">Step Content <span class="text-danger">*</span></label>
-                                        <textarea class="form-control step-content @error('steps.0.content') is-invalid @enderror" name="steps[0][content]" rows="6">{{ old('steps.0.content') }}</textarea>
-                                        @error('steps.0.content')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                        <small class="form-text text-muted">Use the rich text editor to format your step content with headings, lists, and other formatting.</small>
-                                    </div>
-                                    <div class="mt-2">
-                                        <button type="button" class="btn btn-sm btn-danger remove-step" style="display: none;">
-                                            <i class="fas fa-trash"></i> Remove Step
-                                        </button>
-                                    </div>
+                        <div class="row">
+                            <!-- Main Content Column -->
+                            <div class="col-lg-8">
+                                <div class="mb-3">
+                                    <label for="language" class="form-label">Language <span class="text-danger">*</span></label>
+                                    <select name="language" id="language" class="form-select @error('language') is-invalid @enderror" required>
+                                        <option value="">Select Language</option>
+                                        <option value="en" {{ old('language') == 'en' ? 'selected' : '' }}>English</option>
+                                        <option value="hi" {{ old('language') == 'hi' ? 'selected' : '' }}>Hindi</option>
+                                    </select>
+                                    @error('language')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                            </div>
-                            @error('steps')
-                                <div class="text-danger mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
 
-                        <x-image-upload 
-                            name="image" 
-                            label="Image" 
-                            :required="false"
-                            recommended-size="800x600px"
-                        />
-
-
-                        <div class="mb-3">
-                            <div class="card bg-light">
-                                <div class="card-header bg-primary text-white">
-                                    <h6 class="mb-0"><i class="fas fa-cog me-2"></i>Settings</h6>
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}">
+                                    @error('title')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div class="card-body">
-                                    <div class="form-group mb-3">
-                                        <label class="form-label fw-bold">Status</label>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="status" name="status" value="1" checked>
-                                            <label class="form-check-label" for="status">Active</label>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Process Steps <span class="text-danger">*</span></label>
+                                    <div id="steps-container">
+                                        <div class="step-item border p-3 mb-3 rounded">
+                                            <div class="mb-3">
+                                                <label class="form-label">Step Content <span class="text-danger">*</span></label>
+                                                <textarea class="form-control step-content @error('steps.0.content') is-invalid @enderror" name="steps[0][content]" rows="6">{{ old('steps.0.content') }}</textarea>
+                                                @error('steps.0.content')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                                <small class="form-text text-muted">Use the rich text editor to format your step content with headings, lists, and other formatting.</small>
+                                            </div>
+                                            <div class="mt-2">
+                                                <button type="button" class="btn btn-sm btn-danger remove-step" style="display: none;">
+                                                    <i class="fas fa-trash"></i> Remove Step
+                                                </button>
+                                            </div>
                                         </div>
-                                        <small class="form-text text-muted">Toggle to enable/disable this process</small>
+                                    </div>
+                                    @error('steps')
+                                        <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <x-image-upload 
+                                    name="image" 
+                                    label="Image" 
+                                    :required="false"
+                                    recommended-size="800x600px"
+                                />
+                            </div>
+
+                            <!-- Right Sidebar Column -->
+                            <div class="col-lg-4">
+                                <div class="card bg-light sticky-top" style="top: 20px;">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0"><i class="fas fa-cog me-2"></i>Settings</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label fw-bold">Status</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="status" name="status" value="1" checked>
+                                                <label class="form-check-label" for="status">Active</label>
+                                            </div>
+                                            <small class="form-text text-muted">Toggle to enable/disable this process</small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -102,6 +107,48 @@
         </div>
     </div>
 @endsection
+
+@push('styles')
+<style>
+    .sticky-top {
+        position: sticky !important;
+        z-index: 1020;
+    }
+    
+    .settings-card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .settings-card .card-header {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        border-bottom: none;
+    }
+    
+    .form-switch .form-check-input {
+        width: 2.5em;
+        height: 1.25em;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280, 0, 0, 0.25%29'/%3e%3c/svg%3e");
+        background-position: left center;
+        border-radius: 2em;
+        transition: background-position 0.15s ease-in-out;
+    }
+    
+    .form-switch .form-check-input:checked {
+        background-position: right center;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    
+    @media (max-width: 991.98px) {
+        .sticky-top {
+            position: relative !important;
+            top: auto !important;
+        }
+    }
+</style>
+@endpush
 
 @push('scripts')
 <!-- CKEditor 5 -->

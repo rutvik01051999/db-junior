@@ -16,14 +16,14 @@
     <div class="row">
         <div class="col-xl-12">
             <div class="card custom-card">
-                <div class="card-header d-flex align-items-center justify-content-between">
+                {{-- <div class="card-header d-flex align-items-center justify-content-between">
                     <div class="card-title">
                         Contact Form Submissions
                     </div>
                     <div class="d-flex align-items-center justify-content-end flex-wrap">
                         <span class="badge bg-primary">{{ $contacts->total() }} Total Submissions</span>
                     </div>
-                </div>
+                </div> --}}
                 <div class="card-body">
                     @if($contacts->count() > 0)
                         <div class="table-responsive">
@@ -72,7 +72,7 @@
                                                 <div class="btn-group" role="group">
                                                     <a href="{{ route('admin.contacts.show', $contact) }}" 
                                                        class="btn btn-sm btn-info" 
-                                                       title="View Details">
+                                                       title="View Details" style="height: fit-content;">
                                                         <i class="bx bx-show"></i>
                                                     </a>
                                                     <form action="{{ route('admin.contacts.destroy', $contact) }}" 

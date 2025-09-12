@@ -36,12 +36,16 @@
     @endif
 
     <!-- Upload Area -->
-    <div class="image-upload-area" id="imageUploadArea">
-        <div class="upload-content">
-            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
-            <h5 class="text-muted">{{ $currentImage ? 'Click to select new image or drag & drop' : 'Click to select image or drag & drop' }}</h5>
-            <p class="text-muted mb-0">Recommended size: {{ $recommendedSize }}, Max size: {{ $maxSize }}</p>
-            <p class="text-muted">Supported formats: {{ $formats }}</p>
+    <div class="card border-2 border-dashed border-primary">
+        <div class="card-body text-center">
+            <div class="image-upload-area" id="imageUploadArea">
+                <div class="upload-content">
+                    <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                    <h5 class="text-muted">{{ $currentImage ? 'Click to select new image or drag & drop' : 'Click to select image or drag & drop' }}</h5>
+                    <p class="text-muted mb-0">Recommended size: {{ $recommendedSize }}, Max size: {{ $maxSize }}</p>
+                    <p class="text-muted">Supported formats: {{ $formats }}</p>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -76,25 +80,22 @@
 <style>
     /* Image Upload Area Styles */
     .image-upload-area {
-        border: 2px dashed #007bff;
-        border-radius: 10px;
-        background: #f8f9fa;
-        min-height: 200px;
-        padding: 40px 20px;
+        min-height: 150px;
+        padding: 20px;
         text-align: center;
         cursor: pointer;
         transition: all 0.3s ease;
         position: relative;
     }
     
-    .image-upload-area:hover {
-        border-color: #0056b3;
+    .card.border-dashed:hover {
+        border-color: #0056b3 !important;
         background: #e3f2fd;
         transform: translateY(-2px);
     }
     
-    .image-upload-area.dragover {
-        border-color: #28a745;
+    .card.border-dashed.dragover {
+        border-color: #28a745 !important;
         background: #d4edda;
         transform: scale(1.02);
     }
@@ -129,11 +130,11 @@
     }
     
     /* Loading animation */
-    .upload-loading {
+    .card.upload-loading {
         position: relative;
     }
     
-    .upload-loading::after {
+    .card.upload-loading::after {
         content: '';
         position: absolute;
         top: 50%;
@@ -145,6 +146,7 @@
         border-top: 4px solid #007bff;
         border-radius: 50%;
         animation: spin 1s linear infinite;
+        z-index: 10;
     }
     
     @keyframes spin {
@@ -159,6 +161,7 @@
     $(document).ready(function() {
         const fileInput = $('#{{ $name }}');
         const uploadArea = $('#imageUploadArea');
+        const uploadCard = uploadArea.closest('.card');
         const previewContainer = $('#imagePreviewContainer');
         const imagePreview = $('#imagePreview');
         const imageInfo = $('#imageInfo');
@@ -178,19 +181,19 @@
         });
         
         // Drag and drop functionality
-        uploadArea.on('dragover', function(e) {
+        uploadCard.on('dragover', function(e) {
             e.preventDefault();
             e.stopPropagation();
             $(this).addClass('dragover');
         });
         
-        uploadArea.on('dragleave', function(e) {
+        uploadCard.on('dragleave', function(e) {
             e.preventDefault();
             e.stopPropagation();
             $(this).removeClass('dragover');
         });
         
-        uploadArea.on('drop', function(e) {
+        uploadCard.on('drop', function(e) {
             e.preventDefault();
             e.stopPropagation();
             $(this).removeClass('dragover');
@@ -228,7 +231,7 @@
             }
             
             // Show loading
-            uploadArea.addClass('upload-loading');
+            uploadCard.addClass('upload-loading');
             
             // Create file reader
             const reader = new FileReader();
@@ -244,7 +247,7 @@
                 imageInfo.text(`${file.name} (${fileSize} MB)`);
                 
                 // Remove loading
-                uploadArea.removeClass('upload-loading');
+                uploadCard.removeClass('upload-loading');
             };
             
             reader.readAsDataURL(file);

@@ -341,6 +341,32 @@
                     </li>
                 </ul>
             </li>
+
+            <!-- Junior Editor Registrations Section -->
+            <li class="slide has-sub {{ request()->routeIs('admin.junior-editor-registrations.*') ? 'active' : '' }}">
+                <a href="javascript:void(0);"
+                    class="side-menu__item {{ request()->routeIs('admin.junior-editor-registrations.*') ? 'active' : '' }}">
+                    <i class="bx bx-user-check side-menu__icon"></i>
+                    <span class="side-menu__label">
+                        JE Registrations
+                    </span>
+                    <i class="fe fe-chevron-right side-menu__angle"></i>
+                </a>
+                <ul class="slide-menu child1 {{ request()->routeIs('admin.junior-editor-registrations.*') ? 'active' : '' }}"
+                    data-popper-placement="bottom">
+                    <li class="slide side-menu__label1">
+                        <a href="javascript:void(0)">
+                            JE Registrations
+                        </a>
+                    </li>
+                    <li class="slide {{ request()->routeIs('admin.junior-editor-registrations.index') ? 'active' : '' }}">
+                        <a href="{{ route('admin.junior-editor-registrations.index') }}"
+                            class="side-menu__item {{ request()->routeIs('admin.junior-editor-registrations.index') ? 'active' : '' }}">
+                            All Registrations
+                        </a>
+                    </li>
+                </ul>
+            </li>
                                 </ul>
 
                                 <div class="slide-right d-none" id="slide-right">

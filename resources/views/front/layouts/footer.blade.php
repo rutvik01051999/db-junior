@@ -40,8 +40,8 @@
                         <li><a href="">About Us</a></li>
                         <li><a href="">Gallery</a></li>
                         <li><a href="/contact">Contact Us</a></li>
-                        <li><a href="/terms-of-service">Terms Of Service</a></li>
-                        <li><a href="/privacy-policy">Privacy Policy</a></li>
+                        <li><a target="_blank" href="/terms-of-service">Terms Of Service</a></li>
+                        <li><a target="_blank" href="/privacy-policy">Privacy Policy</a></li>
                     </ul>
                 </div>
             </div>

@@ -3,6 +3,8 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
 
@@ -27,6 +29,9 @@ $(document).ready(function() {
     
     // Load states
     fetchAllState();
+    
+    // Initialize Select2 for state and city dropdowns
+    initializeSelect2();
     
     // Initialize jQuery Validation
     initializeFormValidation();
@@ -114,6 +119,74 @@ $(document).ready(function() {
         }
     }, 2000);
 });
+
+// Initialize Select2 for dropdowns
+function initializeSelect2() {
+    console.log('Initializing Select2...');
+    
+    // Initialize Select2 for state dropdown
+    $('#state').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Select State',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#state').parent()
+    });
+    
+    // Initialize Select2 for city dropdown
+    $('#city').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Select City',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#city').parent()
+    });
+    
+    // Initialize Select2 for school class dropdown
+    $('#school_class').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Select Class',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#school_class').parent()
+    });
+    
+    // Initialize Select2 for delivery type dropdown
+    $('#delivery_type').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Select Delivery Type',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#delivery_type').parent()
+    });
+    
+    // Initialize Select2 for pickup centers dropdown
+    $('#pickup_centers').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Select Pickup Center',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#pickup_centers').parent()
+    });
+    
+    console.log('Select2 initialized successfully');
+    
+    // Add change event handlers for Select2 validation
+    $('#state, #city, #school_class, #delivery_type, #pickup_centers').on('change', function() {
+        const element = $(this);
+        const form = element.closest('form');
+        
+        // Clear validation errors when user makes a selection
+        if (form.length && form.data('validator')) {
+            element.valid();
+        }
+        
+        // Remove error styling
+        element.removeClass('error').addClass('valid');
+        element.closest('.form-group').removeClass('has-error');
+        element.next('.select2-container').removeClass('error').addClass('valid');
+    });
+}
 
 // Initialize jQuery Validation
 function initializeFormValidation() {
@@ -309,10 +382,20 @@ function initializeFormValidation() {
         highlight: function(element, errorClass, validClass) {
             $(element).addClass("error").removeClass("valid");
             $(element).closest('.form-group').addClass('has-error');
+            
+            // Handle Select2 validation styling
+            if ($(element).hasClass('select2-hidden-accessible')) {
+                $(element).next('.select2-container').addClass('error').removeClass('valid');
+            }
         },
         unhighlight: function(element, errorClass, validClass) {
             $(element).removeClass("error").addClass("valid");
             $(element).closest('.form-group').removeClass('has-error');
+            
+            // Handle Select2 validation styling
+            if ($(element).hasClass('select2-hidden-accessible')) {
+                $(element).next('.select2-container').removeClass('error').addClass('valid');
+            }
         },
         submitHandler: function(form) {
             console.log('Form submit handler called - form is valid');
@@ -542,6 +625,16 @@ function fetchAllState() {
                     options += "<option value='" + val.name + "'>" + val.name + "</option>";
                 });
                 $('#state').html(options);
+                
+                // Re-initialize Select2 for state dropdown after loading options
+                $('#state').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: 'Select State',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#state').parent()
+                });
+                
                 fetchAllCity();
             }
         },
@@ -560,6 +653,14 @@ function fetchAllCity() {
         
         if (!state) {
             $('#city').html("<option value=''>Select City</option>");
+            // Re-initialize Select2 for city dropdown
+            $('#city').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Select City',
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#city').parent()
+            });
             return;
         }
         
@@ -578,13 +679,38 @@ function fetchAllCity() {
                         options += "<option value='" + val.name + "'>" + val.name + "</option>";
                     });
                     $('#city').html(options);
+                    
+                    // Re-initialize Select2 for city dropdown after loading options
+                    $('#city').select2({
+                        theme: 'bootstrap-5',
+                        placeholder: 'Select City',
+                        allowClear: true,
+                        width: '100%',
+                        dropdownParent: $('#city').parent()
+                    });
                 } else {
                     $('#city').html("<option value=''>No City Available</option>");
+                    // Re-initialize Select2 for city dropdown
+                    $('#city').select2({
+                        theme: 'bootstrap-5',
+                        placeholder: 'Select City',
+                        allowClear: true,
+                        width: '100%',
+                        dropdownParent: $('#city').parent()
+                    });
                 }
             },
             error: function(xhr, status, error) {
                 console.error('Cities error:', error);
                 $('#city').html("<option value=''>No City Available</option>");
+                // Re-initialize Select2 for city dropdown
+                $('#city').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: 'Select City',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#city').parent()
+                });
             }
         });
     });

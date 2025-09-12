@@ -91,10 +91,10 @@
                         <div class="row mt-4">
                             <div class="col-12">
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary btn-lg">
+                                    <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save me-2"></i> Save Video
                                     </button>
-                                    <a href="{{ route('admin.videos.index') }}" class="btn btn-secondary btn-lg">
+                                    <a href="{{ route('admin.videos.index') }}" class="btn btn-secondary">
                                         <i class="fas fa-times me-2"></i> Cancel
                                     </a>
                                 </div>

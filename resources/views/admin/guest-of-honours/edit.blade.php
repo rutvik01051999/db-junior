@@ -89,10 +89,10 @@
                         <div class="row mt-4">
                             <div class="col-12">
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary btn-lg">
+                                    <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save me-2"></i> Update Guest Of Honour
                                     </button>
-                                    <a href="{{ route('admin.guest-of-honours.index') }}" class="btn btn-secondary btn-lg">
+                                    <a href="{{ route('admin.guest-of-honours.index') }}" class="btn btn-secondary">
                                         <i class="fas fa-times me-2"></i> Cancel
                                     </a>
                                 </div>
