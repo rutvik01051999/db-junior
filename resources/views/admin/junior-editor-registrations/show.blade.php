@@ -183,7 +183,7 @@
                     </div>
 
                     <!-- Payment Status Update -->
-                    <div class="row mt-4">
+                    {{-- <div class="row mt-4">
                         <div class="col-md-12">
                             <h5 class="text-primary mb-3">Update Payment Status</h5>
                             <div class="btn-group" role="group">
@@ -215,7 +215,7 @@
                                 @endif
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\CmsPage;
+use App\Models\CertiStudent;
 
 class HomeController extends Controller
 {
@@ -114,8 +115,7 @@ class HomeController extends Controller
 
         // check if student exists after given date
         
-        $student = DB::connection('sms')->table('je6_certi_student')
-            ->where('mobile_number', $mobile)
+        $student = CertiStudent::where('mobile_number', $mobile)
             ->where('created_date', '>', '2024-04-20')
             ->first();
 
@@ -138,6 +138,38 @@ class HomeController extends Controller
             ]);
         }
     }
+
+    /**
+     * Generate certificate for verified mobile number
+     */
+    public function certificateGenerate(Request $request)
+    {
+        $mobile = $request->get('mobile');
+        
+        if (!$mobile) {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Mobile number is required.',
+            ]);
+        }
+
+        // Check if student exists
+        $student = CertiStudent::where('mobile_number', $mobile)
+            ->where('created_date', '>', '2024-04-20')
+            ->first();
+
+        if (!$student) {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Student not found with this mobile number.',
+            ]);
+        }
+
+        // For now, redirect to a simple certificate view
+        // You can implement PDF generation here later
+        return view('front.certificate', compact('student'));
+    }
+
     /**
      * Send SMS via Infobip
      */
@@ -146,21 +178,10 @@ class HomeController extends Controller
         if (strlen($numbers) <= 10) {
             $numbers = "91" . $numbers;
         }
-
-        $url = "https://api.infobip.com/sms/1/text/query";
-
-        $params = [
-            "username" => "missedcall",
-            "password" => "missedcall@123",
-            "to" => $numbers,
-            "text" => $message,
-            "from" => "BHASKR",
-            "indiaDltPrincipalEntityId" => "1101693520000011534",
-            "indiaDltContentTemplateId" => "1107161140374009077",
-        ];
+        $url = "https://api.infobip.com/sms/1/text/query?username=missedcall&password=M!ssedc@ll2209&to=" . urlencode($numbers) . "&text=" . urlencode($message) . "&from=BHASKR&indiaDltPrincipalEntityId=1101693520000011534&indiaDltContentTemplateId=1107161140374009077";
 
         try {
-            $response = Http::asForm()->post($url, $params);
+            $response = Http::get($url);
 
             Log::info('Infobip SMS Response', [
                 'mobile'   => $numbers,

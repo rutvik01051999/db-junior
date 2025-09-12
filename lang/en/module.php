@@ -4,8 +4,8 @@ return [
     'auth' => [
         'sign_in' => 'Sign In',
         'welcome_back' => 'Welcome back :name!',
-        'email' => 'Email',
-        'email_placeholder' => 'Enter your email',
+        'email' => 'Employee ID/Alias',
+        'email_placeholder' => 'Enter your Employee ID or Alias',
         'password' => 'Password',
         'password_placeholder' => 'Enter your password',
         'forgot_password' => 'Forgot password?',

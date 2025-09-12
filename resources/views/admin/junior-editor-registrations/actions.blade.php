@@ -17,7 +17,7 @@
         </button>
     @endif
     
-    @if($registration->payment_status === 'completed')
+    {{-- @if($registration->payment_status === 'completed')
         <button type="button" 
                 class="btn btn-warning btn-sm update-payment-status" 
                 data-id="{{ $registration->id }}" 
@@ -37,5 +37,5 @@
                 title="Mark as Failed">
             <i class="bx bx-x"></i>
         </button>
-    @endif
+    @endif --}}
 </div>

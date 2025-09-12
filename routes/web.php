@@ -43,6 +43,7 @@ Route::get('/page/{slug}', [FrontCmsPageController::class, 'show'])->name('cms-p
 Route::get('certificate', [HomeController::class, 'certificateGet'])->name('certificate.get');
 Route::get('register/form', [HomeController::class, 'registerForm'])->name('register.form');
 Route::post('certificate/download', [HomeController::class, 'certificateDownload'])->name('certificate.download');
+Route::get('certificate/generate', [HomeController::class, 'certificateGenerate'])->name('certificate.generate');
 
 
 
@@ -251,6 +252,7 @@ Route::prefix('admin/junior-editor-registrations')->name('admin.junior-editor-re
     Route::get('/export/excel', [JuniorEditorRegistrationsController::class, 'exportExcel'])->name('export.excel');
     Route::get('/export/pdf', [JuniorEditorRegistrationsController::class, 'exportPdf'])->name('export.pdf');
 });
+
 
 // Junior Editor Registration Routes
 Route::get('/register', [App\Http\Controllers\JuniorEditorController::class, 'index'])->name('junior-editor.register');

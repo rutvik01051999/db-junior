@@ -5395,6 +5395,9 @@ Buy Now Btn
   .main-content-description .rich-content{
     padding: 10px !important;
   }
+  body{
+    text-align: justify !important;
+  }
 }
 
 

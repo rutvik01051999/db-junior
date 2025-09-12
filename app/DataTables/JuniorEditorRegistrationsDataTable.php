@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Models\JuniorEditor;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -21,6 +22,7 @@ class JuniorEditorRegistrationsDataTable extends BaseDataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
+            ->addIndexColumn()
             ->addColumn('full_name', function ($q) {
                 $firstName = $q->first_name ?? '';
                 $lastName = $q->last_name ?? '';
@@ -70,6 +72,29 @@ class JuniorEditorRegistrationsDataTable extends BaseDataTable
         $paymentStatus = $request->get('payment_status');
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
+        $state = $request->get('state');
+        $city = $request->get('city');
+        
+        // Debug: Log filter parameters
+        Log::info('DataTable Filter Parameters:', [
+            'payment_status' => $paymentStatus,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'state' => $state,
+            'city' => $city,
+            'all_params' => $request->all()
+        ]);
+        
+        // Log the exact values being used in queries
+        Log::info('Filter Values for Query:', [
+            'payment_status_empty' => empty($paymentStatus),
+            'startDate_empty' => empty($startDate),
+            'endDate_empty' => empty($endDate),
+            'state_empty' => empty($state),
+            'city_empty' => empty($city),
+            'state_value' => $state,
+            'city_value' => $city
+        ]);
         
         // Handle search parameter properly - DataTables sends it as an array
         $searchValue = $request->get('search');
@@ -80,26 +105,42 @@ class JuniorEditorRegistrationsDataTable extends BaseDataTable
             $search = $searchValue;
         }
 
-        $model = $model->when($paymentStatus != '', function ($q) use ($paymentStatus) {
-            return $q->where('payment_status', $paymentStatus);
-        })
-        ->when($startDate != '' && $endDate != '', function ($q) use ($startDate, $endDate) {
-            $startDate = Carbon::parse($startDate)->startOfDay();
-            $endDate = Carbon::parse($endDate)->endOfDay();
-            return $q->whereBetween('created_at', [$startDate, $endDate]);
-        })
-        ->when($search != '', function ($q) use ($search) {
-            return $q->where(function ($query) use ($search) {
-                $query->where('first_name', 'like', "%{$search}%")
-                      ->orWhere('last_name', 'like', "%{$search}%")
-                      ->orWhere('parent_name', 'like', "%{$search}%")
-                      ->orWhere('mobile_number', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%")
-                      ->orWhere('school_name', 'like', "%{$search}%");
+        $query = $model->newQuery()
+            ->when(!empty($paymentStatus), function ($q) use ($paymentStatus) {
+                return $q->where('payment_status', $paymentStatus);
+            })
+            ->when(!empty($startDate), function ($q) use ($startDate) {
+                $startDate = Carbon::parse($startDate)->startOfDay();
+                return $q->where('created_at', '>=', $startDate);
+            })
+            ->when(!empty($endDate), function ($q) use ($endDate) {
+                $endDate = Carbon::parse($endDate)->endOfDay();
+                return $q->where('created_at', '<=', $endDate);
+            })
+            ->when(!empty($state), function ($q) use ($state) {
+                return $q->where('state', $state);
+            })
+            ->when(!empty($city), function ($q) use ($city) {
+                return $q->where('city', $city);
+            })
+            ->when(!empty($search), function ($q) use ($search) {
+                return $q->where(function ($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                          ->orWhere('last_name', 'like', "%{$search}%")
+                          ->orWhere('parent_name', 'like', "%{$search}%")
+                          ->orWhere('mobile_number', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%")
+                          ->orWhere('school_name', 'like', "%{$search}%");
+                });
             });
-        });
-
-        return $model->newQuery();
+        
+        // Log the final SQL query for debugging
+        Log::info('Final SQL Query:', [
+            'sql' => $query->toSql(),
+            'bindings' => $query->getBindings()
+        ]);
+        
+        return $query;
     }
 
     /**
@@ -114,11 +155,7 @@ class JuniorEditorRegistrationsDataTable extends BaseDataTable
             ->parameters($this->parameters)
             ->orderBy(0, 'desc')
             ->selectStyleSingle()
-            ->buttons([
-                Button::make('excel')->addClass('btn-sm btn-warning')->text('<i class="bx bx-file"></i> Export to Excel'),
-                Button::make('csv')->addClass('btn-sm btn-info')->text('<i class="bx bx-file"></i> Export to CSV'),
-                Button::make('pdf')->addClass('btn-sm btn-danger')->text('<i class="bx bx-file"></i> Export to PDF'),
-            ]);
+            ->buttons([]);
     }
 
     /**
@@ -127,6 +164,7 @@ class JuniorEditorRegistrationsDataTable extends BaseDataTable
     public function getColumns(): array
     {
         return [
+            Column::computed('DT_RowIndex')->title('#')->width(50)->addClass('text-center'),
             Column::make('id')->visible(false)->searchable(false)->exportable(false),
             Column::make('mobile_number')->title('Mobile Number'),
             Column::make('full_name')->title('Student Name')->searchable(false)->orderable(false),

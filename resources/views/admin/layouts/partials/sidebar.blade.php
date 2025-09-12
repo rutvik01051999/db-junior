@@ -29,7 +29,7 @@
                                 </div>
                                 <ul class="main-menu">
                                     <!-- Banner Sections -->
-                                    <li class="slide has-sub {{ request()->routeIs('admin.banner-sections.*') ? 'active' : '' }}">
+                                    <li class="slide has-sub {{ request()->routeIs('admin.banner-sections.*') ? 'active open' : '' }}">
                                         <a href="javascript:void(0);"
                                             class="side-menu__item {{ request()->routeIs('admin.banner-sections.*') ? 'active' : '' }}">
                                             <i class="bx bx-image side-menu__icon"></i>
@@ -39,7 +39,7 @@
                                             <i class="fe fe-chevron-right side-menu__angle"></i>
                                         </a>
                                         <ul class="slide-menu child1 {{ request()->routeIs('admin.banner-sections.*') ? 'active' : '' }}"
-                                            data-popper-placement="bottom">
+                                            data-popper-placement="bottom" style="{{ request()->routeIs('admin.banner-sections.*') ? 'display: block;' : '' }}">
                                             <li class="slide side-menu__label1">
                                                 <a href="javascript:void(0)">
                                                     Banner Sections
@@ -61,7 +61,7 @@
                                     </li>
                                     
                                     <!-- Main Content Section -->
-                                    <li class="slide has-sub {{ request()->routeIs('admin.main-contents.*') ? 'active' : '' }}">
+                                    <li class="slide has-sub {{ request()->routeIs('admin.main-contents.*') ? 'active open' : '' }}">
                                         <a href="javascript:void(0);"
                                             class="side-menu__item {{ request()->routeIs('admin.main-contents.*') ? 'active' : '' }}">
                                             <i class="bx bx-layout side-menu__icon"></i>
@@ -71,7 +71,7 @@
                                             <i class="fe fe-chevron-right side-menu__angle"></i>
                                         </a>
                                         <ul class="slide-menu child1 {{ request()->routeIs('admin.main-contents.*') ? 'active' : '' }}"
-                                            data-popper-placement="bottom">
+                                            data-popper-placement="bottom" style="{{ request()->routeIs('admin.main-contents.*') ? 'display: block;' : '' }}">
                                             <li class="slide side-menu__label1">
                                                 <a href="javascript:void(0)">
                                                     Main Content
@@ -93,7 +93,7 @@
                                     </li>
 
                                     <!-- Video Section -->
-                                    <li class="slide has-sub {{ request()->routeIs('admin.videos.*') ? 'active' : '' }}">
+                                    <li class="slide has-sub {{ request()->routeIs('admin.videos.*') ? 'active open' : '' }}">
                                         <a href="javascript:void(0);"
                                             class="side-menu__item {{ request()->routeIs('admin.videos.*') ? 'active' : '' }}">
                                             <i class="bx bx-video-recording side-menu__icon"></i>
@@ -103,7 +103,7 @@
                                             <i class="fe fe-chevron-right side-menu__angle"></i>
                                         </a>
                                         <ul class="slide-menu child1 {{ request()->routeIs('admin.videos.*') ? 'active' : '' }}"
-                                            data-popper-placement="bottom">
+                                            data-popper-placement="bottom" style="{{ request()->routeIs('admin.videos.*') ? 'display: block;' : '' }}">
                                             <li class="slide side-menu__label1">
                                                 <a href="javascript:void(0)">
                                                     Videos
@@ -125,7 +125,7 @@
                                     </li>
 
                                     <!-- Process Section -->
-                                    <li class="slide has-sub {{ request()->routeIs('admin.processes.*') ? 'active' : '' }}">
+                                    <li class="slide has-sub {{ request()->routeIs('admin.processes.*') ? 'active open' : '' }}">
                                         <a href="javascript:void(0);"
                                             class="side-menu__item {{ request()->routeIs('admin.processes.*') ? 'active' : '' }}">
                                             <i class="bx bx-list-check side-menu__icon"></i>
@@ -135,7 +135,7 @@
                                             <i class="fe fe-chevron-right side-menu__angle"></i>
                                         </a>
                                         <ul class="slide-menu child1 {{ request()->routeIs('admin.processes.*') ? 'active' : '' }}"
-                                            data-popper-placement="bottom">
+                                            data-popper-placement="bottom" style="{{ request()->routeIs('admin.processes.*') ? 'display: block;' : '' }}">
                                             <li class="slide side-menu__label1">
                                                 <a href="javascript:void(0)">
                                                     Processes
@@ -157,7 +157,7 @@
                                     </li>
 
                                     <!-- Participants Section -->
-                                    <li class="slide has-sub {{ request()->routeIs('admin.participants.*') ? 'active' : '' }}">
+                                    <li class="slide has-sub {{ request()->routeIs('admin.participants.*') ? 'active open' : '' }}">
                                         <a href="javascript:void(0);"
                                             class="side-menu__item {{ request()->routeIs('admin.participants.*') ? 'active' : '' }}">
                                             <i class="bx bx-group side-menu__icon"></i>
@@ -167,7 +167,7 @@
                                             <i class="fe fe-chevron-right side-menu__angle"></i>
                                         </a>
                                         <ul class="slide-menu child1 {{ request()->routeIs('admin.participants.*') ? 'active' : '' }}"
-                                            data-popper-placement="bottom">
+                                            data-popper-placement="bottom" style="{{ request()->routeIs('admin.participants.*') ? 'display: block;' : '' }}">
                                             <li class="slide side-menu__label1">
                                                 <a href="javascript:void(0)">
                                                     Participants
@@ -189,7 +189,7 @@
                                     </li>
 
                                     <!-- Guest Of Honours Section -->
-                                    <li class="slide has-sub {{ request()->routeIs('admin.guest-of-honours.*') ? 'active' : '' }}">
+                                    <li class="slide has-sub {{ request()->routeIs('admin.guest-of-honours.*') ? 'active open' : '' }}">
                                         <a href="javascript:void(0);"
                                             class="side-menu__item {{ request()->routeIs('admin.guest-of-honours.*') ? 'active' : '' }}">
                                             <i class="bx bx-crown side-menu__icon"></i>
@@ -199,7 +199,7 @@
                                             <i class="fe fe-chevron-right side-menu__angle"></i>
                                         </a>
                                         <ul class="slide-menu child1 {{ request()->routeIs('admin.guest-of-honours.*') ? 'active' : '' }}"
-                                            data-popper-placement="bottom">
+                                            data-popper-placement="bottom" style="{{ request()->routeIs('admin.guest-of-honours.*') ? 'display: block;' : '' }}">
                                             <li class="slide side-menu__label1">
                                                 <a href="javascript:void(0)">
                                                     Guest Of Honours
@@ -221,7 +221,7 @@
                                     </li>
 
                                     <!-- Sliders Section -->
-                                    <li class="slide has-sub {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}">
+                                    <li class="slide has-sub {{ request()->routeIs('admin.sliders.*') ? 'active open' : '' }}">
                                         <a href="javascript:void(0);"
                                             class="side-menu__item {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}">
                                             <i class="bx bx-slider side-menu__icon"></i>
@@ -231,7 +231,7 @@
                                             <i class="fe fe-chevron-right side-menu__angle"></i>
                                         </a>
                                         <ul class="slide-menu child1 {{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}"
-                                            data-popper-placement="bottom">
+                                            data-popper-placement="bottom" style="{{ request()->routeIs('admin.sliders.*') ? 'display: block;' : '' }}">
                                             <li class="slide side-menu__label1">
                                                 <a href="javascript:void(0)">
                                                     Sliders
@@ -253,7 +253,7 @@
                                     </li>
 
                                     <!-- CMS Pages Section -->
-                                    <li class="slide has-sub {{ request()->routeIs('admin.cms-pages.*') ? 'active' : '' }}">
+                                    <li class="slide has-sub {{ request()->routeIs('admin.cms-pages.*') ? 'active open' : '' }}">
                                         <a href="javascript:void(0);"
                                             class="side-menu__item {{ request()->routeIs('admin.cms-pages.*') ? 'active' : '' }}">
                                             <i class="bx bx-file side-menu__icon"></i>
@@ -263,7 +263,7 @@
                                             <i class="fe fe-chevron-right side-menu__angle"></i>
                                         </a>
                                         <ul class="slide-menu child1 {{ request()->routeIs('admin.cms-pages.*') ? 'active' : '' }}"
-                                            data-popper-placement="bottom">
+                                            data-popper-placement="bottom" style="{{ request()->routeIs('admin.cms-pages.*') ? 'display: block;' : '' }}">
                                             <li class="slide side-menu__label1">
                                                 <a href="javascript:void(0)">
                                                     CMS Pages
@@ -285,7 +285,7 @@
                                     </li>
 
             <!-- Contact Form Submissions Section -->
-            <li class="slide has-sub {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
+            <li class="slide has-sub {{ request()->routeIs('admin.contacts.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);"
                     class="side-menu__item {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
                     <i class="bx bx-message-square-detail side-menu__icon"></i>
@@ -295,7 +295,7 @@
                     <i class="fe fe-chevron-right side-menu__angle"></i>
                 </a>
                 <ul class="slide-menu child1 {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}"
-                    data-popper-placement="bottom">
+                    data-popper-placement="bottom" style="{{ request()->routeIs('admin.contacts.*') ? 'display: block;' : '' }}">
                     <li class="slide side-menu__label1">
                         <a href="javascript:void(0)">
                             Contact Submissions
@@ -311,7 +311,7 @@
             </li>
 
             <!-- Employee Management Section -->
-            <li class="slide has-sub {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
+            <li class="slide has-sub {{ request()->routeIs('admin.employees.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);"
                     class="side-menu__item {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
                     <i class="bx bx-user-plus side-menu__icon"></i>
@@ -321,7 +321,7 @@
                     <i class="fe fe-chevron-right side-menu__angle"></i>
                 </a>
                 <ul class="slide-menu child1 {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}"
-                    data-popper-placement="bottom">
+                    data-popper-placement="bottom" style="{{ request()->routeIs('admin.employees.*') ? 'display: block;' : '' }}">
                     <li class="slide side-menu__label1">
                         <a href="javascript:void(0)">
                             Employee Management
@@ -343,7 +343,7 @@
             </li>
 
             <!-- Junior Editor Registrations Section -->
-            <li class="slide has-sub {{ request()->routeIs('admin.junior-editor-registrations.*') ? 'active' : '' }}">
+            <li class="slide has-sub {{ request()->routeIs('admin.junior-editor-registrations.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);"
                     class="side-menu__item {{ request()->routeIs('admin.junior-editor-registrations.*') ? 'active' : '' }}">
                     <i class="bx bx-user-check side-menu__icon"></i>
@@ -353,7 +353,7 @@
                     <i class="fe fe-chevron-right side-menu__angle"></i>
                 </a>
                 <ul class="slide-menu child1 {{ request()->routeIs('admin.junior-editor-registrations.*') ? 'active' : '' }}"
-                    data-popper-placement="bottom">
+                    data-popper-placement="bottom" style="{{ request()->routeIs('admin.junior-editor-registrations.*') ? 'display: block;' : '' }}">
                     <li class="slide side-menu__label1">
                         <a href="javascript:void(0)">
                             JE Registrations

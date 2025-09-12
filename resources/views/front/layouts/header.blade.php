@@ -101,7 +101,7 @@
                                         <span>English</span>
                                     </a>
                                     <a href="{{ route('switch.hindi') }}" class="dropdown-item d-flex align-items-center {{ $currentLanguage == 'hi' ? 'active' : '' }}">
-                                        <img src="{{ asset('front/assets/img/india.jpg') }}" class="shadow-sm" alt="flag">
+                                        <img src="{{ asset('front/assets/img/india.png') }}" class="shadow-sm" alt="flag">
                                         <span>हिंदी</span>
                                     </a>
                                 </div>
@@ -142,7 +142,7 @@
                                         <span>English</span>
                                     </a>
                                     <a href="{{ route('switch.hindi') }}" class="dropdown-item d-flex align-items-center {{ $currentLanguage == 'hi' ? 'active' : '' }}">
-                                        <img src="{{ asset('front/assets/img/english.png') }}" class="shadow-sm" alt="flag">
+                                        <img src="{{ asset('front/assets/img/india.png') }}" class="shadow-sm" alt="flag">
                                         <span>हिंदी</span>
                                     </a>
                                 </div>

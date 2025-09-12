@@ -21,7 +21,8 @@
 
     <style>
         body {
-            background: url('{{ asset('assets/images/media/auth-bg.jpg') }}');
+            /* background: url('{{ asset('assets/images/media/auth-bg.jpg') }}'); */
+            background-color: white;
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;

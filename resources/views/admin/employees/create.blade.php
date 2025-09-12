@@ -28,7 +28,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="employee_id" class="form-label">Employee ID/Name <span class="text-danger">*</span></label>
+                                    <label for="employee_id" class="form-label">Employee ID/Alias <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <input type="text" 
                                                class="form-control @error('employee_id') is-invalid @enderror" 
@@ -52,7 +52,7 @@
                             
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                                    <label for="email" class="form-label">Email Address</label>
                                     <input type="email" 
                                            class="form-control @error('email') is-invalid @enderror" 
                                            id="email" 
@@ -70,7 +70,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="full_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                    <label for="full_name" class="form-label">Full Name</label>
                                     <input type="text" 
                                            class="form-control @error('full_name') is-invalid @enderror" 
                                            id="full_name" 
@@ -86,7 +86,7 @@
                             
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="phone_number" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                    <label for="phone_number" class="form-label">Phone Number</label>
                                     <input type="text" 
                                            class="form-control @error('phone_number') is-invalid @enderror" 
                                            id="phone_number" 
@@ -104,7 +104,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
-                                    <label for="department" class="form-label">Department <span class="text-danger">*</span></label>
+                                    <label for="department" class="form-label">Department</label>
                                     <input type="text" 
                                            class="form-control @error('department') is-invalid @enderror" 
                                            id="department" 
@@ -157,7 +157,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const fetchBtn = document.getElementById('fetchEmployeeBtn');
     const employeeIdInput = document.getElementById('employee_id');
-    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    const loadingModal = $('#loadingModal');
     
     fetchBtn.addEventListener('click', function() {
         const alias = employeeIdInput.value.trim();
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Show loading modal
-        loadingModal.show();
+      //  loadingModal.show();
         
         // Fetch employee data
         fetch('{{ route("admin.employees.fetch-data") }}', {
@@ -183,8 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            loadingModal.hide();
-            
+            //loadingModal.hide();            
             if (data.success) {
                 // Populate form fields with fetched data
                 document.getElementById('employee_id').value = data.data.employee_id || alias;
@@ -192,7 +191,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('full_name').value = data.data.full_name || '';
                 document.getElementById('phone_number').value = data.data.phone_number || '';
                 document.getElementById('department').value = data.data.department || '';
-                
                 // Show success message
                 showAlert('Employee data fetched successfully!', 'success');
             } else {
@@ -200,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            loadingModal.hide();
+           // loadingModal.hide();
             console.error('Error:', error);
             showAlert('An error occurred while fetching employee data', 'error');
         });
