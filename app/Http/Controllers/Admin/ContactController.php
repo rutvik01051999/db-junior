@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\DataTables\ContactDataTable;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
@@ -11,10 +12,9 @@ class ContactController extends Controller
     /**
      * Display a listing of the contact form submissions.
      */
-    public function index()
+    public function index(ContactDataTable $dataTable)
     {
-        $contacts = Contact::orderBy('created_at', 'desc')->paginate(15);
-        return view('admin.contacts.index', compact('contacts'));
+        return $dataTable->render('admin.contacts.index');
     }
 
     /**

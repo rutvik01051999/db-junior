@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'large.uploads' => \App\Http\Middleware\HandleLargeUploads::class,
+            'certificate.rate.limit' => \App\Http\Middleware\CertificateRateLimit::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

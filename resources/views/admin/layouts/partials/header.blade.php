@@ -4,17 +4,17 @@
             <div class="header-element">
                 <div class="horizontal-logo">
                     <a href="{{ route('admin.dashboard.index') }}" class="header-logo">
-                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                        <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo"
                             class="desktop-logo" style="width: 100px; height: auto;">
-                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                        <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo"
                             class="toggle-logo" style="width: 100px; height: auto;">
-                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                        <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo"
                             class="desktop-dark" style="width: 100px; height: auto;">
-                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                        <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo"
                             class="toggle-dark" style="width: 100px; height: auto;">
-                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                        <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo"
                             class="desktop-white" style="width: 100px; height: auto;">
-                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                        <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo"
                             class="toggle-white" style="width: 100px; height: auto;">
                     </a>
                 </div>

@@ -9,183 +9,215 @@
         ],
     ])
 
+
+    <!-- Registration Details Section -->
     <div class="row">
-        <!-- Total Users -->
-        <x-dashboard-widget icon="bx bx-group" title="{{ __('module.dashboard.total_users') }}"
-            value="{{ $usersCounts->total_users }}" bg-color="primary" />
+        <!-- Junior Editor Registrations -->
+        <x-dashboard-widget icon="bx bx-edit" title="Junior Editor Registrations"
+            value="{{ $registrationDetails['junior_editors']['total'] }}" bg-color="info" />
 
-        <!-- Total Active Users -->
-        <x-dashboard-widget icon="bx bx-user-check" title="{{ __('module.dashboard.total_active_users') }}"
-            value="{{ $usersCounts->active_users }}" bg-color="success" />
+        <!-- Today's Registrations -->
+        <x-dashboard-widget icon="bx bx-calendar-check" title="Today's Registrations"
+            value="{{ $registrationDetails['junior_editors']['today'] }}" bg-color="warning" />
 
-        <!-- Total Inactive Users -->
-        <x-dashboard-widget icon="bx bx-user-x" title="{{ __('module.dashboard.total_inactive_users') }}"
-            value="{{ $usersCounts->inactive_users }}" bg-color="danger" />
+        <!-- This Month's Registrations -->
+        <x-dashboard-widget icon="bx bx-calendar" title="This Month's Registrations"
+            value="{{ $registrationDetails['junior_editors']['this_month'] }}" bg-color="success" />
 
-        <!-- Dynamic Widgets for Roles -->
-        @foreach ($roles as $role)
-            <x-dashboard-widget icon="bx bx-id-card"
-                title="{{ __('module.dashboard.total_role_users', ['role' => $role->name]) }}"
-                value="{{ $role->users_count ?? 0 }}" bg-color="{{ $loop->iteration % 2 === 0 ? 'primary' : 'success' }}" />
-        @endforeach
+        <!-- Verified Registrations -->
+        <x-dashboard-widget icon="bx bx-check-circle" title="Verified Registrations"
+            value="{{ $registrationDetails['junior_editors']['verified'] }}" bg-color="primary" />
+
+        <!-- Paid Registrations -->
+        <x-dashboard-widget icon="bx bx-credit-card" title="Paid Registrations"
+            value="{{ $registrationDetails['junior_editors']['paid'] }}" bg-color="success" />
+
+        <!-- Certificate Students -->
+        <x-dashboard-widget icon="bx bx-certificate" title="Certificate Students"
+            value="{{ $registrationDetails['certificate_students']['total'] }}" bg-color="info" />
     </div>
 
+    <!-- Contact Submissions Section -->
+    <div class="row">
+        <!-- Total Contact Submissions -->
+        <x-dashboard-widget icon="bx bx-message-square-detail" title="Total Contact Submissions"
+            value="{{ $registrationDetails['contact_submissions']['total'] }}" bg-color="primary" />
+
+        <!-- Today's Contact Submissions -->
+        <x-dashboard-widget icon="bx bx-message-square-add" title="Today's Contact Submissions"
+            value="{{ $registrationDetails['contact_submissions']['today'] }}" bg-color="success" />
+
+        <!-- This Month's Contact Submissions -->
+        <x-dashboard-widget icon="bx bx-message-square" title="This Month's Contact Submissions"
+            value="{{ $registrationDetails['contact_submissions']['this_month'] }}" bg-color="warning" />
+
+        <!-- Last Month's Contact Submissions -->
+        <x-dashboard-widget icon="bx bx-message-square-minus" title="Last Month's Contact Submissions"
+            value="{{ $registrationDetails['contact_submissions']['last_month'] }}" bg-color="info" />
+    </div>
+
+    <!-- Employee Management Section -->
+    <div class="row">
+        <!-- Total Employees -->
+        <x-dashboard-widget icon="bx bx-user-plus" title="Total Employees"
+            value="{{ $registrationDetails['employees']['total'] }}" bg-color="primary" />
+
+        <!-- Today's Employees -->
+        <x-dashboard-widget icon="bx bx-user-check" title="Today's New Employees"
+            value="{{ $registrationDetails['employees']['today'] }}" bg-color="success" />
+
+        <!-- This Month's Employees -->
+        <x-dashboard-widget icon="bx bx-user" title="This Month's New Employees"
+            value="{{ $registrationDetails['employees']['this_month'] }}" bg-color="warning" />
+
+        <!-- Last Month's Employees -->
+        <x-dashboard-widget icon="bx bx-user-minus" title="Last Month's New Employees"
+            value="{{ $registrationDetails['employees']['last_month'] }}" bg-color="info" />
+    </div>
+
+
+    <!-- Recent Data Tables -->
+    <div class="row">
+        <!-- Recent Junior Editor Registrations -->
+        <div class="col-lg-6">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h5 class="mb-0">Recent Junior Editor Registrations</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Mobile</th>
+                                    <th>Email</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($registrationDetails['recent_registrations'] as $index => $registration)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $registration['name'] }}</td>
+                                        <td>{{ $registration['mobile'] }}</td>
+                                        <td>{{ $registration['email'] }}</td>
+                                        <td>{{ $registration['date'] }}</td>
+                                        <td>
+                                            @if($registration['payment_status'] == 'paid')
+                                                <span class="badge bg-success">Paid</span>
+                                            @elseif($registration['payment_status'] == 'pending')
+                                                <span class="badge bg-warning">Pending</span>
+                                            @else
+                                                <span class="badge bg-danger">Unpaid</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center">No recent registrations found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Contact Submissions -->
+        <div class="col-lg-6">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h5 class="mb-0">Recent Contact Submissions</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Message</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($registrationDetails['recent_contacts'] as $index => $contact)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $contact['name'] }}</td>
+                                        <td>{{ $contact['email'] }}</td>
+                                        <td>{{ $contact['phone'] }}</td>
+                                        <td>{{ $contact['message'] }}</td>
+                                        <td>{{ $contact['date'] }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center">No recent contact submissions found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Employees Table -->
     <div class="row">
         <div class="col-12">
             <div class="card custom-card">
-                <!-- Chart Filters -->
-                <div class="card-header justify-content-between">
-                    <div class="card-title mb-2 mb-sm-0">
-                        {{ __('module.dashboard.user_registrations_chart') }}
-                    </div>
-                    <div class="form-group m-0 d-flex align-items-center">
-                        <input type="text" class="form-control form-control-sm filter-date-range"
-                            placeholder="Select Date" data-input>
+                <div class="card-header">
+                    <div class="card-title">
+                        <h5 class="mb-0">Recent Employee Additions</h5>
                     </div>
                 </div>
-
-                <!-- Chart Container -->
-                <div id="users-registrations-chart"></div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Employee ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($registrationDetails['recent_employees'] as $index => $employee)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $employee['employee_id'] }}</td>
+                                        <td>{{ $employee['name'] }}</td>
+                                        <td>{{ $employee['email'] }}</td>
+                                        <td>{{ $employee['department'] }}</td>
+                                        <td>{{ $employee['designation'] }}</td>
+                                        <td>{{ $employee['date'] }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center">No recent employees found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 @endsection
 
-@push('scripts')
-    <script type="module">
-        var chart = new ApexCharts(document.querySelector("#users-registrations-chart"), {
-            series: [{
-                name: "{{ __('module.dashboard.user_registrations') }}",
-                data: []
-            }],
-            chart: {
-                height: 450,
-                animations: {
-                    speed: 500
-                },
-                dropShadow: {
-                    enabled: true,
-                    enabledOnSeries: undefined,
-                    top: 8,
-                    left: 0,
-                    blur: 3,
-                    color: '#000',
-                    opacity: 0.1
-                },
-            },
-            colors: ["rgb(132, 90, 223)", "rgba(35, 183, 229, 0.85)", "rgba(119, 119, 142, 0.05)"],
-            dataLabels: {
-                enabled: false
-            },
-            grid: {
-                borderColor: '#f1f1f1',
-                strokeDashArray: 3
-            },
-            stroke: {
-                curve: 'smooth',
-                width: [2, 2, 0],
-                dashArray: [0, 5, 0],
-            },
-            xaxis: {
-                axisTicks: {
-                    show: false,
-                },
-            },
-            yaxis: {
-                labels: {
-                    formatter: function(value) {
-                        return value;
-                    }
-                },
-            },
-            legend: {
-                show: true,
-                customLegendItems: ["{{ __('module.dashboard.user_registrations') }}"],
-                inverseOrder: true
-            },
-            title: {
-                text: "{{ __('module.dashboard.user_registrations') }}",
-                align: 'left',
-                style: {
-                    fontSize: '.8125rem',
-                    fontWeight: 'semibold',
-                    color: '#8c9097'
-                },
-            },
-            markers: {
-                hover: {
-                    sizeOffset: 5
-                }
-            }
-        });
-
-        chart.render();
-
-        // Fetch data and update the chart based on the selected filter
-        function updateChart(startDate = null, endDate = null) {
-            $.ajax({
-                url: "{{ route('admin.dashboard.users-registrations') }}",
-                data: {
-                    startDate: startDate,
-                    endDate: endDate
-                },
-                success: function(response) {
-                    var categories = [];
-                    var data = [];
-
-                    // Prepare the data from the response
-                    response.forEach(function(item) {
-                        categories.push(item.category); // Adjust this field based on your data
-                        data.push(item.count); // Adjust this field based on your data
-                    });
-
-                    // Update chart options
-                    chart.updateOptions({
-                        xaxis: {
-                            categories: categories
-                        }
-                    });
-
-                    // Update chart series data
-                    chart.updateSeries([{
-                        data: data
-                    }]);
-                }
-            });
-        }
-
-        // Initial chart load with default filter
-        updateChart();
-
-        // Date Range Picker
-        $('.filter-date-range').daterangepicker({
-            maxSpan: {
-                days: 30
-            },
-            singleDatePicker: false,
-            showDropdowns: true,
-            locale: daterangeLocale,
-            ranges: {
-                "{{ __('module.dashboard.today') }}": [moment(), moment()],
-                "{{ __('module.dashboard.yesterday') }}": [moment().subtract(1, 'days'), moment().subtract(1,
-                    'days')],
-                "{{ __('module.dashboard.last_7_days') }}": [moment().subtract(7, 'days'), moment()],
-                "{{ __('module.dashboard.last_30_days') }}": [moment().subtract(30, 'days'), moment()],
-                "{{ __('module.dashboard.this_month') }}": [moment().startOf('month'), moment().endOf('month')],
-                "{{ __('module.dashboard.last_month') }}": [moment().subtract(1, 'month').startOf('month'),
-                    moment().subtract(1, 'month').endOf('month')
-                ]
-            },
-            startDate: moment().subtract(30, 'days'),
-            endDate: moment(),
-            defaultDate: [moment().subtract(30, 'days'), moment()],
-            maxDate: moment()
-        }, function(start, end, label) {
-            var startDate = start.format('YYYY-MM-DD');
-            var endDate = end.format('YYYY-MM-DD');
-
-            // Update the chart with the selected date range
-            updateChart(startDate, endDate);
-        });
-    </script>
-@endpush

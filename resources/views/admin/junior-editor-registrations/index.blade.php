@@ -47,7 +47,7 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="state">State</label>
-                                    <select name="state" id="state" class="form-control">
+                                    <select name="state" id="state" class="form-select">
                                         <option value="">All States</option>
                                     </select>
                                 </div>
@@ -166,7 +166,6 @@ $("#endDate").val(today);
                         
                         // Initialize Select2 for state dropdown after loading options
                         $('#state').select2({
-                            theme: 'bootstrap-5',
                             placeholder: 'Select State',
                             allowClear: true,
                             width: '100%'
@@ -181,7 +180,6 @@ $("#endDate").val(today);
 
             // Initialize Select2 for city dropdown
             $('#city').select2({
-                theme: 'bootstrap-5',
                 placeholder: 'Select City',
                 allowClear: true,
                 width: '100%'
@@ -235,11 +233,7 @@ $("#endDate").val(today);
                 table.ajax.reload(null, false); // false = stay on current page
             });
 
-            // Auto-apply filter on field change
-            $('#startDate, #endDate, #payment_status, #state, #city').change(function() {
-                var table = $('#junior-editor-registrations-table').DataTable();
-                table.ajax.reload(null, false); // false = stay on current page
-            });
+            // Remove auto-apply filter on field change - only apply on button click
 
             // Override DataTable AJAX data function to include filter parameters
             $('#junior-editor-registrations-table').on('preXhr.dt', function (e, settings, data) {

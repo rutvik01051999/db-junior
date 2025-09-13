@@ -50,9 +50,9 @@
                                         <img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->title }}" style="max-width: 100px; max-height: 50px;">
                                     </td>
                                     <td>
-                                        <a href="{{ route('admin.banner-sections.edit', $banner->id) }}" class="text-primary">
+                                        
                                             {{ $banner->title }}
-                                        </a>
+                                       
                                     </td>
                                     <td>{{ Str::limit($banner->description, 50) }}</td>
                                     <td>

@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\RateLimiter;
 use App\Models\CmsPage;
 use App\Models\CertiStudent;
 
@@ -113,8 +115,20 @@ class HomeController extends Controller
 
         $mobile = $request->mobile;
 
-        // check if student exists after given date
+        // Check daily OTP request limit for this mobile number
+        $config = config('certificate_rate_limit');
+        $dailyOtpKey = $config['cache_prefix']['otp_requests'] . '_daily:' . $mobile . ':' . date('Y-m-d');
+        $dailyOtpCount = Cache::get($dailyOtpKey, 0);
         
+        if ($dailyOtpCount >= $config['otp_requests']['per_day']) {
+            return response()->json([
+                'status' => 0,
+                'message' => $config['error_messages']['too_many_otp_requests'],
+                'data' => []
+            ], 429);
+        }
+
+        // check if student exists after given date
         $student = CertiStudent::where('mobile_number', $mobile)
             ->where('created_date', '>', '2024-04-20')
             ->first();
@@ -124,6 +138,9 @@ class HomeController extends Controller
             $message = $otp . ' is your verification code for Dainik Bhaskar. - Bhaskar Group';
 
             $this->postMessage($mobile, $message);
+
+            // Increment daily OTP request counter
+            Cache::put($dailyOtpKey, $dailyOtpCount + 1, now()->endOfDay());
 
             return response()->json([
                 'status'  => 1,
@@ -179,6 +196,18 @@ class HomeController extends Controller
         ]);
 
         $mobile = $request->mobile;
+
+        // Check daily download limit for this mobile number
+        $config = config('certificate_rate_limit');
+        $dailyDownloadKey = $config['cache_prefix']['downloads'] . '_daily:' . $mobile . ':' . date('Y-m-d');
+        $dailyDownloadCount = Cache::get($dailyDownloadKey, 0);
+        
+        if ($dailyDownloadCount >= $config['downloads']['per_day']) {
+            return response()->json([
+                'status' => 0,
+                'message' => str_replace(':limit', $config['downloads']['per_day'], $config['error_messages']['too_many_downloads']),
+            ], 429);
+        }
 
         // Check if student exists
         $student = CertiStudent::where('mobile_number', $mobile)
@@ -241,8 +270,8 @@ class HomeController extends Controller
             // Calculate position for student name (center of image)
             $textLength = strlen($text);
             $textWidth = $textLength * $fontWidth;
-            $textX = ($imageWidth - $textWidth) / 2;
-            $textY = ($imageHeight / 2) - ($fontHeight / 2);
+            $textX = (int)(($imageWidth - $textWidth) / 2);
+            $textY = (int)(($imageHeight / 2) - ($fontHeight / 2));
             
             // Add larger white background rectangle behind text for better visibility
             $padding = 20; // Increased padding for larger appearance
@@ -254,28 +283,17 @@ class HomeController extends Controller
                 $whiteColor
             );
             
-            // Create a larger text effect by scaling up the font
-            // Method 1: Draw text multiple times with offsets for bold effect
-            $offset = 2; // Increased offset for more prominent effect
-            for ($i = -$offset; $i <= $offset; $i++) {
-                for ($j = -$offset; $j <= $offset; $j++) {
-                    imagestring($image, $fontSize, $textX + $i, $textY + $j, $text, $textColor);
-                }
-            }
+            // Create bold effect with shadow for better visibility
+            $shadowColor = imagecolorallocate($image, 100, 100, 100); // Gray shadow
             
-            // Method 2: Create a scaled version by drawing each character larger
-            $charSpacing = 0;
-            $currentX = $textX;
-            for ($i = 0; $i < strlen($text); $i++) {
-                $char = $text[$i];
-                // Draw each character with slight scaling effect
-                imagestring($image, $fontSize, $currentX, $textY, $char, $textColor);
-                imagestring($image, $fontSize, $currentX + 1, $textY, $char, $textColor);
-                imagestring($image, $fontSize, $currentX, $textY + 1, $char, $textColor);
-                imagestring($image, $fontSize, $currentX + 1, $textY + 1, $char, $textColor);
-                
-                $currentX += $fontWidth + $charSpacing;
-            }
+            // Draw shadow first (slightly offset)
+            imagestring($image, $fontSize, $textX + 2, $textY + 2, $text, $shadowColor);
+            
+            // Draw main text on top
+            imagestring($image, $fontSize, $textX, $textY, $text, $textColor);
+            
+            // Add a second layer for extra boldness
+            imagestring($image, $fontSize, $textX + 1, $textY, $text, $textColor);
             
             // Add certificate details at bottom
             $details = "Mobile: " . $student->mobile_number . " | Date: " . date('d M Y', strtotime($student->created_date));
@@ -284,8 +302,8 @@ class HomeController extends Controller
             $detailsFontHeight = imagefontheight($detailsFontSize);
             $detailsLength = strlen($details);
             $detailsWidth = $detailsLength * $detailsFontWidth;
-            $detailsX = ($imageWidth - $detailsWidth) / 2;
-            $detailsY = $imageHeight - 150;
+            $detailsX = (int)(($imageWidth - $detailsWidth) / 2);
+            $detailsY = (int)($imageHeight - 150);
             
             // Add white background for details
             imagefilledrectangle($image, 
@@ -305,8 +323,8 @@ class HomeController extends Controller
             $certIdFontHeight = imagefontheight($certIdFontSize);
             $certIdLength = strlen($certId);
             $certIdWidth = $certIdLength * $certIdFontWidth;
-            $certIdX = $imageWidth - $certIdWidth - 100;
-            $certIdY = $imageHeight - 100;
+            $certIdX = (int)($imageWidth - $certIdWidth - 100);
+            $certIdY = (int)($imageHeight - 100);
             
             // Add white background for certificate ID
             imagefilledrectangle($image, 
@@ -353,7 +371,7 @@ class HomeController extends Controller
             // Check if the data starts with proper JPEG header
             $jpegHeader = substr($imageData, 0, 4);
             if ($jpegHeader !== "\xFF\xD8\xFF\xE0" && $jpegHeader !== "\xFF\xD8\xFF\xE1") {
-                \Log::error('Invalid JPEG header: ' . bin2hex($jpegHeader));
+                Log::error('Invalid JPEG header: ' . bin2hex($jpegHeader));
                 unlink($tempFile);
                 return response()->json([
                     'status' => 0,
@@ -369,6 +387,9 @@ class HomeController extends Controller
                 ob_clean();
             }
             
+            // Increment daily download counter
+            Cache::put($dailyDownloadKey, $dailyDownloadCount + 1, now()->endOfDay());
+            
             // Set proper headers and return clean response
             return response($imageData, 200, [
                 'Content-Type' => 'image/jpeg',
@@ -380,7 +401,7 @@ class HomeController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            \Log::error('JPG Generation Error: ' . $e->getMessage());
+            Log::error('JPG Generation Error: ' . $e->getMessage());
             
             return response()->json([
                 'status' => 0,

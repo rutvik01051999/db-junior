@@ -495,7 +495,10 @@
     background: #5a34a1;
 }
 .ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred{
-    height: 140px;
+    height: 140px !important;
+}
+.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-focused{
+    height: 140px !important;
 }
 .main-sidebar{
     margin-block-start: 5.72rem !important;

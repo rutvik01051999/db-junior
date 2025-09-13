@@ -5,6 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\JuniorEditor;
+use App\Models\Participant;
+use App\Models\CertiStudent;
+use App\Models\Contact;
+use App\Models\Employee;
 use App\Services\RoleService;
 use App\Services\UserService;
 use Carbon\Carbon;
@@ -31,7 +36,104 @@ class DashboardController extends Controller
     {
         $roles = $this->roleService->all(['users'], ['users']);
         $usersCounts = $this->userService->totalCounts();
-        return view('admin.dashboard.index', compact('roles', 'usersCounts'));
+        
+        // Get registration details
+        $registrationDetails = $this->getRegistrationDetails();
+        
+        return view('admin.dashboard.index', compact('roles', 'usersCounts', 'registrationDetails'));
+    }
+    
+    /**
+     * Get registration details for dashboard
+     */
+    private function getRegistrationDetails()
+    {
+        $today = Carbon::today();
+        $thisMonth = Carbon::now()->startOfMonth();
+        $lastMonth = Carbon::now()->subMonth()->startOfMonth();
+        
+        return [
+            'junior_editors' => [
+                'total' => JuniorEditor::count(),
+                'today' => JuniorEditor::whereDate('created_at', $today)->count(),
+                'this_month' => JuniorEditor::where('created_at', '>=', $thisMonth)->count(),
+                'last_month' => JuniorEditor::whereBetween('created_at', [
+                    $lastMonth, 
+                    $lastMonth->copy()->endOfMonth()
+                ])->count(),
+                'verified' => JuniorEditor::where('mobile_verified', true)->count(),
+                'paid' => JuniorEditor::where('payment_status', 'paid')->count(),
+            ],
+            'participants' => [
+                'total' => Participant::count(),
+                'active' => Participant::where('status', true)->count(),
+                'inactive' => Participant::where('status', false)->count(),
+            ],
+            'certificate_students' => [
+                'total' => CertiStudent::count(),
+                'today' => CertiStudent::whereDate('created_date', $today)->count(),
+                'this_month' => CertiStudent::where('created_date', '>=', $thisMonth)->count(),
+            ],
+            'contact_submissions' => [
+                'total' => Contact::count(),
+                'today' => Contact::whereDate('created_at', $today)->count(),
+                'this_month' => Contact::where('created_at', '>=', $thisMonth)->count(),
+                'last_month' => Contact::whereBetween('created_at', [
+                    $lastMonth, 
+                    $lastMonth->copy()->endOfMonth()
+                ])->count(),
+            ],
+            'employees' => [
+                'total' => Employee::count(),
+                'today' => Employee::whereDate('created_at', $today)->count(),
+                'this_month' => Employee::where('created_at', '>=', $thisMonth)->count(),
+                'last_month' => Employee::whereBetween('created_at', [
+                    $lastMonth, 
+                    $lastMonth->copy()->endOfMonth()
+                ])->count(),
+            ],
+            'recent_registrations' => JuniorEditor::with([])
+                ->latest()
+                ->limit(10)
+                ->get(['id', 'first_name', 'last_name', 'mobile_number', 'email', 'created_at', 'payment_status'])
+                ->map(function ($registration) {
+                    return [
+                        'id' => $registration->id,
+                        'name' => $registration->full_name,
+                        'mobile' => $registration->mobile_number,
+                        'email' => $registration->email,
+                        'date' => $registration->created_at->format('d M Y'),
+                        'payment_status' => $registration->payment_status,
+                    ];
+                }),
+            'recent_contacts' => Contact::latest()
+                ->limit(10)
+                ->get(['id', 'name', 'email', 'phone_number', 'message', 'created_at'])
+                ->map(function ($contact) {
+                    return [
+                        'id' => $contact->id,
+                        'name' => $contact->name,
+                        'email' => $contact->email,
+                        'phone' => $contact->phone_number,
+                        'message' => strlen($contact->message) > 50 ? substr($contact->message, 0, 50) . '...' : $contact->message,
+                        'date' => $contact->created_at->format('d M Y'),
+                    ];
+                }),
+            'recent_employees' => Employee::latest()
+                ->limit(10)
+                ->get(['id', 'employee_id', 'full_name', 'email', 'department', 'designation', 'created_at'])
+                ->map(function ($employee) {
+                    return [
+                        'id' => $employee->id,
+                        'employee_id' => $employee->employee_id,
+                        'name' => $employee->full_name,
+                        'email' => $employee->email,
+                        'department' => $employee->department,
+                        'designation' => $employee->designation,
+                        'date' => $employee->created_at->format('d M Y'),
+                    ];
+                }),
+        ];
     }
 
     public function userRegistrations(Request $request)

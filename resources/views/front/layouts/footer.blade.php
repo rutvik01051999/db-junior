@@ -7,8 +7,8 @@
                     <div class="logo">
                         <h3>GET IN TOUCH</h3>
                         <a class="navbar-brand mb-3" href="">
-                            <img src="{{ asset('front/assets/img/Logo.jpg') }}" class="black-logo img-fluid h-50 w-auto" alt="image" style="max-height:50px;">
-                            <img src="{{ asset('front/assets/img/Logo.jpg') }}" class="white-logo img-fluid h-50 w-auto" alt="image" style="max-height:50px;">
+                            <img src="{{ asset('front/assets/img/Logo.svg') }}" class="black-logo img-fluid h-50 w-auto" alt="image" style="max-height:50px;">
+                            <img src="{{ asset('front/assets/img/Logo.svg') }}" class="white-logo img-fluid h-50 w-auto" alt="image" style="max-height:50px;">
                         </a>
                     </div>
                     <p>Dainik Bhaskar,
@@ -37,8 +37,8 @@
                 <div class="single-footer-widget pl-5">
                     <h3>Pages</h3>
                     <ul class="quick-links">
-                        <li><a href="">About Us</a></li>
-                        <li><a href="">Gallery</a></li>
+                        <li><a href="#about-us">About Us</a></li>
+                        {{-- <li><a href="">Gallery</a></li> --}}
                         <li><a href="/contact">Contact Us</a></li>
                         <li><a target="_blank" href="/terms-of-service">Terms Of Service</a></li>
                         <li><a target="_blank" href="/privacy-policy">Privacy Policy</a></li>

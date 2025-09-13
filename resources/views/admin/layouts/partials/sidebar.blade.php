@@ -1,12 +1,12 @@
 <aside class="app-sidebar sticky" id="sidebar">
     <div class="main-sidebar-header" style="background: transparent !important; border: none !important;">
         <a href="{{ route('admin.dashboard.index') }}" class="header-logo" style="background: transparent !important; border: none !important; padding: 10px;">
-            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="desktop-logo" style="width: 100px; height: auto; background: transparent !important;">
-            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="toggle-logo" style="width: 100px; height: auto; background: transparent !important;">
-            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="desktop-dark" style="width: 100px; height: auto; background: transparent !important;">
-            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="toggle-dark" style="width: 100px; height: auto; background: transparent !important;">
-            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="desktop-white" style="width: 100px; height: auto; background: transparent !important;">
-            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="toggle-white" style="width: 100px; height: auto; background: transparent !important;">
+            <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo" class="desktop-logo" style="width: 100px; height: auto; background: transparent !important;">
+            <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo" class="toggle-logo" style="width: 100px; height: auto; background: transparent !important;">
+            <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo" class="desktop-dark" style="width: 100px; height: auto; background: transparent !important;">
+            <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo" class="toggle-dark" style="width: 100px; height: auto; background: transparent !important;">
+            <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo" class="desktop-white" style="width: 100px; height: auto; background: transparent !important;">
+            <img src="{{ asset('front/assets/img/Logo.svg') }}" alt="logo" class="toggle-white" style="width: 100px; height: auto; background: transparent !important;">
         </a>
     </div>
     <div class="main-sidebar" id="sidebar-scroll" data-simplebar="init">

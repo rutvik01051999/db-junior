@@ -585,10 +585,10 @@
         box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
     }
     
-    .form-control.valid {
+    /* .form-control.valid {
         border-color: #28a745;
         box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-    }
+    } */
     
     .form-group.has-error .form-control {
         border-color: #dc3545;
@@ -612,10 +612,10 @@
         box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
     }
     
-    select.form-control.valid {
+    /* select.form-control.valid {
         border-color: #28a745;
         box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-    }
+    } */
     
     /* Textarea validation styles */
     textarea.form-control.error {
@@ -623,10 +623,10 @@
         box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
     }
     
-    textarea.form-control.valid {
+    /* textarea.form-control.valid {
         border-color: #28a745;
         box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-    }
+    } */
     
     /* Success state for verified mobile */
     .mobile-verified {

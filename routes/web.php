@@ -42,9 +42,9 @@ Route::get('terms-of-service', [HomeController::class, 'termsPage'])->name('term
 Route::get('/page/{slug}', [FrontCmsPageController::class, 'show'])->name('cms-page.show');
 Route::get('certificate', [HomeController::class, 'certificateGet'])->name('certificate.get');
 Route::get('register/form', [HomeController::class, 'registerForm'])->name('register.form');
-Route::post('certificate/download', [HomeController::class, 'certificateDownload'])->name('certificate.download');
-Route::get('certificate/generate', [HomeController::class, 'certificateGenerate'])->name('certificate.generate');
-Route::post('certificate/download-jpg', [HomeController::class, 'certificateDownloadJpg'])->name('certificate.download-jpg');
+Route::post('certificate/download', [HomeController::class, 'certificateDownload'])->name('certificate.download')->middleware('certificate.rate.limit:5,1');
+Route::get('certificate/generate', [HomeController::class, 'certificateGenerate'])->name('certificate.generate')->middleware('certificate.rate.limit:5,1');
+Route::post('certificate/download-jpg', [HomeController::class, 'certificateDownloadJpg'])->name('certificate.download-jpg')->middleware('certificate.rate.limit:3,1');
 
 
 

@@ -74,34 +74,6 @@
                                     </div>
                                 </div>
 
-                                <div class="card bg-light mt-3">
-                                    <div class="card-header bg-info text-white">
-                                        <h6 class="mb-0"><i class="fas fa-search me-2"></i>SEO Settings</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="form-group mb-3">
-                                            <label for="meta_title" class="form-label fw-bold">Meta Title</label>
-                                            <input type="text" name="meta_title" id="meta_title" class="form-control @error('meta_title') is-invalid @enderror" value="{{ old('meta_title', $cmsPage->meta_title) }}" placeholder="Enter meta title">
-                                            @error('meta_title')
-                                                <div class="invalid-feedback">
-                                                    <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
-                                                </div>
-                                            @enderror
-                                            <small class="form-text text-muted">Recommended: 50-60 characters</small>
-                                        </div>
-
-                                        <div class="form-group mb-3">
-                                            <label for="meta_description" class="form-label fw-bold">Meta Description</label>
-                                            <textarea name="meta_description" id="meta_description" class="form-control @error('meta_description') is-invalid @enderror" rows="3" placeholder="Enter meta description">{{ old('meta_description', $cmsPage->meta_description) }}</textarea>
-                                            @error('meta_description')
-                                                <div class="invalid-feedback">
-                                                    <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
-                                                </div>
-                                            @enderror
-                                            <small class="form-text text-muted">Recommended: 150-160 characters</small>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -207,12 +179,6 @@
                     required: true,
                     minlength: 10
                 },
-                meta_title: {
-                    maxlength: 255
-                },
-                meta_description: {
-                    maxlength: 500
-                }
             },
             messages: {
                 title: {
@@ -224,12 +190,6 @@
                     required: "Please enter page content",
                     minlength: "Content must be at least 10 characters long"
                 },
-                meta_title: {
-                    maxlength: "Meta title cannot exceed 255 characters"
-                },
-                meta_description: {
-                    maxlength: "Meta description cannot exceed 500 characters"
-                }
             },
             errorElement: 'div',
             errorPlacement: function (error, element) {

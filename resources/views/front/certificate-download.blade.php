@@ -21,7 +21,7 @@
 <!-- End Page Banner -->
 
 <!-- Start Certificate Download Area -->
-<section class="contact-area ptb-100">
+<section class="contact-area ptb-100 certificate-download-area">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-8">
@@ -71,7 +71,7 @@
                                     <div class="text-center">
                                         <button type="submit" 
                                                 class="default-btn" 
-                                                id="verify_otp">
+                                                id="verify_otp" style="border: none !important;">
                                             <span class="btn-text">Download Certificate</span>
                                             <span class="btn-icon">
                                                 <i class="fas fa-download"></i>
@@ -92,6 +92,17 @@
                     </div> --}}
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="value-shape">
+        <div class="shape-1">
+            <img src="{{ asset('front/assets/img/value/value-shape-1.png') }}" alt="image">
+        </div>
+        <div class="shape-2">
+            <img src="{{ asset('front/assets/img/value/value-shape-2.png') }}" alt="image">
+        </div>
+        <div class="shape-3">
+            <img src="{{ asset('front/assets/img/value/value-shape-3.png') }}" alt="image">
         </div>
     </div>
 </section>
