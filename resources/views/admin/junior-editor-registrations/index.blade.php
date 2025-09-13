@@ -4,13 +4,13 @@
 
 @section('content')
     <!-- Page Header -->
-    {{-- @include('admin.layouts.partials.page-header', [
+    @include('admin.layouts.partials.page-header', [
         'title' => 'Junior Editor Registrations',
         'breadcrumb' => [
             'Home' => route('admin.dashboard.index'),
             'Junior Editor Registrations' => route('admin.junior-editor-registrations.index'),
         ],
-    ]) --}}
+    ])
 
     @include('admin.layouts.partials.alert')
 

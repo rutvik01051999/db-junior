@@ -3,6 +3,18 @@
 @section('title', 'Create Guest Of Honour')
 
 @section('content')
+    <!-- Page Header -->
+    @include('admin.layouts.partials.page-header', [
+        'title' => 'Create Guest Of Honour',
+        'breadcrumb' => [
+            'Home' => route('admin.dashboard.index'),
+            'Guest Of Honours' => route('admin.guest-of-honours.index'),
+            'Create Guest Of Honour' => '#'
+        ],
+    ])
+
+    @include('admin.layouts.partials.alert')
+
     <div class="row">
         <div class="col-12">
             <div class="card">

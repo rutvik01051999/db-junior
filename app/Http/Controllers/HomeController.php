@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Models\CmsPage;
 use App\Models\CertiStudent;
+use App\Models\CertiDownload;
 
 class HomeController extends Controller
 {
@@ -221,193 +222,87 @@ class HomeController extends Controller
             ]);
         }
 
+        // We'll track the download after successful image generation
+
+        // Track the download like in the original certi.php
         try {
-            // Load the certificate image
-            $certificatePath = public_path('front/assets/img/certificate/certificate.jpg');
-            
-            if (!file_exists($certificatePath)) {
-                return response()->json([
-                    'status' => 0,
-                    'message' => 'Certificate template not found.',
-                ]);
-            }
-
-            // Check if the file is a valid JPEG
-            $imageInfo = getimagesize($certificatePath);
-            if ($imageInfo === false || $imageInfo[2] !== IMAGETYPE_JPEG) {
-                return response()->json([
-                    'status' => 0,
-                    'message' => 'Invalid certificate template format.',
-                ]);
-            }
-
-            // Create image from certificate template
-            $image = imagecreatefromjpeg($certificatePath);
-            
-            if (!$image) {
-                return response()->json([
-                    'status' => 0,
-                    'message' => 'Error loading certificate template.',
-                ]);
-            }
-
-            // Set text colors - using darker colors for better visibility
-            $textColor = imagecolorallocate($image, 0, 0, 0); // Black text
-            $whiteColor = imagecolorallocate($image, 255, 255, 255); // White background
-            
-            // Get image dimensions
-            $imageWidth = imagesx($image);
-            $imageHeight = imagesy($image);
-            
-            // Calculate text position (center of image)
-            $text = strtoupper($student->name);
-            
-            // Create larger text effect by using multiple font sizes and positioning
-            $fontSize = 5; // Largest built-in font
-            $fontWidth = imagefontwidth($fontSize);
-            $fontHeight = imagefontheight($fontSize);
-            
-            // Calculate position for student name (center of image)
-            $textLength = strlen($text);
-            $textWidth = $textLength * $fontWidth;
-            $textX = (int)(($imageWidth - $textWidth) / 2);
-            $textY = (int)(($imageHeight / 2) - ($fontHeight / 2));
-            
-            // Add larger white background rectangle behind text for better visibility
-            $padding = 20; // Increased padding for larger appearance
-            imagefilledrectangle($image, 
-                $textX - $padding, 
-                $textY - $padding, 
-                $textX + $textWidth + $padding, 
-                $textY + $fontHeight + $padding, 
-                $whiteColor
-            );
-            
-            // Create bold effect with shadow for better visibility
-            $shadowColor = imagecolorallocate($image, 100, 100, 100); // Gray shadow
-            
-            // Draw shadow first (slightly offset)
-            imagestring($image, $fontSize, $textX + 2, $textY + 2, $text, $shadowColor);
-            
-            // Draw main text on top
-            imagestring($image, $fontSize, $textX, $textY, $text, $textColor);
-            
-            // Add a second layer for extra boldness
-            imagestring($image, $fontSize, $textX + 1, $textY, $text, $textColor);
-            
-            // Add certificate details at bottom
-            $details = "Mobile: " . $student->mobile_number . " | Date: " . date('d M Y', strtotime($student->created_date));
-            $detailsFontSize = 3;
-            $detailsFontWidth = imagefontwidth($detailsFontSize);
-            $detailsFontHeight = imagefontheight($detailsFontSize);
-            $detailsLength = strlen($details);
-            $detailsWidth = $detailsLength * $detailsFontWidth;
-            $detailsX = (int)(($imageWidth - $detailsWidth) / 2);
-            $detailsY = (int)($imageHeight - 150);
-            
-            // Add white background for details
-            imagefilledrectangle($image, 
-                $detailsX - 5, 
-                $detailsY - 5, 
-                $detailsX + $detailsWidth + 5, 
-                $detailsY + $detailsFontHeight + 5, 
-                $whiteColor
-            );
-            
-            imagestring($image, $detailsFontSize, $detailsX, $detailsY, $details, $textColor);
-            
-            // Add certificate ID
-            $certId = "ID: JE" . $student->id . date('Y');
-            $certIdFontSize = 2;
-            $certIdFontWidth = imagefontwidth($certIdFontSize);
-            $certIdFontHeight = imagefontheight($certIdFontSize);
-            $certIdLength = strlen($certId);
-            $certIdWidth = $certIdLength * $certIdFontWidth;
-            $certIdX = (int)($imageWidth - $certIdWidth - 100);
-            $certIdY = (int)($imageHeight - 100);
-            
-            // Add white background for certificate ID
-            imagefilledrectangle($image, 
-                $certIdX - 5, 
-                $certIdY - 5, 
-                $certIdX + $certIdWidth + 5, 
-                $certIdY + $certIdFontHeight + 5, 
-                $whiteColor
-            );
-            
-            imagestring($image, $certIdFontSize, $certIdX, $certIdY, $certId, $textColor);
-            
-            // Set filename
-            $filename = 'Certificate_' . preg_replace('/[^A-Za-z0-9_\-]/', '_', $student->name) . '_' . date('Y-m-d') . '.jpg';
-            
-            // Create a temporary file to store the image
-            $tempFile = tempnam(sys_get_temp_dir(), 'cert_');
-            $tempFile .= '.jpg';
-            
-            // Save image to temporary file first
-            if (!imagejpeg($image, $tempFile, 90)) {
-                imagedestroy($image);
-                return response()->json([
-                    'status' => 0,
-                    'message' => 'Error saving certificate image.',
-                ]);
-            }
-            
-            // Clean up the image resource
-            imagedestroy($image);
-            
-            // Read the file and output it
-            $imageData = file_get_contents($tempFile);
-            
-            // Verify the image data is valid
-            if ($imageData === false || strlen($imageData) === 0) {
-                unlink($tempFile);
-                return response()->json([
-                    'status' => 0,
-                    'message' => 'Error reading generated certificate.',
-                ]);
-            }
-            
-            // Check if the data starts with proper JPEG header
-            $jpegHeader = substr($imageData, 0, 4);
-            if ($jpegHeader !== "\xFF\xD8\xFF\xE0" && $jpegHeader !== "\xFF\xD8\xFF\xE1") {
-                Log::error('Invalid JPEG header: ' . bin2hex($jpegHeader));
-                unlink($tempFile);
-                return response()->json([
-                    'status' => 0,
-                    'message' => 'Generated certificate is corrupted.',
-                ]);
-            }
-            
-            // Clean up temporary file
-            unlink($tempFile);
-            
-            // Clear any output buffer to prevent corruption
-            if (ob_get_level()) {
-                ob_clean();
-            }
-            
-            // Increment daily download counter
-            Cache::put($dailyDownloadKey, $dailyDownloadCount + 1, now()->endOfDay());
-            
-            // Set proper headers and return clean response
-            return response($imageData, 200, [
-                'Content-Type' => 'image/jpeg',
-                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-                'Content-Length' => strlen($imageData),
-                'Cache-Control' => 'no-cache, no-store, must-revalidate',
-                'Pragma' => 'no-cache',
-                'Expires' => '0'
+            CertiDownload::create([
+                'name' => $student->name,
+                'mobile_number' => $mobile,
+                'download_from' => request()->header('User-Agent'),
+                'created_at' => now()
             ]);
-            
         } catch (\Exception $e) {
-            Log::error('JPG Generation Error: ' . $e->getMessage());
-            
-            return response()->json([
-                'status' => 0,
-                'message' => 'Error generating certificate. Please try again.',
-            ]);
+            // Don't fail the download if tracking fails
+            Log::error('Download tracking error: ' . $e->getMessage());
         }
+
+        // Clear all output buffers first
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        // Load the certificate image exactly like certi.php
+        $certificatePath = public_path('front/assets/img/certificate/certificate.jpg');
+        
+        if (!file_exists($certificatePath)) {
+            echo "Certificate template not found";
+            exit;
+        }
+
+        // Create image from certificate template
+        $image = imagecreatefromjpeg($certificatePath);
+        
+        if (!$image) {
+            echo "Error loading certificate template";
+            exit;
+        }
+
+        // Set text color exactly like certi.php
+        $textColor = imagecolorallocate($image, 19, 21, 22);
+        
+        // Get the font file path
+        $fontFile = public_path('front/assets/fonts/OpenSans-SemiBold.ttf');
+        
+        // Use TTF font like the original certi.php
+        $name = ucfirst($student->name);
+        $nameFontSize = 60;
+        
+        // Calculate text width and adjust font size if needed
+        $nameBox = imagettfbbox($nameFontSize, 0, $fontFile, $name);
+        $nameWidth = abs($nameBox[4] - $nameBox[0]);
+        
+        // Reduce font size if text is too wide (matching original logic)
+        while ($nameWidth > 1000 && $nameFontSize > 8) {
+            $nameFontSize -= 2;
+            $nameBox = imagettfbbox($nameFontSize, 0, $fontFile, $name);
+            $nameWidth = abs($nameBox[4] - $nameBox[0]);
+        }
+        
+        // Calculate position (matching original coordinates)
+        $nameX = 1200 - ($nameWidth / 2);
+        $nameX = round($nameX);
+        $nameY = 1150;
+        
+        // Draw the text using TTF font
+        imagettftext($image, $nameFontSize, 0, $nameX, $nameY, $textColor, $fontFile, $name);
+        
+        // Generate filename like the original certi.php
+        $file_name = str_replace(' ', '_', $name);
+        $filename = $file_name . '.jpg';
+        
+        // Set headers exactly like certi.php
+        header("content-type:image/jpeg");
+        header('Content-Disposition: attachment; filename=' . $filename);
+        
+        // Output the image directly like certi.php
+        imagejpeg($image, null, 100);
+        imagedestroy($image);
+        
+        // Increment daily download counter
+        Cache::put($dailyDownloadKey, $dailyDownloadCount + 1, now()->endOfDay());
+        
+        exit;
     }
 
     /**
@@ -439,4 +334,5 @@ class HomeController extends Controller
     {
         return view('front.register');
     }
+
 }

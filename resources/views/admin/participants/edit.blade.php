@@ -3,6 +3,18 @@
 @section('title', 'Edit Participant')
 
 @section('content')
+    <!-- Page Header -->
+    @include('admin.layouts.partials.page-header', [
+        'title' => 'Edit Participant',
+        'breadcrumb' => [
+            'Home' => route('admin.dashboard.index'),
+            'Participants' => route('admin.participants.index'),
+            'Edit Participant' => '#'
+        ],
+    ])
+
+    @include('admin.layouts.partials.alert')
+
     <div class="row">
         <div class="col-12">
             <div class="card">

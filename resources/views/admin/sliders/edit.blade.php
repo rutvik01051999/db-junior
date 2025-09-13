@@ -3,6 +3,18 @@
 @section('title', 'Edit Slider')
 
 @section('content')
+    <!-- Page Header -->
+    @include('admin.layouts.partials.page-header', [
+        'title' => 'Edit Slider',
+        'breadcrumb' => [
+            'Home' => route('admin.dashboard.index'),
+            'Sliders' => route('admin.sliders.index'),
+            'Edit Slider' => '#'
+        ],
+    ])
+
+    @include('admin.layouts.partials.alert')
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -15,7 +27,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.sliders.update', $slider->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.sliders.update', $slider->id) }}" method="POST" enctype="multipart/form-data" id="edit-slider-form">
                         @csrf
                         @method('PUT')
                         
@@ -107,7 +119,7 @@
         }, 'Please enter a valid file extension.');
 
         // Form validation
-        $("form").validate({
+        $("#edit-slider-form").validate({
             rules: {
                 image: {
                     extension: "jpg|jpeg|png|gif",

@@ -24,7 +24,7 @@
 <section class="contact-area ptb-100 certificate-download-area">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-6 col-md-8">
+            <div class="col-lg-4 col-md-6">
                 <div class="card shadow-lg border-0 rounded-3">
                     <div class="card-header text-white text-center py-4">
                         <h3 class="mb-0">

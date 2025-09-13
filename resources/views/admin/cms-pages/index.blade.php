@@ -3,6 +3,17 @@
 @section('title', 'CMS Pages')
 
 @section('content')
+    <!-- Page Header -->
+    @include('admin.layouts.partials.page-header', [
+        'title' => 'CMS Pages',
+        'breadcrumb' => [
+            'Home' => route('admin.dashboard.index'),
+            'CMS Pages' => route('admin.cms-pages.index'),
+        ],
+    ])
+
+    @include('admin.layouts.partials.alert')
+
     <div class="row">
         <div class="col-12">
             <div class="card">

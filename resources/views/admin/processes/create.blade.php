@@ -3,6 +3,18 @@
 @section('title', 'Create Process')
 
 @section('content')
+    <!-- Page Header -->
+    @include('admin.layouts.partials.page-header', [
+        'title' => 'Create Process',
+        'breadcrumb' => [
+            'Home' => route('admin.dashboard.index'),
+            'Processes' => route('admin.processes.index'),
+            'Create Process' => '#'
+        ],
+    ])
+
+    @include('admin.layouts.partials.alert')
+
     <div class="row">
         <div class="col-12">
             <div class="card">

@@ -1,6 +1,18 @@
 @extends('admin.layouts.app')
 
 @section('content')
+    <!-- Page Header -->
+    @include('admin.layouts.partials.page-header', [
+        'title' => 'Add New Video',
+        'breadcrumb' => [
+            'Home' => route('admin.dashboard.index'),
+            'Videos' => route('admin.videos.index'),
+            'Add New Video' => '#'
+        ],
+    ])
+
+    @include('admin.layouts.partials.alert')
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">

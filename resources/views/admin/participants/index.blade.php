@@ -3,6 +3,17 @@
 @section('title', 'Participants')
 
 @section('content')
+    <!-- Page Header -->
+    @include('admin.layouts.partials.page-header', [
+        'title' => 'Participants',
+        'breadcrumb' => [
+            'Home' => route('admin.dashboard.index'),
+            'Participants' => route('admin.participants.index'),
+        ],
+    ])
+
+    @include('admin.layouts.partials.alert')
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -14,14 +25,14 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    @if(session('success'))
+                    {{-- @if(session('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                    @endif
+                    @endif --}}
 
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">

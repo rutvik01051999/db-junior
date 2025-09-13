@@ -3,6 +3,18 @@
 @section('title', 'Edit Banner')
 
 @section('content')
+    <!-- Page Header -->
+    @include('admin.layouts.partials.page-header', [
+        'title' => 'Edit Banner',
+        'breadcrumb' => [
+            'Home' => route('admin.dashboard.index'),
+            'Banner Sections' => route('admin.banner-sections.index'),
+            'Edit Banner' => '#'
+        ],
+    ])
+
+    @include('admin.layouts.partials.alert')
+
     <div class="row">
         <div class="col-12">
             <div class="card">

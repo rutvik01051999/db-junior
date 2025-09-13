@@ -3,6 +3,17 @@
 @section('title', 'Banner Sections')
 
 @section('content')
+    <!-- Page Header -->
+    @include('admin.layouts.partials.page-header', [
+        'title' => 'Banner Sections',
+        'breadcrumb' => [
+            'Home' => route('admin.dashboard.index'),
+            'Banner Sections' => route('admin.banner-sections.index'),
+        ],
+    ])
+
+    @include('admin.layouts.partials.alert')
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -13,14 +24,14 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    @if(session('success'))
+                    {{-- @if(session('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                    @endif
+                    @endif --}}
 
                     <div class="table-responsive">
                     <table class="table table-hover text-nowrap">
@@ -54,7 +65,7 @@
                                             {{ $banner->title }}
                                        
                                     </td>
-                                    <td>{{ Str::limit($banner->description, 50) }}</td>
+                                    <td>{!! Str::limit($banner->description, 50) !!}</td>
                                     <td>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input status-toggle" type="checkbox" 

@@ -3,6 +3,18 @@
 @section('title', 'Create Slider')
 
 @section('content')
+    <!-- Page Header -->
+    @include('admin.layouts.partials.page-header', [
+        'title' => 'Create Slider',
+        'breadcrumb' => [
+            'Home' => route('admin.dashboard.index'),
+            'Sliders' => route('admin.sliders.index'),
+            'Create Slider' => '#'
+        ],
+    ])
+
+    @include('admin.layouts.partials.alert')
+
     <div class="row">
         <div class="col-12">
             <div class="card">

@@ -11,6 +11,8 @@
         ],
     ])
 
+    @include('admin.layouts.partials.alert')
+
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">
@@ -20,8 +22,6 @@
             </ul>
         </div>
     @endif
-
-    @include('admin.layouts.partials.alert')
 
     <!-- Create User Form -->
     <div class="row">

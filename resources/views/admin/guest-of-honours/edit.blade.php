@@ -3,6 +3,18 @@
 @section('title', 'Edit Guest Of Honour')
 
 @section('content')
+    <!-- Page Header -->
+    @include('admin.layouts.partials.page-header', [
+        'title' => 'Edit Guest Of Honour',
+        'breadcrumb' => [
+            'Home' => route('admin.dashboard.index'),
+            'Guest Of Honours' => route('admin.guest-of-honours.index'),
+            'Edit Guest Of Honour' => '#'
+        ],
+    ])
+
+    @include('admin.layouts.partials.alert')
+
     <div class="row">
         <div class="col-12">
             <div class="card">

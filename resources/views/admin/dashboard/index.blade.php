@@ -37,45 +37,6 @@
             value="{{ $registrationDetails['certificate_students']['total'] }}" bg-color="info" />
     </div>
 
-    <!-- Contact Submissions Section -->
-    <div class="row">
-        <!-- Total Contact Submissions -->
-        <x-dashboard-widget icon="bx bx-message-square-detail" title="Total Contact Submissions"
-            value="{{ $registrationDetails['contact_submissions']['total'] }}" bg-color="primary" />
-
-        <!-- Today's Contact Submissions -->
-        <x-dashboard-widget icon="bx bx-message-square-add" title="Today's Contact Submissions"
-            value="{{ $registrationDetails['contact_submissions']['today'] }}" bg-color="success" />
-
-        <!-- This Month's Contact Submissions -->
-        <x-dashboard-widget icon="bx bx-message-square" title="This Month's Contact Submissions"
-            value="{{ $registrationDetails['contact_submissions']['this_month'] }}" bg-color="warning" />
-
-        <!-- Last Month's Contact Submissions -->
-        <x-dashboard-widget icon="bx bx-message-square-minus" title="Last Month's Contact Submissions"
-            value="{{ $registrationDetails['contact_submissions']['last_month'] }}" bg-color="info" />
-    </div>
-
-    <!-- Employee Management Section -->
-    <div class="row">
-        <!-- Total Employees -->
-        <x-dashboard-widget icon="bx bx-user-plus" title="Total Employees"
-            value="{{ $registrationDetails['employees']['total'] }}" bg-color="primary" />
-
-        <!-- Today's Employees -->
-        <x-dashboard-widget icon="bx bx-user-check" title="Today's New Employees"
-            value="{{ $registrationDetails['employees']['today'] }}" bg-color="success" />
-
-        <!-- This Month's Employees -->
-        <x-dashboard-widget icon="bx bx-user" title="This Month's New Employees"
-            value="{{ $registrationDetails['employees']['this_month'] }}" bg-color="warning" />
-
-        <!-- Last Month's Employees -->
-        <x-dashboard-widget icon="bx bx-user-minus" title="Last Month's New Employees"
-            value="{{ $registrationDetails['employees']['last_month'] }}" bg-color="info" />
-    </div>
-
-
     <!-- Recent Data Tables -->
     <div class="row">
         <!-- Recent Junior Editor Registrations -->
@@ -108,7 +69,7 @@
                                         <td>{{ $registration['email'] }}</td>
                                         <td>{{ $registration['date'] }}</td>
                                         <td>
-                                            @if($registration['payment_status'] == 'paid')
+                                            @if($registration['payment_status'] == 'completed')
                                                 <span class="badge bg-success">Paid</span>
                                             @elseif($registration['payment_status'] == 'pending')
                                                 <span class="badge bg-warning">Pending</span>
