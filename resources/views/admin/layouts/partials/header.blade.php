@@ -3,19 +3,19 @@
         <div class="header-content-left">
             <div class="header-element">
                 <div class="horizontal-logo">
-                    <a href="{{ URL::to('/') }}" class="header-logo">
-                        <img src="{{ asset('assets/images/brand-logos/desktop-logo.png') }}" alt="logo"
-                            class="desktop-logo">
-                        <img src="{{ asset('assets/images/brand-logos/toggle-logo.png') }}" alt="logo"
-                            class="toggle-logo">
-                        <img src="{{ asset('assets/images/brand-logos/desktop-dark.png') }}" alt="logo"
-                            class="desktop-dark">
-                        <img src="{{ asset('assets/images/brand-logos/toggle-dark.png') }}" alt="logo"
-                            class="toggle-dark">
-                        <img src="{{ asset('assets/images/brand-logos/desktop-white.png') }}" alt="logo"
-                            class="desktop-white">
-                        <img src="{{ asset('assets/images/brand-logos/toggle-white.png') }}" alt="logo"
-                            class="toggle-white">
+                    <a href="{{ route('admin.dashboard.index') }}" class="header-logo">
+                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                            class="desktop-logo" style="width: 100px; height: auto;">
+                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                            class="toggle-logo" style="width: 100px; height: auto;">
+                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                            class="desktop-dark" style="width: 100px; height: auto;">
+                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                            class="toggle-dark" style="width: 100px; height: auto;">
+                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                            class="desktop-white" style="width: 100px; height: auto;">
+                        <img src="{{ asset('front/assets/img/Logo.jpg') }}" alt="logo"
+                            class="toggle-white" style="width: 100px; height: auto;">
                     </a>
                 </div>
             </div>

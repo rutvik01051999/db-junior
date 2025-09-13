@@ -1,12 +1,12 @@
 <aside class="app-sidebar sticky" id="sidebar">
-    <div class="main-sidebar-header">
-        <a href="index.html" class="header-logo">
-            <img src="{{ asset('assets/images/brand-logos/desktop-logo.png') }}" alt="logo" class="desktop-logo">
-            <img src="{{ asset('assets/images/brand-logos/toggle-logo.png') }}" alt="logo" class="toggle-logo">
-            <img src="{{ asset('assets/images/brand-logos/desktop-dark.png') }}" alt="logo" class="desktop-dark">
-            <img src="{{ asset('assets/images/brand-logos/toggle-dark.png') }}" alt="logo" class="toggle-dark">
-            <img src="{{ asset('assets/images/brand-logos/desktop-white.png') }}" alt="logo" class="desktop-white">
-            <img src="{{ asset('assets/images/brand-logos/toggle-white.png') }}" alt="logo" class="toggle-white">
+    <div class="main-sidebar-header" style="background: transparent !important; border: none !important;">
+        <a href="{{ route('admin.dashboard.index') }}" class="header-logo" style="background: transparent !important; border: none !important; padding: 10px;">
+            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="desktop-logo" style="width: 100px; height: auto; background: transparent !important;">
+            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="toggle-logo" style="width: 100px; height: auto; background: transparent !important;">
+            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="desktop-dark" style="width: 100px; height: auto; background: transparent !important;">
+            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="toggle-dark" style="width: 100px; height: auto; background: transparent !important;">
+            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="desktop-white" style="width: 100px; height: auto; background: transparent !important;">
+            <img src="{{ asset('front/assets/img/Logo.png') }}" alt="logo" class="toggle-white" style="width: 100px; height: auto; background: transparent !important;">
         </a>
     </div>
     <div class="main-sidebar" id="sidebar-scroll" data-simplebar="init">
@@ -28,6 +28,17 @@
                                     </svg>
                                 </div>
                                 <ul class="main-menu">
+                                    <!-- Dashboard -->
+                                    <li class="slide {{ request()->routeIs('admin.dashboard.*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.dashboard.index') }}"
+                                            class="side-menu__item {{ request()->routeIs('admin.dashboard.*') ? 'active' : '' }}">
+                                            <i class="bx bx-home side-menu__icon"></i>
+                                            <span class="side-menu__label">
+                                                Dashboard
+                                            </span>
+                                        </a>
+                                    </li>
+
                                     <!-- Banner Sections -->
                                     <li class="slide has-sub {{ request()->routeIs('admin.banner-sections.*') ? 'active open' : '' }}">
                                         <a href="javascript:void(0);"

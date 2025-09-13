@@ -14,7 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register Snappy PDF service
+        $this->app->register(\Barryvdh\Snappy\ServiceProvider::class);
     }
 
     /**

@@ -34,6 +34,13 @@
                         <p class="mb-0 mt-2">Enter your registered mobile number to download your certificate</p>
                     </div>
                     <div class="card-body p-4">
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+                        
                         <form id="certificateForm">
                             @csrf
                             <div class="row">
@@ -383,6 +390,9 @@ function CheckOTP() {
                 $('#verify_otp').html('<span class="btn-text">Mobile Verified</span>');
                 $('#otpModal').modal('hide');
                 mobile_verified = true;
+                
+                // Show success message and download certificate
+                showMessage('<i class="fas fa-check-circle me-2"></i>Mobile verified successfully! Downloading your certificate...', 'success');
                 GetCertificate($('#mobileno').val());
             } else {
                 showMessage('<i class="fas fa-exclamation-circle me-2"></i>Please enter valid OTP', 'error');
@@ -397,8 +407,40 @@ function CheckOTP() {
 
 // Download certificate
 function GetCertificate(mobile) {
-    // Open certificate in new window
-    window.open("{{ route('certificate.generate') }}?mobile=" + mobile, '_blank');
+    // Use fetch API for better download handling
+    const formData = new FormData();
+    formData.append('_token', '{{ csrf_token() }}');
+    formData.append('mobile', mobile);
+    
+    fetch('{{ route("certificate.download-jpg") }}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.blob();
+    })
+    .then(blob => {
+        // Create download link
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'Certificate_' + mobile + '_' + new Date().toISOString().split('T')[0] + '.jpg';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    })
+    .catch(error => {
+        console.error('Download error:', error);
+        showMessage('<i class="fas fa-exclamation-circle me-2"></i>Error downloading certificate. Please try again.', 'error');
+    });
 }
 
 // Add jQuery if not already loaded

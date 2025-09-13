@@ -497,3 +497,9 @@
 .ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred{
     height: 140px;
 }
+.main-sidebar{
+    margin-block-start: 5.72rem !important;
+}
+.main-sidebar-header{
+    margin-block-start: 1.72rem !important;
+}

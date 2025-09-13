@@ -44,6 +44,7 @@ Route::get('certificate', [HomeController::class, 'certificateGet'])->name('cert
 Route::get('register/form', [HomeController::class, 'registerForm'])->name('register.form');
 Route::post('certificate/download', [HomeController::class, 'certificateDownload'])->name('certificate.download');
 Route::get('certificate/generate', [HomeController::class, 'certificateGenerate'])->name('certificate.generate');
+Route::post('certificate/download-jpg', [HomeController::class, 'certificateDownloadJpg'])->name('certificate.download-jpg');
 
 
 
