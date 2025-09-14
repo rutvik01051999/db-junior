@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ContactFormRequest;
 use App\Mail\ContactFormMail;
 use App\Models\Contact;
+use App\Services\ActivityLogService;
 use App\Services\PepipostMailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -28,6 +29,9 @@ class ContactController extends Controller
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
             ]);
+
+            // Log form submission activity
+            ActivityLogService::logFormSubmission($request, 'Contact Form', $validated);
 
             // Send email notification
             $this->sendContactEmail($validated['name'], $validated['email'], $validated['phone_number'], $validated['message']);

@@ -25,23 +25,46 @@ class ActivityLogDataTable extends BaseDataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('causer', function ($q) {
-                return $q->causer->full_name ?? 'N/A';
-            })
-            ->addColumn('old_properties', function ($q) {
+                if ($q->causer) {
+                    return $q->causer->full_name ?? $q->causer->name ?? 'Admin User';
+                }
+                
+                // For front-end activities, show IP and user agent info
                 $properties = json_decode($q->properties ?? '', true) ?? [];
-                return view('admin.activitylog.old_properties', compact('properties'))->render();
+                if (isset($properties['ip'])) {
+                    return 'Frontend User (' . $properties['ip'] . ')';
+                }
+                
+                return 'System';
             })
-            ->addColumn('new_properties', function ($q) {
+            ->addColumn('activity_type', function ($q) {
                 $properties = json_decode($q->properties ?? '', true) ?? [];
-                return view('admin.activitylog.new_properties', compact('properties'))->render();
+                $type = $properties['type'] ?? 'admin_activity';
+                
+                $typeLabels = [
+                    'page_load' => '<span class="badge bg-info">Page Load</span>',
+                    'form_submission' => '<span class="badge bg-success">Form Submission</span>',
+                    'admin_activity' => '<span class="badge bg-primary">Admin Activity</span>',
+                    'certificate_download' => '<span class="badge bg-warning">Certificate Download</span>',
+                    'otp_activity' => '<span class="badge bg-secondary">OTP Activity</span>',
+                ];
+                
+                return $typeLabels[$type] ?? '<span class="badge bg-secondary">Unknown</span>';
+            })
+            ->addColumn('details', function ($q) {
+                $properties = json_decode($q->properties ?? '', true) ?? [];
+                return view('admin.activitylog.details', compact('properties', 'q'))->render();
             })
             ->addColumn('description', function ($q) {
                 return view('admin.activitylog.description', compact('q'))->render();
             })
-            ->editColumn('created_at', function ($q) {
-                return $q->created_at->format('Y-m-d');
+            ->addColumn('action', function ($q) {
+                return view('admin.activitylog.actions', compact('q'))->render();
             })
-            ->rawColumns(['old_properties', 'new_properties', 'description'])
+            ->editColumn('created_at', function ($q) {
+                return $q->created_at->format('Y-m-d H:i:s');
+            })
+            ->rawColumns(['activity_type', 'details', 'description', 'action'])
             ->setRowId('id');
     }
 
@@ -75,11 +98,12 @@ class ActivityLogDataTable extends BaseDataTable
     {
         return [
             Column::make('id')->visible(false)->searchable(false)->exportable(false),
-            Column::make('causer')->title(__('module.activitylog.causer')),
-            Column::make('description')->title(__('module.activitylog.description')),
-            Column::make('old_properties')->title(__('module.activitylog.old_properties')),
-            Column::make('new_properties')->title(__('module.activitylog.new_properties')),
-            Column::make('created_at')->title(__('module.activitylog.activity_at')),
+            Column::make('causer')->title('User'),
+            Column::make('activity_type')->title('Type'),
+            Column::make('description')->title('Description'),
+            Column::make('details')->title('Details'),
+            Column::make('created_at')->title('Date & Time'),
+            Column::make('action')->title('Action')->orderable(false)->searchable(false),
         ];
     }
 

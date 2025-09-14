@@ -268,6 +268,11 @@ $(document).ready(function() {
         // Hide any existing messages when user starts typing
         hideMessage();
     });
+    
+    // Clear OTP input error state when user starts typing
+    $('#dialog_otp').on('input', function() {
+        $(this).css('border-color', '');
+    });
 });
 
 // Function to show message below input field
@@ -295,7 +300,6 @@ function hideMessage() {
 
 // Global variables for OTP verification
 var mobile_verified = false;
-var otp_value = '';
 
 // Verify mobile number and send OTP
 function VerifyMobile() {
@@ -339,7 +343,9 @@ function ResendCode() {
                 // Show OTP modal
                 $('#otpModal').modal('show');
                 $('#span_mobile').html(mobile);
-                otp_value = response.data;
+                // Clear previous OTP input
+                $('#dialog_otp').val('').css('border-color', '');
+                // Don't store OTP on client side for security
                 $('#resendCode').attr('disabled', true);
                 
                 // Start countdown timer
@@ -387,14 +393,39 @@ function ResendCode() {
 // Verify OTP
 function CheckOTP() {
     var entered_otp = $('#dialog_otp').val();
+    var mobile = $('#mobileno').val();
+    var verifyBtn = $('#check_otp');
     
+    // Basic validation
     if (entered_otp == '') {
         $('#dialog_otp').css('border-color', 'red');
         $('#dialog_otp').focus();
         showMessage('<i class="fas fa-exclamation-circle me-2"></i>Please enter OTP', 'error');
-    } else {
-        if (entered_otp.length == 6) {
-            if (otp_value == entered_otp) {
+        return;
+    }
+    
+    if (entered_otp.length != 6) {
+        $('#dialog_otp').css('border-color', 'red');
+        $('#dialog_otp').focus();
+        showMessage('<i class="fas fa-exclamation-circle me-2"></i>Please enter valid 6 digits OTP', 'error');
+        return;
+    }
+    
+    // Disable button and show loading
+    verifyBtn.prop('disabled', true).val('Verifying...');
+    
+    // Make AJAX call to verify OTP on server
+    $.ajax({
+        type: 'POST',
+        url: '{{ route("certificate.verify-otp") }}',
+        data: {
+            _token: '{{ csrf_token() }}',
+            mobile: mobile,
+            otp: entered_otp
+        },
+        success: function(response) {
+            if (response.status === 1) {
+                // OTP verified successfully
                 $('#mobileno').attr('disabled', true);
                 $('#verify_otp').attr('disabled', true);
                 $('#verify_otp').css('background', 'green');
@@ -404,16 +435,28 @@ function CheckOTP() {
                 
                 // Show success message and download certificate
                 showMessage('<i class="fas fa-check-circle me-2"></i>Mobile verified successfully! Downloading your certificate...', 'success');
-                GetCertificate($('#mobileno').val());
+                GetCertificate(mobile);
             } else {
-                showMessage('<i class="fas fa-exclamation-circle me-2"></i>Please enter valid OTP', 'error');
+                // OTP verification failed
+                showMessage('<i class="fas fa-exclamation-circle me-2"></i>' + response.message, 'error');
+                $('#dialog_otp').css('border-color', 'red');
+                $('#dialog_otp').focus();
             }
-        } else {
+        },
+        error: function(xhr) {
+            var errorMessage = 'An error occurred while verifying OTP. Please try again.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            showMessage('<i class="fas fa-exclamation-triangle me-2"></i>' + errorMessage, 'error');
             $('#dialog_otp').css('border-color', 'red');
             $('#dialog_otp').focus();
-            showMessage('<i class="fas fa-exclamation-circle me-2"></i>Please enter valid 6 digits OTP', 'error');
+        },
+        complete: function() {
+            // Re-enable button
+            verifyBtn.prop('disabled', false).val('Verify');
         }
-    }
+    });
 }
 
 // Download certificate

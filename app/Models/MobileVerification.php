@@ -154,19 +154,110 @@ class MobileVerification extends Model
     }
 
     /**
-     * Check if mobile can receive new OTP (rate limiting)
+     * Check if mobile can receive new OTP (comprehensive rate limiting)
      */
     public static function canSendOtp(string $mobileNumber): bool
     {
-        $lastVerification = self::where('mobile_number', $mobileNumber)
+        $now = now();
+        
+        // Check per minute limit (max 1 OTP per minute)
+        $lastMinute = self::where('mobile_number', $mobileNumber)
+            ->where('created_at', '>=', $now->copy()->subMinute())
+            ->count();
+        
+        if ($lastMinute >= 1) {
+            return false;
+        }
+        
+        // Check per hour limit (max 5 OTPs per hour)
+        $lastHour = self::where('mobile_number', $mobileNumber)
+            ->where('created_at', '>=', $now->copy()->subHour())
+            ->count();
+        
+        if ($lastHour >= 5) {
+            return false;
+        }
+        
+        // Check per day limit (max 10 OTPs per day)
+        $lastDay = self::where('mobile_number', $mobileNumber)
+            ->where('created_at', '>=', $now->copy()->subDay())
+            ->count();
+        
+        if ($lastDay >= 10) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Get rate limiting information for a mobile number
+     */
+    public static function getRateLimitInfo(string $mobileNumber): array
+    {
+        $now = now();
+        
+        // Get last OTP sent
+        $lastOtp = self::where('mobile_number', $mobileNumber)
             ->orderBy('created_at', 'desc')
             ->first();
-
-        if (!$lastVerification) {
-            return true;
+        
+        // Count OTPs in different time windows
+        $lastMinute = self::where('mobile_number', $mobileNumber)
+            ->where('created_at', '>=', $now->copy()->subMinute())
+            ->count();
+        
+        $lastHour = self::where('mobile_number', $mobileNumber)
+            ->where('created_at', '>=', $now->copy()->subHour())
+            ->count();
+        
+        $lastDay = self::where('mobile_number', $mobileNumber)
+            ->where('created_at', '>=', $now->copy()->subDay())
+            ->count();
+        
+        // Calculate next available time
+        $nextAvailable = null;
+        if ($lastOtp) {
+            $nextAvailable = $lastOtp->created_at->addMinute();
         }
-
-        // Allow new OTP only if last one was sent more than 1 minute ago
-        return $lastVerification->created_at->addMinute()->isPast();
+        
+        return [
+            'can_send' => self::canSendOtp($mobileNumber),
+            'last_otp_sent' => $lastOtp ? $lastOtp->created_at : null,
+            'next_available' => $nextAvailable,
+            'counts' => [
+                'per_minute' => $lastMinute,
+                'per_hour' => $lastHour,
+                'per_day' => $lastDay,
+            ],
+            'limits' => [
+                'per_minute' => 1,
+                'per_hour' => 5,
+                'per_day' => 10,
+            ]
+        ];
+    }
+    
+    /**
+     * Get time remaining until next OTP can be sent
+     */
+    public static function getTimeUntilNextOtp(string $mobileNumber): ?int
+    {
+        $lastOtp = self::where('mobile_number', $mobileNumber)
+            ->orderBy('created_at', 'desc')
+            ->first();
+        
+        if (!$lastOtp) {
+            return 0;
+        }
+        
+        $nextAvailable = $lastOtp->created_at->addMinute();
+        $now = now();
+        
+        if ($nextAvailable->isFuture()) {
+            return $nextAvailable->diffInSeconds($now);
+        }
+        
+        return 0;
     }
 }

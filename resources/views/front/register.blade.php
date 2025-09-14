@@ -197,8 +197,8 @@
                                 <div class="col-md-12">
                             <div class="form-group">
                                         <input type="text" class="form-control" id="school_telephone_no" name="school_telephone_no" 
-                                               placeholder="School Contact No" maxlength="12" 
-                                               onkeypress="return restrictAlphabets(event)">
+                                               placeholder="School Contact No*" maxlength="12" 
+                                               onkeypress="return restrictAlphabets(event)" required>
                                     </div>
                                 </div>
                             </div>
@@ -347,7 +347,7 @@
                     </div>
         </div>
                 <p style="text-align: right;">
-                    <button type="button" id="resendCode" class="btn btn-link" disabled onclick="ResendCode()">Resend OTP</button>
+                    <button type="button" id="resendCode" class="btn btn-link" disabled onclick="ResendCodeFromModal()">Resend OTP</button>
                     <span id="counter" style="color: blue;"></span>
                 </p>
         </div>
@@ -576,8 +576,10 @@
         color: #dc3545;
         font-size: 12px;
         margin-top: 5px;
+        margin-bottom: 10px;
         display: block;
         font-weight: 500;
+        width: 100%;
     }
     
     .form-control.error {
@@ -734,6 +736,22 @@
     .select2-container--bootstrap-5.valid .select2-selection {
         border-color: #28a745;
         box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+    
+    /* Error message positioning for Select2 dropdowns */
+    .select2-container + .validation-error {
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+    
+    /* Ensure proper spacing for form groups with Select2 */
+    .form-group .select2-container {
+        margin-bottom: 0;
+    }
+    
+    .form-group .select2-container + .validation-error {
+        margin-top: 5px;
+        margin-bottom: 10px;
     }
 </style>
 @endpush

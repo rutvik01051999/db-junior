@@ -353,6 +353,17 @@
                 </ul>
             </li>
 
+            <!-- Winner Management Section -->
+            <li class="slide {{ request()->routeIs('admin.winners.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.winners.index') }}"
+                    class="side-menu__item {{ request()->routeIs('admin.winners.*') ? 'active' : '' }}">
+                    <i class="bx bx-trophy side-menu__icon"></i>
+                    <span class="side-menu__label">
+                        Winner Management
+                    </span>
+                </a>
+            </li>
+
             <!-- Junior Editor Registrations Section -->
             <li class="slide has-sub {{ request()->routeIs('admin.junior-editor-registrations.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);"
@@ -377,6 +388,17 @@
                         </a>
                     </li>
                 </ul>
+            </li>
+
+            <!-- Activity Log Section -->
+            <li class="slide {{ request()->routeIs('admin.activities.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.activities.activity-logs.index') }}"
+                    class="side-menu__item {{ request()->routeIs('admin.activities.*') ? 'active' : '' }}">
+                    <i class="bx bx-history side-menu__icon"></i>
+                    <span class="side-menu__label">
+                        Activity Log
+                    </span>
+                </a>
             </li>
                                 </ul>
 

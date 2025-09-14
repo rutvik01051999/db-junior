@@ -17,6 +17,17 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'large.uploads' => \App\Http\Middleware\HandleLargeUploads::class,
             'certificate.rate.limit' => \App\Http\Middleware\CertificateRateLimit::class,
+            'track.page.loads' => \App\Http\Middleware\TrackPageLoads::class,
+            'track.admin.activities' => \App\Http\Middleware\TrackAdminActivities::class,
+        ]);
+        
+        // Add global middleware
+        $middleware->web(append: [
+            \App\Http\Middleware\TrackPageLoads::class,
+        ]);
+        
+        $middleware->group('admin', [
+            \App\Http\Middleware\TrackAdminActivities::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

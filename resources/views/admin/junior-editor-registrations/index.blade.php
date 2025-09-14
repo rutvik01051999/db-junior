@@ -76,7 +76,7 @@
                                     <label>&nbsp;</label>
                                     <div class="d-flex gap-2">
                                         <button type="button" class="btn btn-primary btn-sm" id="apply-filter">
-                                            <i class="bx bx-filter"></i> Apply Filter
+                                            <i class="bx bx-filter"></i> Search
                                         </button>
                                     </div>
                                 </div>

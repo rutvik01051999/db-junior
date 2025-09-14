@@ -12,6 +12,9 @@ console.log('Register scripts loaded');
 // Global variables
 var mobile_verified = false;
 var otpData = null;
+var otpCountdownTimer = null;
+var resendCountdownTimer = null;
+var rateLimitInfo = null;
 
 // Initialize page
 $(document).ready(function() {
@@ -227,7 +230,7 @@ function initializeFormValidation() {
     $("#orderForm").validate({
         rules: {
             parent_name: {
-                required: false,
+                required: true,
                 nameOnly: true,
                 minlength: 2,
                 maxlength: 50
@@ -238,59 +241,65 @@ function initializeFormValidation() {
                 mobileVerified: true
             },
             first_name: {
-                required: false,
+                required: true,
                 nameOnly: true,
                 minlength: 2,
                 maxlength: 30
             },
             last_name: {
-                required: false,
+                required: true,
                 nameOnly: true,
                 minlength: 2,
                 maxlength: 30
             },
             email: {
-                required: false,
+                required: true,
                 email: true,
                 maxlength: 100
             },
             birthdate: {
-                required: false,
+                required: true,
                 validAge: true
             },
             gender: {
-                required: false
+                required: true
             },
             address: {
-                required: false,
+                required: true,
                 minlength: 10,
                 maxlength: 200
             },
             pincode: {
-                required: false,
+                required: true,
                 pincode: true
             },
             state: {
-                required: false
+                required: true
             },
             city: {
-                required: false
+                required: true
             },
             school_name: {
-                required: false,
+                required: true,
                 minlength: 2,
                 maxlength: 100
             },
             school_class: {
-                required: false
+                required: true
+            },
+            school_telephone_no: {
+                required: true,
+                minlength: 10,
+                maxlength: 12,
+                digits: true
             },
             school_address: {
-                required: false,
+                required: true,
                 minlength: 10,
                 maxlength: 200
             },
             delivery_type: {
-                required: false
+                required: true
             },
             pickup_centers: {
                 required: function() {
@@ -357,6 +366,12 @@ function initializeFormValidation() {
             school_class: {
                 required: "Please select class"
             },
+            school_telephone_no: {
+                required: "Please enter school contact number",
+                minlength: "School contact number must be at least 10 digits",
+                maxlength: "School contact number cannot exceed 12 digits",
+                digits: "Please enter only numbers for school contact"
+            },
             school_address: {
                 required: "Please enter school address",
                 minlength: "School address must be at least 10 characters long",
@@ -375,7 +390,13 @@ function initializeFormValidation() {
             // For radio buttons, place error after the radio group
             if (element.attr("type") === "radio") {
                 error.insertAfter(element.closest(".form-group"));
-            } else {
+            } 
+            // For Select2 dropdowns, place error after the Select2 container
+            else if (element.hasClass('select2-hidden-accessible')) {
+                error.insertAfter(element.next('.select2-container'));
+            } 
+            // For all other elements, place error right after the input field
+            else {
                 error.insertAfter(element);
             }
         },
@@ -479,27 +500,79 @@ function VerifyMobile() {
     console.log('VerifyMobile called with:', mobile);
     
     if (!mobile) {
-        $("#mobileno").css("border-color", "red");
-        notify('danger', 'Please enter mobile number');
+        $("#mobileno").addClass("error");
         $("#mobileno").focus();
         return;
     }
     
     if (mobile.length !== 10) {
-        $("#mobileno").css("border-color", "red");
-        notify('danger', 'Please enter valid 10-digit mobile number');
+        $("#mobileno").addClass("error");
         $("#mobileno").focus();
         return;
     }
     
-    $("#mobileno").css("border-color", "");
-    ResendCode();
+    // Check rate limiting before sending OTP
+    checkRateLimitAndSendOtp(mobile);
+}
+
+// Check rate limit and send OTP
+function checkRateLimitAndSendOtp(mobile) {
+    // First check rate limit info
+    $.ajax({
+        type: 'POST',
+        url: '{{ route("junior-editor.rate-limit-info") }}',
+        data: {
+            mobile: mobile,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            console.log('Rate limit info response:', response);
+            if (response.status === '1') {
+                rateLimitInfo = response.data.rate_limit_info;
+                const timeRemaining = response.data.time_remaining;
+                
+                if (!rateLimitInfo.can_send) {
+                    // Show rate limit message and start countdown
+                    let message = 'Please wait before requesting another OTP';
+                    if (rateLimitInfo.counts.per_day >= rateLimitInfo.limits.per_day) {
+                        message = 'Daily OTP limit reached. Please try again tomorrow.';
+                    } else if (rateLimitInfo.counts.per_hour >= rateLimitInfo.limits.per_hour) {
+                        message = 'Hourly OTP limit reached. Please try again in an hour.';
+                    } else if (timeRemaining > 0) {
+                        message = `Please wait ${timeRemaining} seconds before requesting another OTP`;
+                        startOtpCountdown(timeRemaining);
+                    }
+                    
+                    // Show error below mobile field instead of top notification
+                    showFieldError('mobileno', message);
+                    return;
+                }
+                
+                // Rate limit allows sending, proceed with OTP
+                $("#mobileno").css("border-color", "");
+                ResendCode();
+            } else {
+                // If rate limit check fails, still try to send OTP
+                $("#mobileno").css("border-color", "");
+                ResendCode();
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Rate limit check error:', error);
+            // If rate limit check fails, still try to send OTP
+            $("#mobileno").css("border-color", "");
+            ResendCode();
+        }
+    });
 }
 
 // Resend OTP
 function ResendCode() {
     const mobile = $("#mobileno").val();
     console.log('ResendCode called for mobile:', mobile);
+    
+    // Disable button and show loading
+    $("#verify_otp").prop('disabled', true).addClass('btn-loading');
     
     $.ajax({
         type: 'POST',
@@ -515,16 +588,31 @@ function ResendCode() {
                 $("#span_mobile").html(mobile);
                 otpData = response.data; // Store OTP for verification
                 
-                // Start countdown
-                //startCountdown();
-                notify('success', 'OTP sent successfully');
+                // Start countdown for resend button
+                startResendCountdown(60);
+                // Clear any validation errors for mobile field
+                $("#mobileno").removeClass("error").addClass("valid");
+                $("#mobileno").closest('.form-group').removeClass('has-error');
             } else {
-                notify('danger', response.message);
+                // Handle rate limiting response
+                if (response.rate_limit_info) {
+                    rateLimitInfo = response.rate_limit_info;
+                    const timeRemaining = response.time_remaining || 0;
+                    
+                    if (timeRemaining > 0) {
+                        startOtpCountdown(timeRemaining);
+                    }
+                }
+                showFieldError('mobileno', response.message);
             }
         },
         error: function(xhr, status, error) {
             console.error('OTP error:', error);
-            notify('danger', 'Failed to send OTP. Please try again.');
+            showFieldError('mobileno', 'Failed to send OTP. Please try again.');
+        },
+        complete: function() {
+            // Re-enable button
+            $("#verify_otp").prop('disabled', false).removeClass('btn-loading');
         }
     });
 }
@@ -536,15 +624,13 @@ function verifyOtp() {
     console.log('verifyOtp called with OTP:', otp, 'Mobile:', mobile);
     
     if (!otp) {
-        $("#dialog_otp").css("border-color", "red");
-        notify('danger', 'Please enter OTP');
+        $("#dialog_otp").addClass("error");
         $("#dialog_otp").focus();
         return;
     }
     
     if (otp.length !== 6) {
-        $("#dialog_otp").css("border-color", "red");
-        notify('danger', 'Please enter valid 6-digit OTP');
+        $("#dialog_otp").addClass("error");
         $("#dialog_otp").focus();
         return;
     }
@@ -572,43 +658,131 @@ function verifyOtp() {
                 $("#mobileno").valid(); // Re-validate the field
                 
                 console.log('Mobile verification completed - mobile_verified set to true');
-                notify('success', 'Mobile number verified successfully');
+                // Clear any validation errors for mobile field
+                $("#mobileno").removeClass("error").addClass("valid");
+                $("#mobileno").closest('.form-group').removeClass('has-error');
             } else {
-                notify('danger', response.message);
+                showFieldError('dialog_otp', response.message);
             }
         },
         error: function(xhr, status, error) {
             console.error('OTP verification error:', error);
-            notify('danger', 'OTP verification failed. Please try again.');
+            showFieldError('dialog_otp', 'OTP verification failed. Please try again.');
         }
     });
 }
 
-// Start countdown timer
-function startCountdown() {
-    let sec = 60;
-    const countDiv = document.getElementById("counter");
-    const resendBtn = document.getElementById("resendCode");
+// Start countdown timer for OTP button
+function startOtpCountdown(seconds) {
+    if (otpCountdownTimer) {
+        clearInterval(otpCountdownTimer);
+    }
     
-    resendBtn.disabled = true;
+    let remainingSeconds = seconds;
+    const button = $("#verify_otp");
+    const originalText = button.val();
     
-    const countDown = setInterval(function() {
-        const min = Math.floor(sec / 60);
-        let remSec = sec % 60;
-        
-        if (remSec < 10) remSec = '0' + remSec;
-        if (min < 10) min = '0' + min;
-        
-        countDiv.innerHTML = min + ":" + remSec;
-        
-        if (sec > 0) {
-            sec = sec - 1;
+    button.prop('disabled', true);
+    
+    const updateButton = () => {
+        if (remainingSeconds > 0) {
+            button.val(`Wait ${remainingSeconds}s`);
+            remainingSeconds--;
         } else {
-            clearInterval(countDown);
-            countDiv.innerHTML = '00:00';
-            resendBtn.disabled = false;
+            clearInterval(otpCountdownTimer);
+            button.prop('disabled', false).val(originalText);
+            otpCountdownTimer = null;
         }
-    }, 1000);
+    };
+    
+    updateButton(); // Initial update
+    otpCountdownTimer = setInterval(updateButton, 1000);
+}
+
+// Start countdown timer for resend button
+function startResendCountdown(seconds) {
+    if (resendCountdownTimer) {
+        clearInterval(resendCountdownTimer);
+    }
+    
+    let remainingSeconds = seconds;
+    const resendBtn = $("#resendCode");
+    const counter = $("#counter");
+    
+    resendBtn.prop('disabled', true);
+    
+    const updateResend = () => {
+        if (remainingSeconds > 0) {
+            let min = Math.floor(remainingSeconds / 60);
+            let sec = remainingSeconds % 60;
+            
+            if (sec < 10) sec = '0' + sec;
+            if (min < 10) min = '0' + min;
+            
+            counter.text(`${min}:${sec}`);
+            remainingSeconds--;
+        } else {
+            clearInterval(resendCountdownTimer);
+            counter.text('');
+            resendBtn.prop('disabled', false);
+            resendCountdownTimer = null;
+        }
+    };
+    
+    updateResend(); // Initial update
+    resendCountdownTimer = setInterval(updateResend, 1000);
+}
+
+// Start countdown timer (legacy function for modal)
+function startCountdown() {
+    startResendCountdown(60);
+}
+
+// Resend OTP from modal
+function ResendCodeFromModal() {
+    const mobile = $("#mobileno").val();
+    console.log('ResendCodeFromModal called for mobile:', mobile);
+    
+    // Disable resend button and show loading
+    $("#resendCode").prop('disabled', true).text('Sending...');
+    
+    $.ajax({
+        type: 'POST',
+        url: '{{ route("junior-editor.send-otp") }}',
+        data: {
+            mobile: mobile,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            console.log('OTP resend response:', response);
+            if (response.status === '1') {
+                // Start countdown for resend button
+                startResendCountdown(60);
+                // Clear any validation errors for mobile field
+                $("#mobileno").removeClass("error").addClass("valid");
+                $("#mobileno").closest('.form-group').removeClass('has-error');
+            } else {
+                // Handle rate limiting response
+                if (response.rate_limit_info) {
+                    rateLimitInfo = response.rate_limit_info;
+                    const timeRemaining = response.time_remaining || 0;
+                    
+                    if (timeRemaining > 0) {
+                        startResendCountdown(timeRemaining);
+                    }
+                }
+                showFieldError('mobileno', response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('OTP resend error:', error);
+            showFieldError('mobileno', 'Failed to resend OTP. Please try again.');
+        },
+        complete: function() {
+            // Re-enable button
+            $("#resendCode").prop('disabled', false).text('Resend OTP');
+        }
+    });
 }
 
 // Fetch all states
@@ -814,7 +988,8 @@ function createOrder() {
                 console.log('Order created successfully, opening Razorpay...');
                 openRazorpayCheckout(response.data);
             } else {
-                notify('danger', response.message);
+                // Show error using jQuery validation
+                showFormError(response.message);
             }
             
             // Reset submit button state
@@ -826,7 +1001,7 @@ function createOrder() {
             console.error('XHR status:', xhr.status);
             console.error('XHR response:', xhr.responseText);
             console.error('Status:', status);
-            notify('danger', 'Failed to create order. Please try again.');
+            showFormError('Failed to create order. Please try again.');
             
             // Reset submit button state
             const submitBtn = $('button[type="submit"]');
@@ -865,7 +1040,7 @@ function openRazorpayCheckout(orderData) {
         "modal": {
             "ondismiss": function() {
                 console.log('Payment modal dismissed');
-                notify('info', 'Payment cancelled');
+                showFormError('Payment cancelled');
             }
         }
     };
@@ -896,18 +1071,18 @@ function updatePaymentStatus(response, mobile) {
         success: function(response) {
             console.log('Payment status updated:', response);
             if (response.status === '1') {
-                notify('success', 'Payment successful! You will receive a confirmation email shortly.');
-                // Redirect to success page or show success message
+                // Show success message and redirect
+                showFormSuccess('Payment successful! You will receive a confirmation email shortly.');
                 setTimeout(function() {
                     window.location.href = '/payment-success?payment_id=' + response.data.payment_id;
                 }, 2000);
             } else {
-                notify('danger', response.message);
+                showFormError(response.message);
             }
         },
         error: function(xhr, status, error) {
             console.error('Failed to update payment status:', error);
-            notify('danger', 'Payment successful but failed to update status. Please contact support.');
+            showFormError('Payment successful but failed to update status. Please contact support.');
         }
     });
 }
@@ -928,11 +1103,11 @@ function handlePaymentFailure(error, orderId) {
         },
         success: function(response) {
             console.log('Payment failure recorded:', response);
-            notify('danger', 'Payment failed: ' + error.description);
+            showFormError('Payment failed: ' + error.description);
         },
         error: function(xhr, status, error) {
             console.error('Failed to record payment failure:', error);
-            notify('danger', 'Payment failed. Please try again.');
+            showFormError('Payment failed. Please try again.');
         }
     });
     
@@ -962,19 +1137,19 @@ function updateTransaction(response, mobile) {
                 // Show success message
                 $("#successMessage").show();
                 $("#orderForm").hide();
-                notify('success', 'Payment completed successfully!');
+                showFormSuccess('Payment completed successfully!');
                 
                 // Redirect to success page or show receipt
                 setTimeout(function() {
                     window.location.href = '/payment-success?payment_id=' + response.razorpay_payment_id;
                 }, 2000);
             } else {
-                notify('danger', response.message);
+                showFormError(response.message);
             }
         },
         error: function(xhr, status, error) {
             console.error('Payment update error:', error);
-            notify('danger', 'Failed to update payment. Please contact support.');
+            showFormError('Failed to update payment. Please contact support.');
         }
     });
 }
@@ -989,29 +1164,51 @@ function restrictAlphabets(e) {
     }
 }
 
-function notify(type, message) {
-    const alertClass = type === 'success' ? 'alert-success' : 
-                      type === 'danger' ? 'alert-danger' : 
-                      type === 'warning' ? 'alert-warning' : 'alert-info';
+// Show field-specific error message using jQuery Validate
+function showFieldError(fieldId, message) {
+    const field = $('#' + fieldId);
+    const form = field.closest('form');
     
-    const alertHtml = `
-        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-            <i class="bx bx-${type === 'success' ? 'check-circle' : type === 'danger' ? 'x-circle' : 'info-circle'}"></i>
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    `;
-    
-    // Remove existing alerts
-    $('.alert').remove();
-    
-    // Insert new alert
-    $('.contact-form').prepend(alertHtml);
-    
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-        $('.alert').fadeOut();
-    }, 5000);
+    // Use jQuery Validate to show error
+    if (form.length && form.data('validator')) {
+        const validator = form.data('validator');
+        validator.showErrors({
+            [fieldId]: message
+        });
+    } else {
+        // Fallback if validator not available
+        const formGroup = field.closest('.form-group');
+        formGroup.find('.validation-error').remove();
+        field.addClass('error');
+        formGroup.addClass('has-error');
+        
+        // Create error message element
+        const errorElement = $('<div class="validation-error">' + message + '</div>');
+        
+        // For Select2 dropdowns, place error after the Select2 container
+        if (field.hasClass('select2-hidden-accessible')) {
+            errorElement.insertAfter(field.next('.select2-container'));
+        } else {
+            // For other elements, place error after the field
+            errorElement.insertAfter(field);
+        }
+    }
 }
+
+// Show form-level error message
+function showFormError(message) {
+    // Find the first required field and show error there
+    const firstRequiredField = $('#orderForm').find('[required]').first();
+    if (firstRequiredField.length) {
+        showFieldError(firstRequiredField.attr('id'), message);
+    }
+}
+
+// Show form-level success message
+function showFormSuccess(message) {
+    // Show success message in the success div
+    $("#successMessage").html('<i class="bx bx-check-circle"></i>' + message).show();
+}
+
 </script>
 @endpush

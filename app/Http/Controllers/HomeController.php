@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use App\Models\CmsPage;
 use App\Models\CertiStudent;
 use App\Models\CertiDownload;
+use App\Models\MobileVerification;
 
 class HomeController extends Controller
 {
@@ -131,12 +132,38 @@ class HomeController extends Controller
 
         // check if student exists after given date
         $student = CertiStudent::where('mobile_number', $mobile)
-            ->where('created_date', '>', '2024-04-20')
             ->first();
 
         if ($student) {
-            $otp = rand(111111, 999999);
-            $message = $otp . ' is your verification code for Dainik Bhaskar. - Bhaskar Group';
+            // Check if mobile can receive new OTP using MobileVerification model
+            if (!MobileVerification::canSendOtp($mobile)) {
+                $rateLimitInfo = MobileVerification::getRateLimitInfo($mobile);
+                $nextAvailable = $rateLimitInfo['next_available'];
+                
+                if ($nextAvailable) {
+                    $timeRemaining = $nextAvailable->diffInSeconds(now());
+                    return response()->json([
+                        'status' => 0,
+                        'message' => "Please wait {$timeRemaining} seconds before requesting another OTP.",
+                        'data' => []
+                    ], 429);
+                } else {
+                    return response()->json([
+                        'status' => 0,
+                        'message' => 'Too many OTP requests. Please try again later.',
+                        'data' => []
+                    ], 429);
+                }
+            }
+
+            // Generate and store OTP using MobileVerification model
+            $verification = MobileVerification::generateOtp(
+                $mobile, 
+                $request->ip(), 
+                $request->userAgent()
+            );
+
+            $message = $verification->otp . ' is your verification code for Dainik Bhaskar. - Bhaskar Group';
 
             $this->postMessage($mobile, $message);
 
@@ -145,14 +172,58 @@ class HomeController extends Controller
 
             return response()->json([
                 'status'  => 1,
-                'message' => 'Receipt Found! We sent your OTP!',
-                'data'    => $otp,
+                'message' => 'Receipt Found! We sent your OTP!'
             ]);
         } else {
             return response()->json([
                 'status'  => 0,
                 'message' => 'Please enter your registered mobile number.',
                 'data'    => [],
+            ]);
+        }
+    }
+
+    /**
+     * Verify OTP for certificate download
+     */
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'mobile' => 'required|digits:10',
+            'otp' => 'required|digits:6'
+        ]);
+
+        $mobile = $request->mobile;
+        $otp = $request->otp;
+
+        // Check if student exists
+        $student = CertiStudent::where('mobile_number', $mobile)
+            ->where('created_date', '>', '2024-04-20')
+            ->first();
+
+        if (!$student) {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Student not found with this mobile number.',
+            ]);
+        }
+
+        // Verify OTP using MobileVerification model
+        $isVerified = MobileVerification::verifyOtp($mobile, $otp);
+
+        if ($isVerified) {
+            return response()->json([
+                'status' => 1,
+                'message' => 'OTP verified successfully! You can now download your certificate.',
+                'data' => [
+                    'mobile' => $mobile,
+                    'name' => $student->name
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Invalid or expired OTP. Please try again.',
             ]);
         }
     }
@@ -222,6 +293,14 @@ class HomeController extends Controller
             ]);
         }
 
+        // Check if mobile number is verified via OTP
+        if (!MobileVerification::isMobileVerified($mobile)) {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Please verify your mobile number with OTP before downloading certificate.',
+            ]);
+        }
+
         // We'll track the download after successful image generation
 
         // Track the download like in the original certi.php
@@ -236,6 +315,7 @@ class HomeController extends Controller
             // Don't fail the download if tracking fails
             Log::error('Download tracking error: ' . $e->getMessage());
         }
+
 
         // Clear all output buffers first
         while (ob_get_level()) {

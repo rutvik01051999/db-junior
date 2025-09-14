@@ -8,6 +8,7 @@ use App\Models\State;
 use App\Models\City;
 use App\Models\RazorpayPaymentResponse;
 use App\Models\RazorpayPaymentTransaction;
+use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -56,9 +57,23 @@ class JuniorEditorController extends Controller
 
             // Check rate limiting
             if (!MobileVerification::canSendOtp($mobile)) {
+                $rateLimitInfo = MobileVerification::getRateLimitInfo($mobile);
+                $timeRemaining = MobileVerification::getTimeUntilNextOtp($mobile);
+                
+                $message = 'Please wait before requesting another OTP';
+                if ($rateLimitInfo['counts']['per_day'] >= $rateLimitInfo['limits']['per_day']) {
+                    $message = 'Daily OTP limit reached. Please try again tomorrow.';
+                } elseif ($rateLimitInfo['counts']['per_hour'] >= $rateLimitInfo['limits']['per_hour']) {
+                    $message = 'Hourly OTP limit reached. Please try again in an hour.';
+                } elseif ($timeRemaining > 0) {
+                    $message = "Please wait {$timeRemaining} seconds before requesting another OTP";
+                }
+                
                 return response()->json([
                     'status' => '0',
-                    'message' => 'Please wait before requesting another OTP'
+                    'message' => $message,
+                    'rate_limit_info' => $rateLimitInfo,
+                    'time_remaining' => $timeRemaining
                 ]);
             }
 
@@ -69,6 +84,9 @@ class JuniorEditorController extends Controller
                 $request->userAgent()
             );
 
+            // Log OTP activity
+            ActivityLogService::logOtpActivity($request, 'sent', $mobile);
+
             // TODO: Send OTP via SMS service
             // For now, we'll return the OTP in response for testing
             Log::info("OTP for mobile {$mobile}: {$verification->otp}");
@@ -76,7 +94,6 @@ class JuniorEditorController extends Controller
             return response()->json([
                 'status' => '1',
                 'message' => 'OTP sent successfully',
-                'data' => $verification->otp // Remove this in production
             ]);
 
         } catch (\Exception $e) {
@@ -108,11 +125,17 @@ class JuniorEditorController extends Controller
         try {
             // Verify OTP using MobileVerification model
             if (MobileVerification::verifyOtp($request->mobile, $request->otp)) {
+                // Log successful OTP verification
+                ActivityLogService::logOtpActivity($request, 'verified', $request->mobile);
+                
                 return response()->json([
                     'status' => '1',
                     'message' => 'Mobile number verified successfully'
                 ]);
             } else {
+                // Log failed OTP verification
+                ActivityLogService::logOtpActivity($request, 'verification_failed', $request->mobile);
+                
                 return response()->json([
                     'status' => '0',
                     'message' => 'Invalid or expired OTP'
@@ -262,6 +285,9 @@ class JuniorEditorController extends Controller
 
             // Update registration with form data
             $registration->update($updateData);
+
+            // Log form submission activity
+            ActivityLogService::logFormSubmission($request, 'Junior Editor Registration', $request->all());
 
             return response()->json([
                 'status' => '1',
@@ -612,6 +638,43 @@ class JuniorEditorController extends Controller
             'message' => 'Test form submission successful',
             'data' => $request->all()
         ]);
+    }
+
+    /**
+     * Get rate limit information for a mobile number
+     */
+    public function getRateLimitInfo(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|digits:10'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => '0',
+                'message' => 'Please enter a valid 10-digit mobile number'
+            ]);
+        }
+
+        try {
+            $mobile = $request->mobile;
+            $rateLimitInfo = MobileVerification::getRateLimitInfo($mobile);
+            $timeRemaining = MobileVerification::getTimeUntilNextOtp($mobile);
+            
+            return response()->json([
+                'status' => '1',
+                'data' => [
+                    'rate_limit_info' => $rateLimitInfo,
+                    'time_remaining' => $timeRemaining
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Rate limit info failed: ' . $e->getMessage());
+            return response()->json([
+                'status' => '0',
+                'message' => 'Failed to get rate limit information'
+            ]);
+        }
     }
 
     /**
