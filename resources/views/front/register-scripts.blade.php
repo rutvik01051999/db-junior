@@ -112,8 +112,8 @@ $(document).ready(function() {
     setTimeout(function() {
         console.log('Testing form validation...');
         const form = $('#orderForm');
-        const isValid = form.valid();
-        console.log('Form validation test result:', isValid);
+        // const isValid = form.valid();
+        // console.log('Form validation test result:', isValid);
         
         if (form.length > 0) {
             console.log('Form found, validation plugin attached:', form.data('validator') !== undefined);
@@ -938,11 +938,13 @@ function savePartialRegistration() {
 function Checkoutpayment() {
     console.log('Checkoutpayment called');
     console.log('Mobile verified status:', mobile_verified);
-    
+    const form = $('#orderForm');
     // jQuery validation will handle all validation automatically
     // This function is called only when form is valid
     console.log('Calling createOrder...');
-    createOrder();
+    if(form.valid()){
+        createOrder();
+    }
 }
 
 // Create Razorpay order

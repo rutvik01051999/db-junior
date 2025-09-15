@@ -160,12 +160,12 @@ class MobileVerification extends Model
     {
         $now = now();
         
-        // Check per 5 minutes limit (max 1 OTP per 5 minutes)
-        $lastFiveMinutes = self::where('mobile_number', $mobileNumber)
-            ->where('created_at', '>=', $now->copy()->subMinutes(5))
+        // Check per 1 minute limit (max 1 OTP per 1 minute)
+        $lastOneMinute = self::where('mobile_number', $mobileNumber)
+            ->where('created_at', '>=', $now->copy()->subMinutes(1))
             ->count();
         
-        if ($lastFiveMinutes >= 1) {
+        if ($lastOneMinute >= 1) {
             return false;
         }
         
@@ -203,8 +203,8 @@ class MobileVerification extends Model
             ->first();
         
         // Count OTPs in different time windows
-        $lastFiveMinutes = self::where('mobile_number', $mobileNumber)
-            ->where('created_at', '>=', $now->copy()->subMinutes(5))
+        $lastOneMinute = self::where('mobile_number', $mobileNumber)
+            ->where('created_at', '>=', $now->copy()->subMinutes(1))
             ->count();
         
         $lastHour = self::where('mobile_number', $mobileNumber)
@@ -218,7 +218,7 @@ class MobileVerification extends Model
         // Calculate next available time
         $nextAvailable = null;
         if ($lastOtp) {
-            $nextAvailableTime = $lastOtp->created_at->addMinutes(5);
+            $nextAvailableTime = $lastOtp->created_at->addMinutes(1);
             // Only set next available if it's in the future
             if ($nextAvailableTime->isFuture()) {
                 $nextAvailable = $nextAvailableTime;
@@ -230,12 +230,12 @@ class MobileVerification extends Model
             'last_otp_sent' => $lastOtp ? $lastOtp->created_at : null,
             'next_available' => $nextAvailable,
             'counts' => [
-                'per_five_minutes' => $lastFiveMinutes,
+                'per_one_minute' => $lastOneMinute,
                 'per_hour' => $lastHour,
                 'per_day' => $lastDay,
             ],
             'limits' => [
-                'per_five_minutes' => 1,
+                'per_one_minute' => 1,
                 'per_hour' => 5,
                 'per_day' => 100,
             ]

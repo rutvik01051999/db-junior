@@ -419,7 +419,7 @@ function ResendCode() {
                 }
                 
                 // Start countdown timer
-                var timeLeft = 300; // 5 minutes (300 seconds)
+                var timeLeft = 60; // 1 minute (60 seconds)
                 var countDiv = document.getElementById("counter");
                 
                 // Clear any existing content

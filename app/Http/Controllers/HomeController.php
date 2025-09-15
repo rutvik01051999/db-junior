@@ -117,44 +117,44 @@ class HomeController extends Controller
 
         $mobile = $request->mobile;
 
-        // Check daily OTP request limit for this mobile number
-        $config = config('certificate_rate_limit');
-        $dailyOtpKey = $config['cache_prefix']['otp_requests'] . '_daily:' . $mobile . ':' . date('Y-m-d');
-        $dailyOtpCount = Cache::get($dailyOtpKey, 0);
+        // Check daily OTP request limit for this mobile number - COMMENTED OUT
+        // $config = config('certificate_rate_limit');
+        // $dailyOtpKey = $config['cache_prefix']['otp_requests'] . '_daily:' . $mobile . ':' . date('Y-m-d');
+        // $dailyOtpCount = Cache::get($dailyOtpKey, 0);
         
-        if ($dailyOtpCount >= $config['otp_requests']['per_day']) {
-            return response()->json([
-                'status' => 0,
-                'message' => 'Daily OTP limit exceeded. You can request maximum ' . $config['otp_requests']['per_day'] . ' OTPs per day. Please try again tomorrow.',
-                'data' => []
-            ], 429);
-        }
+        // if ($dailyOtpCount >= $config['otp_requests']['per_day']) {
+        //     return response()->json([
+        //         'status' => 0,
+        //         'message' => 'Daily OTP limit exceeded. You can request maximum ' . $config['otp_requests']['per_day'] . ' OTPs per day. Please try again tomorrow.',
+        //         'data' => []
+        //     ], 429);
+        // }
 
         // check if student exists after given date
         $student = CertiStudent::where('mobile_number', $mobile)
             ->first();
 
         if ($student) {
-            // Check if mobile can receive new OTP using MobileVerification model
-            if (!MobileVerification::canSendOtp($mobile)) {
-                $rateLimitInfo = MobileVerification::getRateLimitInfo($mobile);
-                $nextAvailable = $rateLimitInfo['next_available'];
+            // Check if mobile can receive new OTP using MobileVerification model - COMMENTED OUT
+            // if (!MobileVerification::canSendOtp($mobile)) {
+            //     $rateLimitInfo = MobileVerification::getRateLimitInfo($mobile);
+            //     $nextAvailable = $rateLimitInfo['next_available'];
                 
-                if ($nextAvailable) {
-                    $timeRemaining = $nextAvailable->diffInSeconds(now());
-                    return response()->json([
-                        'status' => 0,
-                        'message' => "Please wait {$timeRemaining} seconds before requesting another OTP.",
-                        'data' => []
-                    ], 429);
-                } else {
-                    return response()->json([
-                        'status' => 0,
-                        'message' => 'Too many OTP requests. Please try again later.',
-                        'data' => []
-                    ], 429);
-                }
-            }
+            //     if ($nextAvailable) {
+            //         $timeRemaining = $nextAvailable->diffInSeconds(now());
+            //         return response()->json([
+            //             'status' => 0,
+            //             'message' => "Please wait {$timeRemaining} seconds before requesting another OTP.",
+            //             'data' => []
+            //         ], 429);
+            //     } else {
+            //         return response()->json([
+            //             'status' => 0,
+            //             'message' => 'Too many OTP requests. Please try again later.',
+            //             'data' => []
+            //         ], 429);
+            //     }
+            // }
 
             // Generate and store OTP using MobileVerification model
             $verification = MobileVerification::generateOtp(
@@ -167,8 +167,8 @@ class HomeController extends Controller
 
             $this->postMessage($mobile, $message);
 
-            // Increment daily OTP request counter
-            Cache::put($dailyOtpKey, $dailyOtpCount + 1, now()->endOfDay());
+            // Increment daily OTP request counter - COMMENTED OUT
+            // Cache::put($dailyOtpKey, $dailyOtpCount + 1, now()->endOfDay());
 
             return response()->json([
                 'status'  => 1,
@@ -269,17 +269,17 @@ class HomeController extends Controller
 
         $mobile = $request->mobile;
 
-        // Check daily download limit for this mobile number
-        $config = config('certificate_rate_limit');
-        $dailyDownloadKey = $config['cache_prefix']['downloads'] . '_daily:' . $mobile . ':' . date('Y-m-d');
-        $dailyDownloadCount = Cache::get($dailyDownloadKey, 0);
+        // Check daily download limit for this mobile number - COMMENTED OUT
+        // $config = config('certificate_rate_limit');
+        // $dailyDownloadKey = $config['cache_prefix']['downloads'] . '_daily:' . $mobile . ':' . date('Y-m-d');
+        // $dailyDownloadCount = Cache::get($dailyDownloadKey, 0);
         
-        if ($dailyDownloadCount >= $config['downloads']['per_day']) {
-            return response()->json([
-                'status' => 0,
-                'message' => str_replace(':limit', $config['downloads']['per_day'], $config['error_messages']['too_many_downloads']),
-            ], 429);
-        }
+        // if ($dailyDownloadCount >= $config['downloads']['per_day']) {
+        //     return response()->json([
+        //         'status' => 0,
+        //         'message' => str_replace(':limit', $config['downloads']['per_day'], $config['error_messages']['too_many_downloads']),
+        //     ], 429);
+        // }
 
         // Check if student exists
         $student = CertiStudent::where('mobile_number', $mobile)
@@ -379,8 +379,8 @@ class HomeController extends Controller
         imagejpeg($image, null, 100);
         imagedestroy($image);
         
-        // Increment daily download counter
-        Cache::put($dailyDownloadKey, $dailyDownloadCount + 1, now()->endOfDay());
+        // Increment daily download counter - COMMENTED OUT
+        // Cache::put($dailyDownloadKey, $dailyDownloadCount + 1, now()->endOfDay());
         
         exit;
     }

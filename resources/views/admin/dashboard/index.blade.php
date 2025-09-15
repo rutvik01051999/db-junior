@@ -24,7 +24,7 @@
                         <div class="flex-fill">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <span class="fw-semibold text-muted d-block mb-1">Junior Editors</span>
+                                    <span class="fw-semibold text-muted d-block mb-1">Registered Users</span>
                                     <h4 class="fw-semibold mb-0">{{ $moduleStats['junior_editors']['total'] }}</h4>
                                 </div>
                                 <div class="text-end">

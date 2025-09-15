@@ -127,7 +127,7 @@
                     filesize: 102400 // 100MB
                 },
                 is_active: {
-                    required: true
+                    required: false
                 }
             },
             messages: {
@@ -142,7 +142,7 @@
                     filesize: "File size must be less than 100MB"
                 },
                 is_active: {
-                    required: "Please set the video status"
+                    required: false
                 }
             },
             errorElement: 'div',
