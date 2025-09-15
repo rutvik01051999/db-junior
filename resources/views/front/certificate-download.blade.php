@@ -138,6 +138,12 @@
 
 @push('styles')
 <style>
+.bxl-instagram{
+margin-top: 8px;
+}
+.bxl-facebook{
+    margin-top: 8px;
+}
 /* Validation Error Styling */
 .invalid-feedback {
     display: block;
