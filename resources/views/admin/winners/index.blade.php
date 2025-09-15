@@ -3,7 +3,7 @@
 @section('title', 'Winner Management')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid alert-container">
     @include('admin.layouts.partials.page-header', [
         'title' => 'Winner Management',
         'breadcrumb' => [
@@ -188,6 +188,7 @@ $(document).ready(function() {
         // Validate file selection
         var fileInput = $('#csv_file')[0];
         if (!fileInput.files || fileInput.files.length === 0) {
+            console.log('No file selected');
             showAlert('error', 'Please select a CSV file to upload.');
             return false;
         }
@@ -226,12 +227,10 @@ $(document).ready(function() {
                         var alertHtml = `
                             <div class="alert alert-success alert-dismissible fade show" role="alert" id="mainAlert">
                                 ${response.message}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+                               
                             </div>
                         `;
-                        $('.container-fluid').prepend(alertHtml);
+                        $('.alert-container').prepend(alertHtml);
                         
                         // Auto-hide after 5 seconds
                         setTimeout(function() {
@@ -333,6 +332,7 @@ $(document).ready(function() {
 
 // Global showAlert function
 window.showAlert = function(type, message) {
+    console.log('Showing alert:', type, message);
     // Remove all existing alerts first
     $('.alert').remove();
     
@@ -353,7 +353,7 @@ window.showAlert = function(type, message) {
     `;
     
     // Insert new alert at the top of the container
-    $('.container-fluid').prepend(alertHtml);
+    $('.alert-container').prepend(alertHtml);
     
     // Auto-hide after 5 seconds
     setTimeout(function() {

@@ -242,6 +242,7 @@ Route::prefix('admin/employees')->name('admin.employees.')->middleware(['auth', 
     Route::get('/create', [EmployeeController::class, 'create'])->name('create');
     Route::post('/', [EmployeeController::class, 'store'])->name('store');
     Route::get('/{employee}', [EmployeeController::class, 'show'])->name('show');
+    Route::delete('/{employee}', [EmployeeController::class, 'destroy'])->name('destroy');
     Route::post('/fetch-data', [EmployeeController::class, 'fetchEmployeeData'])->name('fetch-data');
 });
 

@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     {{-- Image Column - Alternates position based on even/odd --}}
                     @if($hasImage)
-                        <div class="col-lg-4 {{ $isEven ? 'order-lg-2' : 'order-lg-1' }}">
+                        <div class="col-lg-6 {{ $isEven ? 'order-lg-2' : 'order-lg-1' }}">
                             <div class="value-image">
                                 <img src="{{ $process->image_url }}" alt="{{ $process->title }}" class="img-fluid rounded shadow-sm">
                             </div>
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     @endif
 
                     {{-- Content Column - Alternates position based on even/odd --}}
-                    <div class="col-lg-{{ $hasImage ? '8' : '12' }} {{ $hasImage ? ($isEven ? 'order-lg-1' : 'order-lg-2') : '' }}">
+                    <div class="col-lg-{{ $hasImage ? '6' : '12' }} {{ $hasImage ? ($isEven ? 'order-lg-1' : 'order-lg-2') : '' }}">
                         <div class="value-item">
                             <div class="value-content">
                                 <h3 class="mb-4">{{ $process->title }}</h3>

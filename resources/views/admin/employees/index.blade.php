@@ -60,8 +60,15 @@
                                                 <div class="btn-group" role="group">
                                                     <a href="{{ route('admin.employees.show', $employee->id) }}" 
                                                        class="btn btn-sm btn-info" style="height: fit-content;">
-                                                        <i class="bx bx-show"></i> View
+                                                        <i class="bx bx-show"></i> 
                                                     </a>
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-danger delete-employee" 
+                                                            data-id="{{ $employee->id }}" 
+                                                            data-name="{{ $employee->full_name }}"
+                                                            style="height: fit-content;">
+                                                        <i class="bx bx-trash"></i> 
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -83,3 +90,54 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(document).ready(function() {
+    // Delete Employee
+    $(document).on('click', '.delete-employee', function() {
+        var employeeId = $(this).data('id');
+        var employeeName = $(this).data('name') || 'this employee';
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `You are about to delete ${employeeName}. This action cannot be undone!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Create a form to submit the delete request
+                var form = $('<form>', {
+                    'method': 'POST',
+                    'action': '{{ route("admin.employees.destroy", ":id") }}'.replace(':id', employeeId)
+                });
+                
+                // Add CSRF token
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': '_token',
+                    'value': '{{ csrf_token() }}'
+                }));
+                
+                // Add method override for DELETE
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': '_method',
+                    'value': 'DELETE'
+                }));
+                
+                // Append form to body and submit
+                $('body').append(form);
+                form.submit();
+            }
+        });
+    });
+});
+</script>
+@endpush

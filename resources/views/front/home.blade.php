@@ -1,5 +1,14 @@
 @extends('front.layouts.app')
 
+<style>
+.bxl-instagram{
+margin-top: 8px;
+}
+.bxl-facebook{
+    margin-top: 8px;
+}
+</style>
+
 {{-- Dynamic Banner Section --}}
 <div class="main-banner main-banner-home">
     <x-dynamic-banner :bannerSections="$bannerSections" />

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
@@ -25,7 +26,10 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = User::role('Admin')->orderBy('created_at', 'desc')->paginate(15);
+        $employees = User::role('Admin')
+            ->where('id', '!=', Auth::id()) // Exclude current logged-in user
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
         return view('admin.employees.index', compact('employees'));
     }
 
@@ -130,5 +134,37 @@ class EmployeeController extends Controller
         }
         
         return view('admin.employees.show', compact('employee'));
+    }
+
+    /**
+     * Remove the specified employee from storage
+     */
+    public function destroy(User $employee)
+    {
+        try {
+            // Prevent users from deleting themselves
+            if ($employee->id === Auth::id()) {
+                return redirect()->route('admin.employees.index')
+                    ->with('error', 'You cannot delete your own account.');
+            }
+
+            // Ensure the user has Admin role
+            if (!$employee->hasRole('Admin')) {
+                abort(404, 'Employee not found');
+            }
+
+            // Remove the Admin role first
+            $employee->removeRole('Admin');
+            
+            // Delete the user
+            $employee->delete();
+            
+            return redirect()->route('admin.employees.index')
+                ->with('success', 'Employee deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete employee: ' . $e->getMessage());
+            return redirect()->route('admin.employees.index')
+                ->with('error', 'Failed to delete employee. Please try again.');
+        }
     }
 }
