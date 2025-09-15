@@ -5403,5 +5403,12 @@ Buy Now Btn
 .certificate-download-area{
   padding-top: 130px !important;
 }
+body{
+  text-align: justify !important;
+}
 
+
+.process-section-windows{
+  padding-bottom:30px !important;
+}
 

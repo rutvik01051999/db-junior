@@ -38,9 +38,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($employees as $employee)
+                                    @foreach($employees as $index => $employee)
                                         <tr>
-                                            <td>{{ $employee->id }}</td>
+                                            <td>{{ ($employees->currentPage() - 1) * $employees->perPage() + $index + 1 }}</td>
                                             <td><span class="badge bg-primary">{{ $employee->username }}</span></td>
                                             <td>{{ $employee->full_name }}</td>
                                             <td><a href="mailto:{{ $employee->email }}">{{ $employee->email }}</a></td>

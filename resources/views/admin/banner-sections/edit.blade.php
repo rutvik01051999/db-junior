@@ -52,7 +52,7 @@
                                     <div class="col-12">
                                         <div class="form-group mb-3">
                                             <label for="title" class="form-label fw-bold">Title <span class="text-danger">*</span></label>
-                                            <input type="text" name="title" id="title" class="form-control form-control-lg @error('title') is-invalid @enderror" value="{{ old('title', $bannerSection->title) }}" placeholder="Enter banner title" required>
+                                            <textarea name="title" id="title" class="form-control @error('title') is-invalid @enderror" rows="3" placeholder="Enter banner title" required>{{ old('title', $bannerSection->title) }}</textarea>
                                             @error('title')
                                                 <div class="invalid-feedback">
                                                     <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
@@ -171,7 +171,34 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
 <script>
 $(document).ready(function() {
-    // Initialize CKEditor
+    // Initialize CKEditor for Title
+    ClassicEditor
+        .create(document.querySelector('#title'), {
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', 'underline', '|',
+                    'link', '|',
+                    'undo', 'redo'
+                ]
+            },
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                ]
+            }
+        })
+        .then(editor => {
+            window.titleEditor = editor;
+        })
+        .catch(error => {
+            console.error('Error initializing Title CKEditor:', error);
+        });
+
+    // Initialize CKEditor for Description
     ClassicEditor
         .create(document.querySelector('#description'), {
             toolbar: {
@@ -237,6 +264,9 @@ $(document).ready(function() {
         },
         submitHandler: function(form) {
             // Update textarea with CKEditor content before submit
+            if (window.titleEditor) {
+                window.titleEditor.updateSourceElement();
+            }
             if (window.descriptionEditor) {
                 window.descriptionEditor.updateSourceElement();
             }

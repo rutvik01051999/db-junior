@@ -62,7 +62,7 @@
                                     </td>
                                     <td>
                                         
-                                            {{ $banner->title }}
+                                            {!! $banner->title !!}
                                        
                                     </td>
                                     <td>{!! Str::limit($banner->description, 50) !!}</td>

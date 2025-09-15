@@ -193,7 +193,7 @@
 
 /* Ensure proper spacing between alternating sections */
 .process-section:not(:last-child) {
-    border-bottom: 1px solid #eee;
+    /* border-bottom: 1px solid #eee; */
     padding-bottom: 80px;
 }
 
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 @if($processes && $processes->count() > 0)
     @foreach($processes as $processIndex => $process)
-        <section class="value-area ptb-50 process-section {{ $processIndex > 0 ? 'mt-0' : '' }}">
+        <section class="value-area ptb-50 process-section process-section-windows {{ $processIndex > 0 ? 'mt-0' : '' }}">
             <div class="container">
                 <div class="row align-items-center">
                     @php

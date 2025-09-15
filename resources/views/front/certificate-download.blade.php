@@ -121,6 +121,7 @@
                     <div class='form-group col-md-8'>
                         <input type='text' class='form-control' placeholder='Please enter your OTP' id='dialog_otp'
                                maxlength="6" onkeypress="return restrictAlphabets(event)">
+                        <div id="otpMessage" class="mt-2" style="display: none;"></div>
                     </div>
                     <div class='form-group col-md-4'>
                         <input type="button" class="default-btn form-control" value="Verify" id='check_otp' onclick="CheckOTP()"/>
@@ -201,6 +202,28 @@
     border-radius: 0.25rem;
     padding: 0.5rem;
 }
+
+/* OTP Modal Message Styling */
+#otpMessage {
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+#otpMessage.error {
+    color: #dc3545;
+    /* background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 0.25rem;
+    padding: 0.5rem; */
+}
+
+#otpMessage.success {
+    color: #28a745;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+}
 </style>
 @endpush
 
@@ -272,6 +295,24 @@ $(document).ready(function() {
     // Clear OTP input error state when user starts typing
     $('#dialog_otp').on('input', function() {
         $(this).css('border-color', '');
+        hideOtpMessage(); // Hide any OTP validation messages
+    });
+    
+    // Clear timer when modal is closed
+    $('#otpModal').on('hidden.bs.modal', function() {
+        if (window.otpCountdownTimer) {
+            clearInterval(window.otpCountdownTimer);
+            window.otpCountdownTimer = null;
+        }
+        $('#counter').html('');
+    });
+    
+    // Clear timer when page is unloaded
+    $(window).on('beforeunload', function() {
+        if (window.otpCountdownTimer) {
+            clearInterval(window.otpCountdownTimer);
+            window.otpCountdownTimer = null;
+        }
     });
 });
 
@@ -293,6 +334,29 @@ function showMessage(message, type) {
 // Function to hide message
 function hideMessage() {
     var messageDiv = document.getElementById('mobileMessage');
+    messageDiv.style.display = 'none';
+    messageDiv.className = '';
+    messageDiv.innerHTML = '';
+}
+
+// Function to show OTP message in modal
+function showOtpMessage(message, type) {
+    var messageDiv = document.getElementById('otpMessage');
+    messageDiv.className = type;
+    messageDiv.innerHTML = message;
+    messageDiv.style.display = 'block';
+    
+    // Auto-hide success messages after 3 seconds
+    if (type === 'success') {
+        setTimeout(function() {
+            messageDiv.style.display = 'none';
+        }, 3000);
+    }
+}
+
+// Function to hide OTP message
+function hideOtpMessage() {
+    var messageDiv = document.getElementById('otpMessage');
     messageDiv.style.display = 'none';
     messageDiv.className = '';
     messageDiv.innerHTML = '';
@@ -343,38 +407,39 @@ function ResendCode() {
                 // Show OTP modal
                 $('#otpModal').modal('show');
                 $('#span_mobile').html(mobile);
-                // Clear previous OTP input
+                // Clear previous OTP input and messages
                 $('#dialog_otp').val('').css('border-color', '');
+                hideOtpMessage();
                 // Don't store OTP on client side for security
                 $('#resendCode').attr('disabled', true);
                 
-                // Start countdown timer
-                var sec = 60;
-                var countDiv = document.getElementById("counter");
-                var countDown = setInterval(function() {
-                    secpass();
-                }, 1000);
-
-                function secpass() {
-                    var min = Math.floor(sec / 60);
-                    var remSec = sec % 60;
-                    if (remSec < 10) {
-                        remSec = '0' + remSec;
-                    }
-                    if (min < 10) {
-                        min = '0' + min;
-                    }
-                    countDiv.innerHTML = min + ":" + remSec;
-                    if (sec > 0) {
-                        sec = sec - 1;
-                    } else {
-                        clearInterval(countDown);
-                        countDiv.innerHTML = '00:00';
-                    }
-                    if (countDiv.innerHTML === '00:00') {
-                        $('#resendCode').attr('disabled', false);
-                    }
+                // Clear any existing timer first
+                if (window.otpCountdownTimer) {
+                    clearInterval(window.otpCountdownTimer);
                 }
+                
+                // Start countdown timer
+                var timeLeft = 300; // 5 minutes (300 seconds)
+                var countDiv = document.getElementById("counter");
+                
+                // Clear any existing content
+                countDiv.innerHTML = '';
+                
+                window.otpCountdownTimer = setInterval(function() {
+                    timeLeft--;
+                    
+                    if (timeLeft > 0) {
+                        // Display remaining time - ensure it's a positive whole number
+                        var displayTime = Math.max(0, Math.floor(timeLeft));
+                        countDiv.innerHTML = 'Please wait - ' + displayTime + ' seconds.';
+                    } else {
+                        // Timer finished
+                        clearInterval(window.otpCountdownTimer);
+                        countDiv.innerHTML = '';
+                        $('#resendCode').attr('disabled', false);
+                        window.otpCountdownTimer = null;
+                    }
+                }, 1000);
             } else {
                 showMessage('<i class="fas fa-exclamation-circle me-2"></i>' + response.message, 'error');
                 document.getElementById('mobileno').focus();
@@ -396,18 +461,21 @@ function CheckOTP() {
     var mobile = $('#mobileno').val();
     var verifyBtn = $('#check_otp');
     
+    // Hide any previous OTP messages
+    hideOtpMessage();
+    
     // Basic validation
     if (entered_otp == '') {
         $('#dialog_otp').css('border-color', 'red');
         $('#dialog_otp').focus();
-        showMessage('<i class="fas fa-exclamation-circle me-2"></i>Please enter OTP', 'error');
+        showOtpMessage('<i class="fas fa-exclamation-circle me-2"></i>Please enter OTP', 'error');
         return;
     }
     
     if (entered_otp.length != 6) {
         $('#dialog_otp').css('border-color', 'red');
         $('#dialog_otp').focus();
-        showMessage('<i class="fas fa-exclamation-circle me-2"></i>Please enter valid 6 digits OTP', 'error');
+        showOtpMessage('<i class="fas fa-exclamation-circle me-2"></i>Please enter valid 6 digits OTP', 'error');
         return;
     }
     
@@ -438,7 +506,7 @@ function CheckOTP() {
                 GetCertificate(mobile);
             } else {
                 // OTP verification failed
-                showMessage('<i class="fas fa-exclamation-circle me-2"></i>' + response.message, 'error');
+                showOtpMessage('<i class="fas fa-exclamation-circle me-2"></i>' + response.message, 'error');
                 $('#dialog_otp').css('border-color', 'red');
                 $('#dialog_otp').focus();
             }
@@ -448,7 +516,7 @@ function CheckOTP() {
             if (xhr.responseJSON && xhr.responseJSON.message) {
                 errorMessage = xhr.responseJSON.message;
             }
-            showMessage('<i class="fas fa-exclamation-triangle me-2"></i>' + errorMessage, 'error');
+            showOtpMessage('<i class="fas fa-exclamation-triangle me-2"></i>' + errorMessage, 'error');
             $('#dialog_otp').css('border-color', 'red');
             $('#dialog_otp').focus();
         },

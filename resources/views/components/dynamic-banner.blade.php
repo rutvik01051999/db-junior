@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <br>
                                     <div class="banner-content">
                                         @if($banner->title)
-                                            <h3 style="text-align:center;color: #2882C3;" class="mb-3">{{ $banner->title }}</h3>
+                                            <h3 style="text-align:center;" class="mb-3">{!! $banner->title !!}</h3>
                                         @endif
                                         @if($banner->description)
                                             <div class="banner-description rich-content" style="color: black;max-width: 103%;font-size: 18px;text-align: center;">

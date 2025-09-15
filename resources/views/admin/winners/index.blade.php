@@ -146,6 +146,7 @@
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 $(document).ready(function() {
@@ -172,33 +173,37 @@ $(document).ready(function() {
             pageLength: 25,
             responsive: true,
             dom: 'Bfrtip',
-            buttons: [
-                {
-                    text: 'Reload',
-                    action: function ( e, dt, node, config ) {
-                        dt.ajax.reload();
-                    }
-                }
-            ]
+            buttons: []
         });
     }
     // CSV Upload Form - prevent multiple submissions
     // Ensure handler is only attached once
     if (!$('#csvUploadForm').data('handler-attached')) {
         $('#csvUploadForm').data('handler-attached', true);
+        console.log('Attaching CSV upload handler');
         $('#csvUploadForm').off('submit').on('submit', function(e) {
         e.preventDefault();
         e.stopImmediatePropagation(); // Prevent multiple event handlers
+        
+        // Validate file selection
+        var fileInput = $('#csv_file')[0];
+        if (!fileInput.files || fileInput.files.length === 0) {
+            showAlert('error', 'Please select a CSV file to upload.');
+            return false;
+        }
         
         var formData = new FormData(this);
         var uploadBtn = $('#uploadBtn');
         var originalText = uploadBtn.html();
         
         // Prevent multiple submissions
-        if (uploadBtn.prop('disabled')) {
+        if (uploadBtn.prop('disabled') || window.csvUploadInProgress) {
             console.log('Form submission blocked - already processing');
             return false;
         }
+        
+        // Set upload in progress flag
+        window.csvUploadInProgress = true;
         
         console.log('Starting CSV upload...');
         uploadBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Uploading...');
@@ -211,20 +216,44 @@ $(document).ready(function() {
             contentType: false,
             success: function(response) {
                 console.log('CSV upload response:', response);
+                console.log('Success callback called - csvSuccessShown:', window.csvSuccessShown, 'mainAlert exists:', $('#mainAlert').length);
                 if (response.status === 'success') {
-                    // Only show alert once
-                    if (!$('#mainAlert').length) {
-                        showAlert('success', response.message);
+                    // Only show alert once - more aggressive prevention
+                    if (!$('#mainAlert').length && !window.csvSuccessShown) {
+                        window.csvSuccessShown = true;
+                        
+                        // Create alert directly without using showAlert function
+                        var alertHtml = `
+                            <div class="alert alert-success alert-dismissible fade show" role="alert" id="mainAlert">
+                                ${response.message}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        `;
+                        $('.container-fluid').prepend(alertHtml);
+                        
+                        // Auto-hide after 5 seconds
+                        setTimeout(function() {
+                            $('#mainAlert').fadeOut(function() {
+                                $(this).remove();
+                                window.csvSuccessShown = false;
+                            });
+                        }, 5000);
                     }
                     $('#csvUploadForm')[0].reset();
                     
                     // Hide file preview
                     $('#filePreviewContainer').addClass('d-none');
                     
-                    // Reload DataTable
-                    $('#winners-table').DataTable().ajax.reload();
+                    // Reload DataTable with slight delay
+                    setTimeout(function() {
+                        if ($.fn.DataTable.isDataTable('#winners-table')) {
+                            $('#winners-table').DataTable().ajax.reload();
+                        }
+                    }, 100);
                 } else {
-                    showAlert('error', response.message);
+                  //  showAlert('error', response.message);
                     if (response.errors) {
                         console.log('Validation errors:', response.errors);
                     }
@@ -238,6 +267,7 @@ $(document).ready(function() {
             complete: function() {
                 console.log('CSV upload completed');
                 uploadBtn.prop('disabled', false).html(originalText);
+                window.csvUploadInProgress = false; // Clear upload in progress flag
             }
         });
         }); // Close the if statement
@@ -246,29 +276,58 @@ $(document).ready(function() {
     // Delete Winner
     $(document).on('click', '.delete-winner', function() {
         var winnerId = $(this).data('id');
-        var row = $(this).closest('tr');
+        var winnerName = $(this).data('name') || 'this winner';
         
-        if (confirm('Are you sure you want to delete this winner?')) {
-            $.ajax({
-                url: '{{ route("admin.winners.destroy", ":id") }}'.replace(':id', winnerId),
-                type: 'DELETE',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        showAlert('success', response.message);
-                        $('#winners-table').DataTable().ajax.reload();
-                    } else {
-                        showAlert('error', response.message);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `You are about to delete ${winnerName}. This action cannot be undone!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route("admin.winners.destroy", ":id") }}'.replace(':id', winnerId),
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                $('#winners-table').DataTable().ajax.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message,
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        var response = xhr.responseJSON;
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.message || 'Failed to delete winner',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#3085d6'
+                        });
                     }
-                },
-                error: function(xhr) {
-                    var response = xhr.responseJSON;
-                    showAlert('error', response.message || 'Failed to delete winner');
-                }
-            });
-        }
+                });
+            }
+        });
     });
 });
 
@@ -277,20 +336,19 @@ window.showAlert = function(type, message) {
     // Remove all existing alerts first
     $('.alert').remove();
     
-    // Prevent duplicate alerts with same message
-    if (window.lastAlertMessage === message) {
+    // Prevent duplicate alerts with same message within 2 seconds
+    var now = Date.now();
+    if (window.lastAlertMessage === message && window.lastAlertTime && (now - window.lastAlertTime) < 2000) {
         console.log('Duplicate alert prevented:', message);
         return;
     }
     window.lastAlertMessage = message;
+    window.lastAlertTime = now;
     
     var alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
     var alertHtml = `
         <div class="alert ${alertClass} alert-dismissible fade show" role="alert" id="mainAlert">
             ${message}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
         </div>
     `;
     
@@ -302,6 +360,7 @@ window.showAlert = function(type, message) {
         $('#mainAlert').fadeOut(function() {
             $(this).remove();
             window.lastAlertMessage = null; // Reset after hiding
+            window.lastAlertTime = null; // Reset timestamp
         });
     }, 5000);
 }
@@ -311,9 +370,7 @@ function downloadSampleCSV() {
     var timestamp = Date.now();
     var csvContent = "John Doe,john@example.com," + (6000000000 + (timestamp % 1000000)) + ",2024-01-15\n" +
                      "Jane Smith,jane@example.com," + (7000000000 + ((timestamp + 1) % 1000000)) + ",2024-01-16\n" +
-                     "Mike Johnson,,8345678901,2024-01-17\n" +
-                     "Sarah Wilson,sarah@example.com," + (9000000000 + ((timestamp + 3) % 1000000)) + ",2024-01-18\n" +
-                     "David Brown,,6567890123,2024-01-19";
+                     "Sarah Wilson,sarah@example.com," + (9000000000 + ((timestamp + 3) % 1000000)) + ",2024-01-18";
     var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     var link = document.createElement("a");
     var url = URL.createObjectURL(blob);

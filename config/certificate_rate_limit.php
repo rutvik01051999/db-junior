@@ -15,7 +15,7 @@ return [
     'otp_requests' => [
         'per_minute' => 5,        // Max OTP requests per minute per mobile/IP
         'per_hour' => 10,         // Max OTP requests per hour per mobile/IP
-        'per_day' => 5,           // Max OTP requests per day per mobile
+        'per_day' => 100,         // Max OTP requests per day per mobile
     ],
 
     'downloads' => [

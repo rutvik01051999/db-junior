@@ -24,6 +24,7 @@ class ActivityLogDataTable extends BaseDataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
+            ->addIndexColumn()
             ->addColumn('causer', function ($q) {
                 if ($q->causer) {
                     return $q->causer->full_name ?? $q->causer->name ?? 'Admin User';
@@ -97,6 +98,7 @@ class ActivityLogDataTable extends BaseDataTable
     public function getColumns(): array
     {
         return [
+            Column::make('DT_RowIndex')->title('#')->orderable(false)->searchable(false),
             Column::make('id')->visible(false)->searchable(false)->exportable(false),
             Column::make('causer')->title('User'),
             Column::make('activity_type')->title('Type'),

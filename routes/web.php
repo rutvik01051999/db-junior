@@ -44,7 +44,7 @@ Route::get('certificate', [HomeController::class, 'certificateGet'])->name('cert
 Route::get('register/form', [HomeController::class, 'registerForm'])->name('register.form');
 Route::post('certificate/send-otp', [HomeController::class, 'sendOtp'])->name('certificate.send-otp');
 Route::post('certificate/verify-otp', [HomeController::class, 'verifyOtp'])->name('certificate.verify-otp');
-Route::post('certificate/download', [HomeController::class, 'certificateDownload'])->name('certificate.download')->middleware('certificate.rate.limit:5,1');
+Route::post('certificate/download', [HomeController::class, 'certificateDownload'])->name('certificate.download')->middleware('certificate.rate.limit:1,5');
 Route::get('certificate/generate', [HomeController::class, 'certificateGenerate'])->name('certificate.generate')->middleware('certificate.rate.limit:5,1');
 Route::post('certificate/download-jpg', [HomeController::class, 'certificateDownloadJpg'])->name('certificate.download-jpg')->middleware('certificate.rate.limit:3,1');
 

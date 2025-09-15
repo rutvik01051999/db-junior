@@ -125,7 +125,7 @@ class HomeController extends Controller
         if ($dailyOtpCount >= $config['otp_requests']['per_day']) {
             return response()->json([
                 'status' => 0,
-                'message' => $config['error_messages']['too_many_otp_requests'],
+                'message' => 'Daily OTP limit exceeded. You can request maximum ' . $config['otp_requests']['per_day'] . ' OTPs per day. Please try again tomorrow.',
                 'data' => []
             ], 429);
         }

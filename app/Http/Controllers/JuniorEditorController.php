@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class JuniorEditorController extends Controller
 {
@@ -87,8 +88,10 @@ class JuniorEditorController extends Controller
             // Log OTP activity
             ActivityLogService::logOtpActivity($request, 'sent', $mobile);
 
-            // TODO: Send OTP via SMS service
-            // For now, we'll return the OTP in response for testing
+            // Send OTP via SMS (same format as certificate download)
+            $message = $verification->otp . ' is your verification code for Dainik Bhaskar. - Bhaskar Group';
+            $this->postMessage($mobile, $message);
+            
             Log::info("OTP for mobile {$mobile}: {$verification->otp}");
 
             return response()->json([
@@ -102,6 +105,31 @@ class JuniorEditorController extends Controller
                 'status' => '0',
                 'message' => 'Failed to send OTP. Please try again.'
             ]);
+        }
+    }
+
+    /**
+     * Send SMS via Infobip
+     */
+    private function postMessage($numbers, $message)
+    {
+        if (strlen($numbers) <= 10) {
+            $numbers = "91" . $numbers;
+        }
+        $url = "https://api.infobip.com/sms/1/text/query?username=missedcall&password=M!ssedc@ll2209&to=" . urlencode($numbers) . "&text=" . urlencode($message) . "&from=BHASKR&indiaDltPrincipalEntityId=1101693520000011534&indiaDltContentTemplateId=1107161140374009077";
+
+        try {
+            $response = Http::get($url);
+
+            Log::info('Infobip SMS Response', [
+                'mobile'   => $numbers,
+                'response' => $response->body(),
+            ]);
+
+            return $response->body();
+        } catch (\Exception $e) {
+            Log::error('Infobip SMS Error: ' . $e->getMessage());
+            return false;
         }
     }
 

@@ -15,8 +15,7 @@
            name="{{ $name }}" 
            id="{{ $name }}" 
            class="d-none @error($name) is-invalid @enderror" 
-           accept="{{ $accept }}" 
-           @if($required) required @endif>
+           accept="{{ $accept }}">
     
     <!-- Upload Area -->
     <div class="card border-2 border-dashed border-primary">

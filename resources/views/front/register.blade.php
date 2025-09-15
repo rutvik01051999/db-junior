@@ -734,8 +734,8 @@
     
     /* Valid state for Select2 */
     .select2-container--bootstrap-5.valid .select2-selection {
-        border-color: #28a745;
-        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        /* border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); */
     }
     
     /* Error message positioning for Select2 dropdowns */

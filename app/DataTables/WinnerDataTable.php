@@ -20,7 +20,7 @@ class WinnerDataTable extends DataTable
             ->eloquent($query)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
-                $btn = '<a href="javascript:void(0)" class="btn btn-danger btn-sm delete-winner" data-id="' . $row->id . '">Delete</a>';
+                $btn = '<a href="javascript:void(0)" class="btn btn-danger btn-sm delete-winner" data-id="' . $row->id . '" data-name="' . htmlspecialchars($row->name) . '">Delete</a>';
                 return $btn;
             })
             ->rawColumns(['action']);
@@ -43,9 +43,6 @@ class WinnerDataTable extends DataTable
             ->setTableId('winners-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->buttons(
-                Button::make('reload')
-            )
             ->parameters([
                 'responsive' => true,
                 'autoWidth' => false,
