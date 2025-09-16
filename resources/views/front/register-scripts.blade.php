@@ -5,6 +5,9 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- jQuery UI for Datepicker -->
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/ui-lightness/jquery-ui.css">
 
 <script>
 
@@ -16,19 +19,65 @@ var otpCountdownTimer = null;
 var resendCountdownTimer = null;
 var rateLimitInfo = null;
 
+// Age validation feedback function
+function validateAgeFeedback(dateValue) {
+    if (!dateValue) return;
+    
+    // Handle dd/mm/yy format from jQuery UI datepicker
+    const dateParts = dateValue.split('/');
+    if (dateParts.length !== 3) return;
+    
+    const birthDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    let actualAge = age;
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        actualAge--;
+    }
+    
+    // Create or update age validation message
+    let ageValidation = $('#ageValidation');
+    if (ageValidation.length === 0) {
+        ageValidation = $('<div class="age-validation" id="ageValidation"></div>');
+        $('#birthdate').closest('.form-group').append(ageValidation);
+    }
+    
+    if (actualAge >= 4 && actualAge <= 18) {
+        ageValidation.removeClass('invalid').addClass('valid');
+        ageValidation.html('<i class="fas fa-check-circle"></i> Age: ' + actualAge + ' years (Valid)');
+        ageValidation.show();
+    } else {
+        ageValidation.removeClass('valid').addClass('invalid');
+        ageValidation.html('<i class="fas fa-exclamation-circle"></i> Age: ' + actualAge + ' years (Must be between 4-18 years)');
+        ageValidation.show();
+    }
+}
+
 // Initialize page
 $(document).ready(function() {
     console.log('Register scripts loaded');
     
-    // Initialize date picker with simple HTML5 date input
-    $('#birthdate').attr('type', 'date');
+    // Initialize jQuery UI datepicker with month and year dropdowns
+    const today = new Date();
+    const minDate = new Date(2000, 0, 1); // January 1, 2000
+    const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()); // Today
     
-    // Set max date to today
-    const today = new Date().toISOString().split('T')[0];
-    $('#birthdate').attr('max', today);
-    
-    // Set min date to 2000
-    $('#birthdate').attr('min', '2000-01-01');
+    $('#birthdate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeMonth: true,
+        changeYear: true,
+        yearRange: '2000:' + today.getFullYear(),
+        minDate: minDate,
+        maxDate: maxDate,
+        showAnim: 'slideDown',
+        duration: 300,
+        onSelect: function(dateText, inst) {
+            // Validate age when date is selected
+            validateAgeFeedback(dateText);
+        }
+    });
     
     // Load states
     fetchAllState();
@@ -213,16 +262,22 @@ function initializeFormValidation() {
 
     $.validator.addMethod("validAge", function(value, element) {
         if (!value) return false;
-        const birthDate = new Date(value);
+        
+        // Handle dd/mm/yy format from jQuery UI datepicker
+        const dateParts = value.split('/');
+        if (dateParts.length !== 3) return false;
+        
+        const birthDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
         
+        let actualAge = age;
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
+            actualAge--;
         }
         
-        return age >= 4 && age <= 18;
+        return actualAge >= 4 && actualAge <= 18;
     }, "Age must be between 4 and 18 years");
 
     // Initialize validation

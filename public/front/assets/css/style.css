@@ -2898,9 +2898,9 @@ Page Banner CSS
 .page-banner-area.item-bg1 {
   background-image: url(../../assets/img/page-banner/page-banner-2.jpg);
 }
-.page-banner-area.item-bg2 {
+/* .page-banner-area.item-bg2 {
   background-image: url(../../assets/img/page-banner/page-banner-3.jpg);
-}
+} */
 .page-banner-area.item-bg3 {
   background-image: url(../../assets/img/page-banner/page-banner-4.jpg);
 }

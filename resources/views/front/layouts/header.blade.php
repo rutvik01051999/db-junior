@@ -30,9 +30,17 @@
                         </li>
 
                         <li class="nav-item">
+                            @if (request()->routeIs('home'))
+
                             <a href="#about" class="nav-link">
                                 About
                             </a>
+
+                            @else
+                            <a href="/#about" class="nav-link">
+                                About
+                            </a>
+                            @endif
                         </li>
 
                        <li class="nav-item">
